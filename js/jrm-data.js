@@ -1,24 +1,23 @@
 /**
- * JRM Antophill — Official Deeni Portal & Organization Platform
- * Organization: Jamat Raza-E-Mustafa Antophill, Wadala, Mumbai
- * Affiliation: Ahle Sunnah wal Jama'ah (Under guidance of Huzoor Qaid-e-Millat)
- * Developed by esitesz (jrmantophill.esitesz.com)
+ * Jamat Raza-E-Mustafa (JRM) Antophill, Wadala, Mumbai
+ * Official Islamic Trust Branch of Jamat Raza-E-Mustafa Bareilly Sharif (Est. 1920)
+ * Central Website: jamatrazaemustafa.org | Branch Portal: jrmantophill.esitesz.com
  */
 
 (function (window) {
   'use strict';
 
   const STORAGE_KEYS = {
-    PROGRAMS: 'jrm_programs_v3',
-    COLLECTIONS: 'jrm_collections_v3',
-    EXPENSES: 'jrm_expenses_v3',
-    LOGS: 'jrm_audit_logs_v3',
-    SETTINGS: 'jrm_settings_v3',
-    MEDIA: 'jrm_media_v3',
-    PENDING_OTP: 'jrm_pending_otp_v3',
-    SUPER_ADMIN_SESSION: 'jrm_super_session_v3',
-    ADMIN_SESSION: 'jrm_admin_session_v3',
-    MEMBER_SESSION: 'jrm_member_session_v3'
+    PROGRAMS: 'jrm_programs_trust_v1',
+    COLLECTIONS: 'jrm_collections_trust_v1',
+    EXPENSES: 'jrm_expenses_trust_v1',
+    LOGS: 'jrm_audit_logs_trust_v1',
+    SETTINGS: 'jrm_settings_trust_v1',
+    MEDIA: 'jrm_media_trust_v1',
+    PENDING_OTP: 'jrm_pending_otp_trust_v1',
+    SUPER_ADMIN_SESSION: 'jrm_super_session_trust_v1',
+    ADMIN_SESSION: 'jrm_admin_session_trust_v1',
+    MEMBER_SESSION: 'jrm_member_session_trust_v1'
   };
 
   function numberToWordsINR(num) {
@@ -77,20 +76,23 @@
     return `${prefix}-${year}${month}-${randomHex}`;
   }
 
-  // Official Organization Settings
+  // Official Central Trust & Branch Configuration
   const DEFAULT_SETTINGS = {
     orgName: 'Jamat Raza-E-Mustafa Antophill',
     orgShort: 'JRM Antophill',
-    orgBranch: 'Antophill, Wadala, Mumbai',
+    orgBranch: 'Antophill, Wadala, Mumbai Chapter',
     orgFull: 'Jamat Raza-E-Mustafa (JRM) Antophill, Wadala, Mumbai',
-    centralHQ: 'Bareilly Sharif, Uttar Pradesh (Founded 1920 by Ala Hazrat Imam Ahmed Raza Khan Bareilvi)',
-    supervision: 'Under the spiritual guidance of Huzoor Qaid-e-Millat Madda Zillahul Aali',
-    localLeadership: 'Administered by Zain & JRM Antophill Committee Zimmedaran',
+    centralOrgName: 'Jamat Raza-E-Mustafa (Central Bareilly Sharif)',
+    centralWebsite: 'https://www.jamatrazaemustafa.org/',
+    centralHQ: 'Dargah-e-Aala Hazrat, Saudagran, Bareilly Sharif, Uttar Pradesh (Founded 1920 by Ala Hazrat Imam Ahmed Raza Khan Bareilvi)',
+    supremePatron: 'Huzoor Qaid-e-Millat Allama Asjad Raza Khan Qadri Madda Zillahul Aali (Chief Patron & President, Central JRM)',
+    localAdministration: 'Supervised by Ulama-e-Ahle Sunnat • Administered by Zain & Committee Zimmedaran',
     domain: 'jrmantophill.esitesz.com',
     developerCredit: 'Developed by esitesz',
     developerUrl: 'https://esitesz.com',
-    venueAddress: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala, Mumbai 400037, Maharashtra, India',
+    venueAddress: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037, Maharashtra, India',
     officialEmail: 'jamatrazaemustafa313@gmail.com',
+    centralEmail: 'contact@jamatrazaemustafa.org',
     officialPhone: '+91 85911 06632',
     superAdminPin: '9999', // Zain Master PIN
     adminPin: '7860',      // Committee Zimmedaran PIN
@@ -98,6 +100,7 @@
     googleSheetUrl: '',
     googleSheetApiKey: '',
     currencySymbol: '₹',
+    hijriDate: '1448 AH (Jumada al-Awwal)',
     bioLinks: {
       whatsapp: 'https://whatsapp.com/channel/0029VacNKL4DjiOgHMNQdp2j',
       instagram: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
@@ -107,10 +110,54 @@
       helpline: '+91 85911 06632'
     },
     activePosterUrl: 'https://jrmantophill.esitesz.com/jrmantophill.jpeg',
-    posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound, Antophill, Wadala. All devotees are cordially invited to attend with discipline.'
+    posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound, Antophill, Wadala. All devotees and Ahle Sunnah community members are invited to attend with discipline.'
   };
 
-  // Programs — Active Upcoming Program Promoted + Past Mehfils Archived
+  // Personalities of the Central Trust
+  const DEFAULT_PERSONALITIES = [
+    {
+      id: 'pers-01',
+      name: 'Imam Ahmed Raza Khan Fazil-e-Bareilvi (Aala Hazrat)',
+      title: 'Founder of Jamat Raza-E-Mustafa (1920) • Mujaddid of the 14th Century',
+      period: '1856 – 1921 CE / 1272 – 1340 AH',
+      bio: 'Eminent Islamic jurist, theologian, philosopher, mathematician, and spiritual master. Authored monumental works including Fatawa Razaviyya (30 volumes) and Kanzul Iman. Founded Jamat Raza-e-Mustafa to preserve Sunni Islamic beliefs and social welfare.',
+      icon: '🕌'
+    },
+    {
+      id: 'pers-02',
+      name: 'Huzoor Hujjat-ul-Islam Maulana Hamid Raza Khan Qadri',
+      title: 'First Sajjada Nasheen of Bareilly Sharif • Eldest Son of Aala Hazrat',
+      period: '1875 – 1943 CE / 1292 – 1362 AH',
+      bio: 'Renowned scholar, debater, and spiritual successor. Led Jamat Raza-E-Mustafa across British India, championing religious education and social upliftment.',
+      icon: '📖'
+    },
+    {
+      id: 'pers-03',
+      name: 'Huzoor Mufti-e-Azam Hind Maulana Mustafa Raza Khan',
+      title: 'Grand Mufti of India • Second Son of Aala Hazrat',
+      period: '1892 – 1981 CE / 1310 – 1402 AH',
+      bio: 'Spiritual beacon of millions across the globe. Authored Fatawa Mustafawiyya and Saman-e-Bakhshish. Established Jamat Raza-e-Mustafa as a global voice for Ahle Sunnah wal Jama\'ah.',
+      icon: '🌟'
+    },
+    {
+      id: 'pers-04',
+      name: 'Huzoor Tajushshariah Mufti Akhtar Raza Khan Azhari',
+      title: 'Fakhr-e-Azhar • Chief Islamic Jurist & Spiritual Guide',
+      period: '1943 – 2018 CE / 1362 – 1439 AH',
+      bio: 'World-renowned Al-Azhar graduate, internationally ranked among the world\'s most influential Islamic personalities. Patronized Jamat Raza-E-Mustafa chapters across Mumbai, Maharashtra, and 40+ countries.',
+      icon: '🎓'
+    },
+    {
+      id: 'pers-05',
+      name: 'Huzoor Qaid-e-Millat Allama Asjad Raza Khan Qadri',
+      title: 'President & Supreme Patron, Jamat Raza-E-Mustafa',
+      period: 'Present Leader',
+      bio: 'Current spiritual head and President of Central Jamat Raza-E-Mustafa Bareilly Sharif. Inspiring youth mobilization, modern educational centers, and branch expansions worldwide, including the Antophill Wadala chapter.',
+      icon: '👑'
+    }
+  ];
+
+  // Programs — Spotlight Active (41st) + Past Archive (40th & 39th)
   const DEFAULT_PROGRAMS = [
     {
       id: 'prog-nov-2026',
@@ -122,11 +169,11 @@
       time: '08:30 PM (IST)',
       status: 'upcoming',
       targetCollection: 22000,
-      description: 'The 41st Monthly Sunni Deeni Nashisht spiritual & educational gathering of Jamat Raza-e-Mustafa Antophill Mumbai. Featuring Tilawat-e-Quran, Kalam-e-Raza, speeches by renowned Ulama-e-Ahle Sunnat, Tabarruk distribution, and collective Dua for peace and unity.',
-      venue: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala, Mumbai 400037',
+      description: '41st Monthly Sunni Deeni Nashisht spiritual & educational conference organized by Jamat Raza-E-Mustafa Antophill Wadala. Program includes Quranic recitation, Kalam-e-Raza, speeches by visiting Ulama-e-Ahle Sunnat on Islamic ethics and Shariah guidance, followed by Langar-e-Raza Tabarruk and collective Dua.',
+      venue: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037',
       posterUrl: 'https://jrmantophill.esitesz.com/jrmantophill.jpeg',
-      posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026. Join us for an evening of spiritual enlightenment and Shariah guidance under the supervision of Ulama-e-Kiram.',
-      rsvpCount: 168,
+      posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound. Community gathering open to all devotees of Ahle Sunnah.',
+      rsvpCount: 174,
       createdAt: '2026-10-20T10:00:00Z'
     },
     {
@@ -139,10 +186,10 @@
       time: '08:30 PM (IST)',
       status: 'completed',
       targetCollection: 20000,
-      description: '40th Monthly Sunni Deeni Nashisht Program held at Antophill, Wadala. Verified total collection of ₹18,241 received from 39 members.',
+      description: '40th Monthly Sunni Deeni Nashisht gathering held at Akbar Suleman Compound, Antophill. Total verified member collection of ₹18,241 successfully gathered from 39 contributors.',
       venue: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala, Mumbai 400037',
       posterUrl: '',
-      posterAnnouncement: '40th Mahana Sunni Deeni Nashisht Mehfil concluded successfully with community blessings and Ulama guidance.',
+      posterAnnouncement: '40th Mahana Sunni Deeni Nashisht Mehfil concluded with community prayers and Ulama guidance.',
       rsvpCount: 195,
       createdAt: '2026-10-01T10:00:00Z'
     },
@@ -156,16 +203,16 @@
       time: '08:30 PM (IST)',
       status: 'completed',
       targetCollection: 18000,
-      description: 'Monthly Management & Program Mehfil. Management expenses audited at ₹17,800 (Nazrana, Rent, Niyaz, Sound, Social Media, Miscellaneous).',
+      description: 'Monthly Management & Program Gathering. Program management expenses audited at ₹17,800 (Nazrana for Ulama, Madrasa Premises Rent, Niyaz / Tabarruk, Sound Setup, Social Media Handling, and Miscellaneous).',
       venue: 'Antophill, Wadala, Mumbai 400037',
       posterUrl: '',
-      posterAnnouncement: 'September 2026 Mehfil management accounts fully cleared and verified.',
+      posterAnnouncement: 'September 2026 Mehfil accounts audited and verified.',
       rsvpCount: 154,
       createdAt: '2026-09-01T10:00:00Z'
     }
   ];
 
-  // Authentic Seed Collections with Email, Phone & 4-digit PIN
+  // Authentic Seed Collections (39 Members, ₹18,241 Total, with Email, Phone & 4-digit PIN)
   const DEFAULT_COLLECTIONS = [
     { id: 'col-01', memberNo: 1, name: 'Sayed Yusuf', phone: '9820011001', email: 'sayed.yusuf@jrmantophill.org', pin: '1234', programId: 'prog-oct-2026', paid: 500, balance: 0, mode: 'Cash', status: 'paid', token: 'JRM-2610-YUSUF', date: '2026-10-19', notes: 'Monthly Mehfil Contribution' },
     { id: 'col-02', memberNo: 2, name: 'Sayed jalaluddin', phone: '9820011002', email: 'jalaluddin@jrmantophill.org', pin: '1234', programId: 'prog-oct-2026', paid: 1000, balance: 0, mode: 'Bank UPI', status: 'paid', token: 'JRM-2610-JALAL', date: '2026-10-19', notes: 'Monthly Mehfil Contribution' },
@@ -208,66 +255,108 @@
     { id: 'col-41', memberNo: 41, name: 'Shadab Bhai maidan', phone: '9820011041', email: 'shadab.maidan@jrmantophill.org', pin: '1234', programId: 'prog-oct-2026', paid: 500, balance: 0, mode: 'Cash', status: 'paid', token: 'JRM-2610-SHADAB', date: '2026-10-19', notes: 'Monthly Mehfil Contribution' }
   ];
 
-  // Authentic Seed Expenses
+  // Authentic Seed Expenses (September Management Expenses: ₹17,800)
   const DEFAULT_EXPENSES = [
-    { id: 'exp-01', itemNo: 1, title: 'Nazrana (Ulama & Mashaikh)', category: 'Nazrana', amount: 4000, programId: 'prog-sep-2026', paidTo: 'Hazrat / Ulama-e-Kiram', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-001', notes: 'Nazrana honorarium for visiting Ulama' },
-    { id: 'exp-02', itemNo: 2, title: 'Madrasa Premises Rent', category: 'Madrasa Rent', amount: 1000, programId: 'prog-sep-2026', paidTo: 'Madrasa Hall Committee', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-002', notes: 'Seating & hall arrangements' },
-    { id: 'exp-03', itemNo: 3, title: 'Niyaz / Tabarruk Distribution', category: 'Niyaz', amount: 5800, programId: 'prog-sep-2026', paidTo: 'Catering & Tabarruk Khidmat', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-003', notes: 'Tabarruk distribution for all participants' },
-    { id: 'exp-04', itemNo: 4, title: 'High-Clarity Sound System & Mics', category: 'Sound', amount: 3000, programId: 'prog-sep-2026', paidTo: 'Antophill Sound Service', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-004', notes: 'Audio setup and acoustic monitoring' },
-    { id: 'exp-05', itemNo: 5, title: 'Social Media Broadcast & Live Stream', category: 'Social Media', amount: 3000, programId: 'prog-sep-2026', paidTo: 'Digital Media Khidmat Team', mode: 'Bank UPI', date: '2026-09-21', voucherNo: 'VCH-SEP-005', notes: 'YouTube, Facebook and Instagram broadcast setup' },
-    { id: 'exp-06', itemNo: 6, title: 'Miscellaneous (Parchun Kharcha)', category: 'Parchun Kharcha', amount: 1000, programId: 'prog-sep-2026', paidTo: 'Local Market Antophill', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-006', notes: 'Bottled water, stationery, banners and carpets' }
+    { id: 'exp-01', itemNo: 1, title: 'Nazrana (Visiting Ulama & Mashaikh)', category: 'Nazrana', amount: 4000, programId: 'prog-sep-2026', paidTo: 'Hazrat / Ulama-e-Kiram', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-001', notes: 'Nazrana honorarium for Sunni Deeni Nashisht speakers' },
+    { id: 'exp-02', itemNo: 2, title: 'Madrasa Premises Hall Rent', category: 'Madrasa Rent', amount: 1000, programId: 'prog-sep-2026', paidTo: 'Madrasa Hall Committee', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-002', notes: 'Seating, electricity and hall premises' },
+    { id: 'exp-03', itemNo: 3, title: 'Langar-e-Raza / Niyaz & Tabarruk', category: 'Niyaz', amount: 5800, programId: 'prog-sep-2026', paidTo: 'Catering & Tabarruk Khidmat', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-003', notes: 'Hot tabarruk meal packets for all attendees' },
+    { id: 'exp-04', itemNo: 4, title: 'High-Clarity Sound System & Microphones', category: 'Sound', amount: 3000, programId: 'prog-sep-2026', paidTo: 'Antophill Sound Service', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-004', notes: 'Acoustic audio setup with wireless microphones' },
+    { id: 'exp-05', itemNo: 5, title: 'Digital Media & Live Streaming Setup', category: 'Social Media', amount: 3000, programId: 'prog-sep-2026', paidTo: 'Media Khidmat Team', mode: 'Bank UPI', date: '2026-09-21', voucherNo: 'VCH-SEP-005', notes: 'YouTube, Facebook, and Instagram reels setup' },
+    { id: 'exp-06', itemNo: 6, title: 'Miscellaneous (Parchun Kharcha)', category: 'Parchun Kharcha', amount: 1000, programId: 'prog-sep-2026', paidTo: 'Local Market Antophill', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-006', notes: 'Carpets, stage banners, mineral water, and supplies' }
   ];
 
-  // Dynamic Media & Bayanats Feed
+  // Rich Media Library (Speeches, Bayanats, Reels, Naats)
   const DEFAULT_MEDIA = [
     {
       id: 'med-01',
       type: 'youtube',
-      title: 'Monthly Sunni Deeni Nashisht: Haqeeqat-e-Maslak-e-Ala Hazrat',
-      speaker: 'Ulama-e-Ahle Sunnat',
+      category: 'Bayanat',
+      title: 'Haqeeqat-e-Maslak-e-Ala Hazrat & Sunni Aqeedah',
+      speaker: 'Ulama-e-Ahle Sunnat Delegations',
       date: '2026-10-19',
+      duration: '48:20',
       channel: '@jrmantophill-s8k',
       url: 'http://www.youtube.com/@jrmantophill-s8k',
-      embedId: '',
-      description: 'Recorded live at Akbar Suleman Compound, Antophill, Wadala. Spiritual discourse on Islamic ethics and Shariah guidance.'
+      videoId: 'sample1',
+      description: 'Delivered at Akbar Suleman Compound, Antophill, Wadala. Comprehensive explanation of Ahle Sunnah wal Jama\'ah principles and moral character.',
+      keywords: 'ala hazrat bareilly sharif sunni aqeedah mahana mehfil'
     },
     {
       id: 'med-02',
       type: 'youtube',
-      title: 'Seerat-e-Mustafa ﷺ & Importance of Islamic Education for Youth',
-      speaker: 'Guest Ulama Delegation',
+      category: 'Bayanat',
+      title: 'Seerat-e-Mustafa ﷺ & Shariah Responsibility of Youth',
+      speaker: 'Hazrat Allama Maulana Mufti Sahab',
       date: '2026-09-21',
+      duration: '35:14',
       channel: '@jrmantophill-s8k',
       url: 'http://www.youtube.com/@jrmantophill-s8k',
-      embedId: '',
-      description: 'Comprehensive lecture on youth empowerment and the legacy of Huzoor Mufti-e-Azam Hind.'
+      videoId: 'sample2',
+      description: 'Inspiring address on educating Sunni Muslim youth in modern Mumbai, fostering Islamic ethics, and serving the community.',
+      keywords: 'seerat un nabi youth education shariah guidance'
     },
     {
       id: 'med-03',
-      type: 'reel',
-      title: 'Mehfil Gathering Highlights — Akbar Suleman Compound',
-      speaker: 'JRM Antophill Khuddam',
+      type: 'naat',
+      category: 'Kalam-e-Raza',
+      title: 'Kalam-e-Raza: "Chamak Tujhse Paate Hain Sab Paane Waale"',
+      speaker: 'Naat Khawan Team — JRM Antophill',
       date: '2026-10-19',
-      channel: '@jrmantophill',
-      url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
-      description: 'Short video glimpses of attendees reciting Durood Shareef and Naat.'
+      duration: '12:45',
+      channel: '@jrmantophill-s8k',
+      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      videoId: 'sample3',
+      description: 'Soulful recitation of Aala Hazrat\'s celebrated Manqabat and Naat during the 40th Deeni Nashisht.',
+      keywords: 'kalam e raza naat shareef hadaiq e bakhshish'
     },
     {
       id: 'med-04',
       type: 'reel',
-      title: 'Kalam-e-Raza Recitation & Tabarruk Distribution',
-      speaker: 'Naat Khawan Team',
+      category: 'Reels & Shorts',
+      title: 'Moments of Durood-o-Salam & Dua — Bada Maidan',
+      speaker: 'JRM Antophill Khuddam',
       date: '2026-10-19',
+      duration: '00:58',
       channel: '@jrmantophill',
       url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
-      description: 'Heartfelt recitations of Ala Hazrat Imam Ahmad Raza Khan Bareilvi.'
+      videoId: '',
+      description: 'Spiritual glimpses of the concluding collective Dua at Akbar Suleman Compound, Antophill Wadala.',
+      keywords: 'instagram reel short video dua durood antophill'
+    },
+    {
+      id: 'med-05',
+      type: 'reel',
+      category: 'Reels & Shorts',
+      title: 'Langar-e-Raza Tabarruk Preparation & Volunteer Seva',
+      speaker: 'Khuddam-e-Millat Committee',
+      date: '2026-09-21',
+      duration: '00:45',
+      channel: '@jrmantophill',
+      url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
+      videoId: '',
+      description: 'Behind the scenes: Volunteers preparing food boxes for distribution to all attendees in Wadala.',
+      keywords: 'langar niyaz khidmat volunteer antophill'
+    },
+    {
+      id: 'med-06',
+      type: 'youtube',
+      category: 'Conference',
+      title: 'Legacy of Huzoor Tajushshariah & Global Mission of JRM',
+      speaker: 'Senior Scholars of Jamat Raza-E-Mustafa',
+      date: '2026-08-25',
+      duration: '52:10',
+      channel: '@jrmantophill-s8k',
+      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      videoId: 'sample6',
+      description: 'Commemorating the international service of Huzoor Tajushshariah Allama Akhtar Raza Khan Azhari in India and worldwide.',
+      keywords: 'tajushshariah azhari miyan bareilly conference'
     }
   ];
 
   const DEFAULT_LOGS = [
-    { id: 'log-01', timestamp: '2026-10-19T10:15:00Z', istTime: '19-10-2026, 03:45:00 PM IST', user: 'Zain (Super Admin)', action: 'INIT', details: 'Initialized JRM Antophill Database with 39 Member Records and November Upcoming Mehfil.' },
-    { id: 'log-02', timestamp: '2026-10-19T11:00:00Z', istTime: '19-10-2026, 04:30:00 PM IST', user: 'Zain (Super Admin)', action: 'COLLECTION_VERIFY', details: 'Audited ₹18,241 total collections for October Sunni Deeni Nashisht.' },
-    { id: 'log-03', timestamp: '2026-10-19T11:30:00Z', istTime: '19-10-2026, 05:00:00 PM IST', user: 'Zain (Super Admin)', action: 'EXPENSE_RECORD', details: 'Verified September Expenses: Nazrana, Madrasa Rent, Niyaz, Sound, Social Media, Parchun Kharcha (Total ₹17,800).' }
+    { id: 'log-01', timestamp: '2026-10-19T10:15:00Z', istTime: '19-10-2026, 03:45:00 PM IST', user: 'Zain (Super Admin)', action: 'INIT', details: 'Initialized JRM Antophill Islamic Trust Database with 39 Member Records and November 41st Mehfil.' },
+    { id: 'log-02', timestamp: '2026-10-19T11:00:00Z', istTime: '19-10-2026, 04:30:00 PM IST', user: 'Zain (Super Admin)', action: 'AUDIT_VERIFIED', details: 'Audited ₹18,241 total collections for October Sunni Deeni Nashisht.' },
+    { id: 'log-03', timestamp: '2026-10-19T11:30:00Z', istTime: '19-10-2026, 05:00:00 PM IST', user: 'Zain (Super Admin)', action: 'EXPENSE_AUDITED', details: 'Verified September Expenses: Nazrana, Madrasa Rent, Niyaz, Sound, Social Media, Parchun Kharcha (Total ₹17,800).' }
   ];
 
   const Storage = {
@@ -317,6 +406,10 @@
       return merged;
     },
 
+    getPersonalities() {
+      return DEFAULT_PERSONALITIES;
+    },
+
     getRole() {
       if (this.isSuperAdminLoggedIn()) return 'superadmin';
       if (this.isAdminLoggedIn()) return 'admin';
@@ -355,7 +448,7 @@
       return true;
     },
 
-    // Committee Admin Auth
+    // Committee Admin Auth (Zimmedaran)
     isAdminLoggedIn() {
       if (this.isSuperAdminLoggedIn()) return true;
       const session = Storage.get(STORAGE_KEYS.ADMIN_SESSION, null);
@@ -420,17 +513,15 @@
         return { success: false, error: 'No member record found matching this email or phone.' };
       }
 
-      // Generate a 6-digit OTP
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
       const otpPayload = {
         memberId: member.id,
         otp: otpCode,
         identifier: input,
-        expiresAt: Date.now() + (10 * 60 * 1000) // 10 minutes
+        expiresAt: Date.now() + (10 * 60 * 1000)
       };
       Storage.set(STORAGE_KEYS.PENDING_OTP, otpPayload);
 
-      // Mask identifier for user display
       const isEmail = input.includes('@');
       let masked = input;
       if (isEmail) {
@@ -452,7 +543,7 @@
     verifyMemberOTP(enteredOtp) {
       const pending = Storage.get(STORAGE_KEYS.PENDING_OTP, null);
       if (!pending) {
-        return { success: false, error: 'No active OTP request. Please request a new OTP code.' };
+        return { success: false, error: 'No active OTP request. Please request a new code.' };
       }
 
       if (Date.now() > pending.expiresAt) {
@@ -461,7 +552,7 @@
       }
 
       if (!enteredOtp || enteredOtp.trim() !== pending.otp) {
-        return { success: false, error: 'Incorrect 6-digit OTP code. Please check and re-enter.' };
+        return { success: false, error: 'Incorrect 6-digit OTP code.' };
       }
 
       const member = this.getCollectionById(pending.memberId);
@@ -485,21 +576,18 @@
       return { success: true, member };
     },
 
-    // Direct PIN Fallback Login
     loginMemberWithPIN(identifier, pin) {
-      if (!identifier || !pin) {
-        return { success: false, error: 'Please enter identifier and 4-digit PIN.' };
-      }
+      if (!identifier || !pin) return { success: false, error: 'Please enter identifier and 4-digit PIN.' };
       const cleanId = identifier.trim().toLowerCase();
       const cleanPin = pin.trim();
       const all = this.getCollections();
 
-      const match = all.find(c => {
-        return (c.phone && c.phone === cleanId) ||
-               (c.email && c.email.toLowerCase() === cleanId) ||
-               (c.token && c.token.toLowerCase() === cleanId) ||
-               (c.name && c.name.toLowerCase() === cleanId);
-      });
+      const match = all.find(c =>
+        (c.phone && c.phone === cleanId) ||
+        (c.email && c.email.toLowerCase() === cleanId) ||
+        (c.token && c.token.toLowerCase() === cleanId) ||
+        (c.name && c.name.toLowerCase() === cleanId)
+      );
 
       if (!match) return { success: false, error: 'Member record not found.' };
       const expected = (match.pin && match.pin.trim()) || '1234';
@@ -519,10 +607,6 @@
       return { success: true, member: match };
     },
 
-    logoutMember() {
-      Storage.remove(STORAGE_KEYS.MEMBER_SESSION);
-      return true;
-    },
     logoutAll() {
       Storage.remove(STORAGE_KEYS.SUPER_ADMIN_SESSION);
       Storage.remove(STORAGE_KEYS.ADMIN_SESSION);
@@ -533,9 +617,6 @@
     // Programs
     getPrograms() {
       return Storage.get(STORAGE_KEYS.PROGRAMS, DEFAULT_PROGRAMS);
-    },
-    getProgramById(id) {
-      return this.getPrograms().find(p => p.id === id) || null;
     },
     getActiveProgram() {
       const progs = this.getPrograms();
@@ -561,12 +642,25 @@
       return program;
     },
 
-    // Media & Reels Feed
-    getMediaItems() {
-      return Storage.get(STORAGE_KEYS.MEDIA, DEFAULT_MEDIA);
+    // Media & Speeches Feed (With Search & Category Filter)
+    getMediaItems(query = '', category = 'all') {
+      let list = Storage.get(STORAGE_KEYS.MEDIA, DEFAULT_MEDIA);
+      if (category && category !== 'all') {
+        list = list.filter(m => m.category.toLowerCase() === category.toLowerCase());
+      }
+      if (query && query.trim()) {
+        const q = query.toLowerCase().trim();
+        list = list.filter(m =>
+          (m.title && m.title.toLowerCase().includes(q)) ||
+          (m.speaker && m.speaker.toLowerCase().includes(q)) ||
+          (m.keywords && m.keywords.toLowerCase().includes(q)) ||
+          (m.category && m.category.toLowerCase().includes(q))
+        );
+      }
+      return list;
     },
     saveMediaItem(item) {
-      const list = this.getMediaItems();
+      const list = Storage.get(STORAGE_KEYS.MEDIA, DEFAULT_MEDIA);
       if (!item.id) {
         item.id = 'med-' + Date.now();
         list.unshift(item);
@@ -578,13 +672,8 @@
       Storage.set(STORAGE_KEYS.MEDIA, list);
       return item;
     },
-    deleteMediaItem(id) {
-      const list = this.getMediaItems().filter(m => m.id !== id);
-      Storage.set(STORAGE_KEYS.MEDIA, list);
-      return true;
-    },
 
-    // Member Collections
+    // Collections
     getCollections(programId = null) {
       const all = Storage.get(STORAGE_KEYS.COLLECTIONS, DEFAULT_COLLECTIONS);
       if (!programId) return all;
@@ -592,11 +681,6 @@
     },
     getCollectionById(id) {
       return this.getCollections().find(c => c.id === id) || null;
-    },
-    getCollectionByToken(token) {
-      if (!token) return null;
-      const clean = token.trim().toUpperCase();
-      return this.getCollections().find(c => (c.token && c.token.toUpperCase() === clean)) || null;
     },
     saveCollection(entry) {
       const list = this.getCollections();
@@ -634,7 +718,6 @@
       return { success: true, member };
     },
 
-    // Member Specific Ledger
     getMemberLedger(memberName) {
       if (!memberName) return [];
       const clean = memberName.trim().toLowerCase();
@@ -670,20 +753,17 @@
     },
     deleteExpense(id) {
       const list = this.getExpenses();
-      const item = list.find(e => e.id === id);
       const filtered = list.filter(e => e.id !== id);
       Storage.set(STORAGE_KEYS.EXPENSES, filtered);
-      if (item) this.log('EXPENSE_DELETE', `Deleted expense: ${item.title}`);
+      this.log('EXPENSE_DELETE', `Deleted expense: ${id}`);
       return true;
     },
 
-    // Public Transparency Breakdown (Zero Private Member Names)
+    // Public Transparency Data (Zero Private Member Names)
     getPublicTransparency(programId = null) {
       const collections = this.getCollections(programId);
       let expenses = this.getExpenses(programId);
-      if (!expenses || expenses.length === 0) {
-        expenses = this.getExpenses();
-      }
+      if (!expenses || expenses.length === 0) expenses = this.getExpenses();
 
       const totalCollected = collections.reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
       const totalExpenses = expenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
@@ -703,7 +783,6 @@
       };
     },
 
-    // Audit Logs (IST)
     getLogs(limit = 100) {
       const logs = Storage.get(STORAGE_KEYS.LOGS, DEFAULT_LOGS);
       return logs.slice(-limit).reverse();
@@ -720,10 +799,10 @@
       const entry = {
         id: 'log-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
         timestamp: now.toISOString(),
-        istTime: istTime,
+        istTime,
         user: currentUser,
-        action: action,
-        details: details
+        action,
+        details
       };
       logs.push(entry);
       if (logs.length > 500) logs.shift();
@@ -731,26 +810,13 @@
       return entry;
     },
 
-    getMetrics(programId = null) {
-      const collections = this.getCollections(programId);
-      let expenses = this.getExpenses(programId);
-      if (!expenses || expenses.length === 0) {
-        expenses = this.getExpenses();
-      }
-
+    getMetrics() {
+      const collections = this.getCollections();
+      const expenses = this.getExpenses();
       const totalCollected = collections.reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
       const totalPendingBalance = collections.reduce((acc, c) => acc + (Number(c.balance) || 0), 0);
       const totalExpenses = expenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
       const netBalance = totalCollected - totalExpenses;
-
-      const cashCollected = collections
-        .filter(c => (c.mode || '').toLowerCase().includes('cash'))
-        .reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
-
-      const bankCollected = collections
-        .filter(c => (c.mode || '').toLowerCase().includes('bank') || (c.mode || '').toLowerCase().includes('upi'))
-        .reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
-
       const pendingCount = collections.filter(c => Number(c.balance) > 0).length;
 
       return {
@@ -758,15 +824,13 @@
         totalPendingBalance,
         totalExpenses,
         netBalance,
-        cashCollected,
-        bankCollected,
         totalMembers: collections.length,
         pendingCount
       };
     },
 
-    exportCollectionsCSV(programId = null) {
-      const rows = this.getCollections(programId);
+    exportCollectionsCSV() {
+      const rows = this.getCollections();
       const headers = ['Sr', 'Name', 'Phone', 'Email', 'Paid (INR)', 'Balance (INR)', 'Mode', 'Date (IST)', 'Receipt Token', 'Notes'];
       const lines = [headers.join(',')];
       rows.forEach(r => {
@@ -786,8 +850,8 @@
       return lines.join('\n');
     },
 
-    exportExpensesCSV(programId = null) {
-      const rows = this.getExpenses(programId);
+    exportExpensesCSV() {
+      const rows = this.getExpenses();
       const headers = ['Sr', 'Title', 'Category', 'Amount (INR)', 'Paid To', 'Mode', 'Date (IST)', 'Voucher No', 'Notes'];
       const lines = [headers.join(',')];
       rows.forEach(e => {
@@ -808,7 +872,7 @@
 
     exportFullBackup() {
       return JSON.stringify({
-        version: '3.0.0',
+        version: '4.0.0',
         exportedAt: new Date().toISOString(),
         programs: this.getPrograms(),
         collections: this.getCollections(),

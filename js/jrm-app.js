@@ -16,7 +16,9 @@
     searchQuery: '',
     statusFilter: 'all',
     modeFilter: 'all',
-    otpTarget: ''
+    otpTarget: '',
+    mediaSearchQuery: '',
+    mediaCategoryFilter: 'all'
   };
 
   const el = {};
@@ -293,6 +295,7 @@
     syncSessionState();
     updateHeaderUserPill();
     renderNavTabs();
+    renderPersonalities();
     renderUpcomingProgramSpotlight();
     renderHomeBioLinks();
     renderMediaFeed();
@@ -504,43 +507,158 @@
   }
 
   // ==========================================================================
-  // MEDIA, BAYANATS & INSTAGRAM REELS FEED
+  // SPIRITUAL FOUNDATIONS & LEADERSHIP PERSONALITIES
   // ==========================================================================
+  function renderPersonalities() {
+    const homeCont = document.getElementById('homePersonalitiesContainer');
+    const aboutCont = document.getElementById('aboutPersonalitiesContainer');
+    const personalities = JRMData.getPersonalities();
+
+    const html = personalities.map(p => `
+      <div class="personality-card">
+        <div>
+          <div class="personality-header">
+            <span class="personality-icon">${escapeHTML(p.icon || '🕌')}</span>
+            <div>
+              <div class="personality-name">${escapeHTML(p.name)}</div>
+              <div class="personality-title">${escapeHTML(p.title)}</div>
+              <span class="personality-era">${escapeHTML(p.period)}</span>
+            </div>
+          </div>
+          <p class="personality-bio">${escapeHTML(p.bio)}</p>
+        </div>
+      </div>
+    `).join('');
+
+    if (homeCont) homeCont.innerHTML = html;
+    if (aboutCont) aboutCont.innerHTML = html;
+  }
+
+  // ==========================================================================
+  // MEDIA, BAYANATS & INSTAGRAM REELS (SEARCH & FILTER ENGINE)
+  // ==========================================================================
+  function handleMediaSearch(e) {
+    state.mediaSearchQuery = (e && e.target ? e.target.value : '').trim();
+    renderMediaFeed();
+  }
+
+  function filterMediaCategory(category) {
+    state.mediaCategoryFilter = category;
+    const filterBtns = document.querySelectorAll('.media-filter-btn');
+    filterBtns.forEach(btn => {
+      if (btn.getAttribute('data-cat') === category) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    renderMediaFeed();
+  }
+
+  function openVideoModal(mediaId) {
+    const all = JRMData.getMediaItems();
+    const item = all.find(m => m.id === mediaId);
+    if (!item) return;
+
+    const titleEl = document.getElementById('videoModalTitle');
+    const speakerEl = document.getElementById('videoModalSpeaker');
+    const durationEl = document.getElementById('videoModalDuration');
+    const descEl = document.getElementById('videoModalDescription');
+    const linkEl = document.getElementById('videoModalExternalLink');
+    const playerCont = document.getElementById('videoModalPlayerContainer');
+
+    if (titleEl) titleEl.textContent = item.title;
+    if (speakerEl) speakerEl.textContent = 'Speaker: ' + (item.speaker || 'Ulama-e-Ahle Sunnat');
+    if (durationEl) durationEl.textContent = '⏱️ ' + (item.duration || 'N/A') + ' • ' + (item.date || '');
+    if (descEl) descEl.textContent = item.description;
+    if (linkEl) {
+      linkEl.href = item.url;
+      linkEl.textContent = item.type === 'youtube' ? 'Open in YouTube Channel ↗' : 'Open in Instagram ↗';
+    }
+
+    if (playerCont) {
+      playerCont.innerHTML = `
+        <div style="width: 100%; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #072517 0%, #0b3b24 100%); color: #FFF; padding: 24px; text-align: center;">
+          <div style="font-size: 2.6rem; margin-bottom: 8px;">${item.type === 'youtube' ? '📺' : '📱'}</div>
+          <h4 style="color: #DFBD7A; font-size: 1.05rem; margin-bottom: 6px;">${escapeHTML(item.title)}</h4>
+          <p style="font-size: 0.78rem; color: #DCE3DE; max-width: 440px; margin-bottom: 14px;">
+            Published on official channel <strong>${escapeHTML(item.channel)}</strong>. Watch high-definition broadcast directly on the verified platform.
+          </p>
+          <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+            ▶️ Watch Now on ${item.type === 'youtube' ? 'YouTube' : 'Instagram'}
+          </a>
+        </div>
+      `;
+    }
+
+    openModal('videoPlayerModal');
+  }
+
   function renderMediaFeed() {
     const homeContainer = document.getElementById('homeMediaFeedContainer');
     const allContainer = document.getElementById('allMediaGridContainer');
-    const media = JRMData.getMediaItems();
+    const countIndicator = document.getElementById('mediaCountIndicator');
+
+    const filtered = JRMData.getMediaItems(state.mediaSearchQuery, state.mediaCategoryFilter);
+    const totalCount = JRMData.getMediaItems().length;
+
+    if (countIndicator) {
+      countIndicator.textContent = `Showing ${filtered.length} of ${totalCount} items`;
+    }
 
     const renderCard = (m) => `
       <div class="media-card">
         <div>
+          <div class="media-thumbnail-wrap" onclick="window.JRMApp.openVideoModal('${m.id}')" title="Click to watch preview">
+            <div class="media-play-overlay">▶</div>
+            <span class="media-duration-tag">⏱️ ${escapeHTML(m.duration || 'Video')}</span>
+          </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <span class="media-type-badge ${m.type === 'youtube' ? 'media-type-youtube' : 'media-type-reel'}">
               ${m.type === 'youtube' ? '📺 YouTube Speech' : '📱 Instagram Reel'}
             </span>
             <span style="font-size: 0.72rem; color: var(--text-muted);">${escapeHTML(m.date)}</span>
           </div>
-          <h4 style="font-size: 0.92rem; margin-bottom: 6px; line-height: 1.4;">${escapeHTML(m.title)}</h4>
-          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5;">
+          <h4 style="font-size: 0.94rem; margin-bottom: 4px; line-height: 1.35; color: var(--text-main); cursor: pointer;" onclick="window.JRMApp.openVideoModal('${m.id}')">
+            ${escapeHTML(m.title)}
+          </h4>
+          <div style="font-size: 0.76rem; font-weight: 600; color: var(--brand-green); margin-bottom: 6px;">
+            ${escapeHTML(m.speaker || 'JRM Scholars')}
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">
             ${escapeHTML(m.description)}
           </p>
         </div>
         <div>
-          <div style="font-size: 0.75rem; color: var(--brand-green); font-weight: 600; margin-bottom: 8px;">
-            Channel: ${escapeHTML(m.channel)}
+          <div style="display: flex; gap: 6px;">
+            <button type="button" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center;" onclick="window.JRMApp.openVideoModal('${m.id}')">
+              ▶ Watch Video
+            </button>
+            <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Open on channel" style="padding: 6px 10px;">
+              ↗
+            </a>
           </div>
-          <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="width: 100%; justify-content: center;">
-            ${m.type === 'youtube' ? '▶️ Watch on YouTube' : '📱 Watch on Instagram'}
-          </a>
         </div>
       </div>
     `;
 
     if (homeContainer) {
-      homeContainer.innerHTML = media.slice(0, 4).map(renderCard).join('');
+      homeContainer.innerHTML = filtered.slice(0, 4).map(renderCard).join('');
     }
     if (allContainer) {
-      allContainer.innerHTML = media.map(renderCard).join('');
+      if (filtered.length === 0) {
+        allContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 32px; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+            <div style="font-size: 2rem; margin-bottom: 6px;">🔍</div>
+            <p>No speeches or reels found matching "<strong>${escapeHTML(state.mediaSearchQuery)}</strong>" in this category.</p>
+            <button class="btn btn-outline btn-sm" style="margin-top: 10px;" onclick="window.JRMApp.filterMediaCategory('all'); if (document.getElementById('mediaSearchInput')) document.getElementById('mediaSearchInput').value='';">
+              Show All Media
+            </button>
+          </div>
+        `;
+      } else {
+        allContainer.innerHTML = filtered.map(renderCard).join('');
+      }
     }
   }
 
@@ -1833,6 +1951,11 @@
     logoutCurrent,
     handleRsvp,
     shareProgramInfo,
+    handleMediaSearch,
+    filterMediaCategory,
+    openVideoModal,
+    renderMediaFeed,
+    renderPersonalities,
     previewMemberStatement,
     openAddCollectionModal,
     openEditCollectionModal,

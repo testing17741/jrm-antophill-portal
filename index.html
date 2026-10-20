@@ -15,14 +15,21 @@
 </head>
 <body>
 
-  <!-- Top Informational Announcement Bar -->
+  <!-- Calligraphic Bismillah Header -->
+  <div class="jrm-bismillah-bar" aria-label="Bismillah ir-Rahman ir-Rahim">
+    بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+  </div>
+
+  <!-- Top Informational Announcement Bar (Hijri Date, Central Trust & IST Clock) -->
   <aside class="jrm-topbar">
     <div class="jrm-topbar-inner">
-      <div>
-        <span>🕌 <strong>Jamat Raza-E-Mustafa</strong> (Bareilly Sharif • Est. 1920) • Antophill Wadala Chapter</span>
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <span>🕌 <strong>Jamat Raza-E-Mustafa</strong> (Bareilly Sharif • Est. 1920) • Antophill Chapter</span>
+        <span>• Central: <a href="https://www.jamatrazaemustafa.org/" target="_blank" rel="noopener" style="text-decoration: underline; font-weight: 600;">jamatrazaemustafa.org</a></span>
+        <span style="background: var(--brand-gold-light); color: var(--brand-gold-dark); padding: 1px 6px; border-radius: 4px; font-weight: 600;">1448 AH</span>
       </div>
       <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
-        <span>📍 Akbar Suleman Compound, Wadala</span>
+        <span>📍 Akbar Suleman Compound, Wadala East</span>
         <span>📞 <a href="tel:+918591106632" style="font-weight: 600;">+91 85911 06632</a></span>
         <span style="color: var(--brand-green); font-weight: 700;">🇮🇳 IST: <strong id="istLiveClock">...</strong></span>
       </div>
@@ -69,21 +76,31 @@
          ======================================================================== -->
     <div id="view-home" class="app-view active">
 
+      <!-- Trust Affiliation Heritage Banner -->
+      <section class="trust-affiliation-banner">
+        <div class="trust-affiliation-text">
+          🕌 <strong>Jamat Raza-E-Mustafa (JRM) Antophill</strong> is an accredited regional branch of the historic Sunni movement established in 1920 in Bareilly Sharif by <strong>Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi (رضي الله عنه)</strong>, guided by <strong>Huzoor Qaid-e-Millat Allama Asjad Raza Khan Qadri</strong>.
+        </div>
+        <a href="https://www.jamatrazaemustafa.org/" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="white-space: nowrap; border-color: var(--brand-gold-dark); color: var(--brand-green);">
+          Central Trust ↗
+        </a>
+      </section>
+
       <!-- Hero Banner -->
-      <section class="content-box" style="background: linear-gradient(135deg, rgba(17, 75, 48, 0.08) 0%, rgba(10, 54, 34, 0.02) 100%); border-color: var(--border-strong); padding: 26px 20px;">
+      <section class="content-box" style="background: linear-gradient(135deg, rgba(11, 59, 36, 0.08) 0%, rgba(197, 160, 89, 0.05) 100%); border-color: var(--border-strong); padding: 26px 20px;">
         <div style="max-width: 820px;">
           <span class="user-session-pill" style="font-size: 0.72rem; font-weight: 700; color: var(--brand-green); margin-bottom: 10px;">
             Ahle Sunnah wal Jama'ah • Maslak-e-Ala Hazrat
           </span>
           <h1 style="font-size: 1.65rem; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: var(--text-main);">
-            Advancing Sunni Deeni Education & Spiritual Welfare in Antophill, Mumbai
+            Sunni Deeni Education & Spiritual Welfare in Antophill, Mumbai
           </h1>
           <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
-            Welcome to the official digital portal of <strong>Jamat Raza-E-Mustafa Antophill, Wadala</strong>. Fulfilling the historic mission founded by Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi in 1920 under the spiritual leadership of Huzoor Qaid-e-Millat.
+            Official digital portal of <strong>Jamat Raza-E-Mustafa Antophill, Wadala</strong>. Fulfilling the mission of Bareilly Sharif under Huzoor Qaid-e-Millat through monthly educational conferences, youth guidance, and transparent community stewardship.
           </p>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <a href="https://whatsapp.com/channel/0029VacNKL4DjiOgHMNQdp2j" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">
-              💬 Join Official WhatsApp Channel
+              💬 Official WhatsApp Channel
             </a>
             <button class="btn btn-primary btn-sm" onclick="window.JRMApp.switchView('upcoming-mehfil')">
               📅 Next Mehfil: Nov 16, 2026
@@ -101,6 +118,20 @@
       <!-- SPOTLIGHT: UPCOMING 41st MAHANA SUNNI DEENI NASHISHT MEHFIL -->
       <section class="program-poster-card" id="upcomingProgramSpotlightCard">
         <!-- Injected dynamically by JS -->
+      </section>
+
+      <!-- Spiritual Leadership & Personalities Tribute -->
+      <section class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Founding Figures & Spiritual Leadership</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Bareilly Sharif Lineage & Guidance</span>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('about')">View Full History</button>
+        </div>
+        <div id="homePersonalitiesContainer" class="personalities-grid">
+          <!-- Injected dynamically by JS -->
+        </div>
       </section>
 
       <!-- Official Social & Bio Links (Verified Hub) -->
@@ -203,6 +234,9 @@
             <h3>About Jamat Raza-E-Mustafa (JRM) Antophill</h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">History, Mission & Leadership</span>
           </div>
+          <a href="https://www.jamatrazaemustafa.org/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            Visit jamatrazaemustafa.org ↗
+          </a>
         </div>
 
         <div style="line-height: 1.7; font-size: 0.88rem; color: var(--text-main);">
@@ -211,8 +245,13 @@
             <strong>Jamat Raza-E-Mustafa</strong> is an international Sunni Islamic organization founded in <strong>1920</strong> in Bareilly Sharif, Uttar Pradesh, by the eminent reviver of Islam, <strong>Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi (رضي الله عنه)</strong>, and consolidated under the spiritual leadership of <strong>Huzoor Mufti-e-Azam Hind Maulana Mustafa Raza Khan Qadri</strong>.
           </p>
           <p style="margin-bottom: 16px;">
-            The organization was established to preserve traditional Islamic theology, uphold the creed of the <em>Ahle Sunnah wal Jama'ah</em>, educate the community through systematic deeni learning, and offer social welfare in adherence to Islamic Shariah.
+            The organization was established to preserve traditional Islamic theology, uphold the creed of the <em>Ahle Sunnah wal Jama'ah</em>, educate the community through systematic deeni learning, and offer social welfare in adherence to Islamic Shariah. For more details on the central body's national and international activities, visit the central trust portal at <a href="https://www.jamatrazaemustafa.org/" target="_blank" rel="noopener" style="color: var(--brand-green); font-weight: 700; text-decoration: underline;">jamatrazaemustafa.org</a>.
           </p>
+
+          <h4 style="font-size: 1.05rem; margin-top: 20px; margin-bottom: 8px; color: var(--brand-green);">Founding Leaders & Spiritual Patrons</h4>
+          <div id="aboutPersonalitiesContainer" class="personalities-grid" style="margin-bottom: 24px;">
+            <!-- Injected dynamically by JS -->
+          </div>
 
           <h4 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--brand-green);">Antophill Wadala Chapter</h4>
           <p style="margin-bottom: 14px;">
@@ -229,7 +268,7 @@
 
           <div style="background: var(--bg-subtle); border-left: 3px solid var(--brand-green); padding: 14px; border-radius: var(--radius-sm); margin-top: 18px;">
             <strong>Official Headquarters:</strong> Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037, Maharashtra, India.<br>
-            <strong>Official Email:</strong> <a href="mailto:jamatrazaemustafa313@gmail.com">jamatrazaemustafa313@gmail.com</a> • <strong>Helpline:</strong> <a href="tel:+918591106632">+91 85911 06632</a>
+            <strong>Official Email:</strong> <a href="mailto:jamatrazaemustafa313@gmail.com">jamatrazaemustafa313@gmail.com</a> • <strong>Helpline:</strong> <a href="tel:+918591106632">+91 85911 06632</a> • <strong>Central Body:</strong> <a href="https://www.jamatrazaemustafa.org/" target="_blank" rel="noopener">www.jamatrazaemustafa.org</a>
           </div>
         </div>
       </div>
@@ -253,19 +292,43 @@
     </div>
 
     <!-- ========================================================================
-         VIEW 4: MEDIA, SPEECHES & INSTAGRAM REELS
+         VIEW 4: MEDIA, SPEECHES & INSTAGRAM REELS (Searchable Library)
          ======================================================================== -->
     <div id="view-media" class="app-view">
       <div class="content-box">
         <div class="content-box-header">
           <div>
-            <h3>Official Speeches, Bayanats & Video Reels</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Digital Broadcast from JRM Antophill</span>
+            <h3>Speeches, Bayanats & Kalam-e-Raza Media Library</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Recorded Lectures, Reels & Spiritual Discourses</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="http://www.youtube.com/@jrmantophill-s8k" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color: #C00;">
+              📺 YouTube Channel
+            </a>
+            <a href="https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color: #C13584;">
+              📱 Instagram Reels
+            </a>
           </div>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
-          Watch recorded lectures by Ulama-e-Kiram, spiritual discourses, and highlights of our Mahana Mehfils:
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;">
+          Search our catalog of recorded Ulama lectures, spiritual discourses, Naat-e-Mustafa recitations, and short reminders:
         </p>
+
+        <!-- Media Search & Filter Toolbar -->
+        <div class="media-search-toolbar">
+          <div class="media-search-input-wrap">
+            <span class="media-search-icon">🔍</span>
+            <input type="text" id="mediaSearchInput" class="media-search-input" placeholder="Search speeches, scholars, Naats, or topics (e.g. Ala Hazrat, Seerat, Wadala)..." oninput="window.JRMApp.handleMediaSearch(event)">
+          </div>
+          <div class="media-filter-pills" id="mediaCategoryFilterContainer">
+            <button class="media-filter-btn active" data-cat="all" onclick="window.JRMApp.filterMediaCategory('all')">All Media</button>
+            <button class="media-filter-btn" data-cat="Bayanat" onclick="window.JRMApp.filterMediaCategory('Bayanat')">Bayanat & Speeches</button>
+            <button class="media-filter-btn" data-cat="Kalam-e-Raza" onclick="window.JRMApp.filterMediaCategory('Kalam-e-Raza')">Kalam-e-Raza & Naats</button>
+            <button class="media-filter-btn" data-cat="Reels & Shorts" onclick="window.JRMApp.filterMediaCategory('Reels & Shorts')">Instagram Reels</button>
+            <button class="media-filter-btn" data-cat="Conference" onclick="window.JRMApp.filterMediaCategory('Conference')">Conferences</button>
+            <span id="mediaCountIndicator" class="media-count-indicator">Showing all items</span>
+          </div>
+        </div>
 
         <div id="allMediaGridContainer" class="media-grid">
           <!-- Injected dynamically by JS -->
@@ -931,6 +994,33 @@
           <button type="submit" class="btn btn-primary">Save Expense</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Video Player Modal -->
+  <div id="videoPlayerModal" class="modal-layer">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-head">
+        <h3 id="videoModalTitle">Watch Video / Bayan</h3>
+        <button class="modal-close-btn" onclick="window.JRMApp.closeModal('videoPlayerModal')">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 14px;">
+        <div id="videoModalPlayerContainer" class="video-player-wrap">
+          <!-- Injected player iframe or video element -->
+        </div>
+        <div style="margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span id="videoModalSpeaker" style="font-weight: 700; color: var(--brand-green); font-size: 0.85rem;"></span>
+            <span id="videoModalDuration" style="font-size: 0.74rem; color: var(--text-muted);"></span>
+          </div>
+          <p id="videoModalDescription" style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;"></p>
+          <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
+            <a id="videoModalExternalLink" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+              Open on Channel ↗
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -3,7 +3,7 @@
 The official responsive Progressive Web App (PWA) and organizational website for **Jamat Raza-E-Mustafa (JRM) Antophill, Wadala, Mumbai**, operating under the spiritual guidance of **Huzoor Qaid-e-Millat Madda Zillahul Aali** and adhering to the creed of *Ahle Sunnah wal Jama'ah (Maslak-e-Ala Hazrat)*.
 
 - **Organization:** Jamat Raza-E-Mustafa Antophill, Wadala, Mumbai
-- **Heritage:** Branch of the international movement founded in 1920 in Bareilly Sharif by Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi (رضي الله عنه).
+- **Central Organization:** Jamat Raza-E-Mustafa Bareilly Sharif (Est. 1920 by Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi) • Central Portal: [jamatrazaemustafa.org](https://www.jamatrazaemustafa.org/)
 - **Headquarters:** Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037, Maharashtra, India.
 - **Official Domain:** `jrmantophill.esitesz.com`
 - **Official Email:** `jamatrazaemustafa313@gmail.com`
