@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jrmantophill.esitesz.com/sitemap.xml

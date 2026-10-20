@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>JRM Antophill — Deeni Mehfil & Fund Portal</title>
+  <meta name="description" content="Jamat Raza-e-Mustafa Antophill Mumbai — Mahana Sunni Deeni Nashisht collections, verified receipts, and management expenses. Developed by esitesz.">
+  <meta name="theme-color" content="#114B30">
+
+  <link rel="icon" type="image/svg+xml" href="./icons/jrm-logo.svg">
+  <link rel="apple-touch-icon" href="./icons/jrm-logo.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+
+  <link rel="stylesheet" href="./css/jrm.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="jrm-header">
+    <div class="jrm-header-inner">
+      <div class="jrm-brand">
+        <img src="./icons/jrm-logo.svg" alt="JRM Logo" class="jrm-brand-logo" width="36" height="36">
+        <div class="jrm-brand-titles">
+          <span class="jrm-brand-name">JAMAT RAZA-E-MUSTAFA</span>
+          <span class="jrm-brand-meta">Antophill, Mumbai • Deeni Mehfil & Fund Portal</span>
+        </div>
+      </div>
+
+      <div class="jrm-header-actions">
+        <div id="userRoleDisplay" class="user-session-pill">
+          <span>Public View</span>
+        </div>
+        <button id="loginActionBtn" class="btn btn-outline btn-sm">
+          Login
+        </button>
+        <button id="themeToggle" class="btn btn-outline btn-sm" aria-label="Toggle Theme" style="padding: 4px 8px;">
+          🌙
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="jrm-nav" aria-label="Navigation">
+    <div class="jrm-nav-inner">
+      <button class="nav-tab active" data-view="dashboard">
+        Dashboard
+      </button>
+      <button class="nav-tab" data-view="statement">
+        Mera Hisab & Statement
+      </button>
+      <button class="nav-tab" data-view="collections">
+        Collections
+      </button>
+      <button class="nav-tab" data-view="expenses">
+        Expenses
+      </button>
+      <button class="nav-tab" data-view="callbook">
+        Call Book
+        <span id="pendingNavBadge" class="nav-counter" style="display: none;">0</span>
+      </button>
+      <button class="nav-tab" data-view="whatsapp">
+        WhatsApp Reports
+      </button>
+      <button class="nav-tab" data-view="verify">
+        Verify Receipt
+      </button>
+      <button class="nav-tab admin-only" data-view="sheets" style="display: none;">
+        Sheets Sync
+      </button>
+      <button class="nav-tab admin-only" data-view="logs" style="display: none;">
+        Audit Logs (IST)
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="jrm-container">
+
+    <!-- Active Program Strip -->
+    <section id="activeProgramStrip" class="program-strip">
+      <!-- Injected by JS -->
+    </section>
+
+    <!-- ========================================================================
+         VIEW 1: Dashboard
+         ======================================================================== -->
+    <div id="view-dashboard" class="app-view active">
+      <section id="dashboardKPIs" class="metrics-row">
+        <!-- Injected by JS -->
+      </section>
+
+      <!-- Quick Action Buttons -->
+      <section class="content-box">
+        <div class="content-box-header">
+          <h3>Quick Actions</h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">IST (Asia/Kolkata)</span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-primary admin-only" onclick="window.JRMApp.openAddCollectionModal()" style="display: none;">
+            + Record Collection
+          </button>
+          <button class="btn btn-outline admin-only" onclick="window.JRMApp.openAddExpenseModal()" style="display: none;">
+            + Log Expense
+          </button>
+          <button class="btn btn-outline" onclick="window.JRMApp.openMemberLoginModal()">
+            👤 Member Login (Mera Hisab)
+          </button>
+          <button class="btn btn-whatsapp" onclick="window.JRMApp.switchView('whatsapp')">
+            📱 WhatsApp Reports
+          </button>
+          <button class="btn btn-outline" onclick="window.JRMApp.switchView('callbook')">
+            📞 Pending Call Book
+          </button>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+        <section class="content-box">
+          <div class="content-box-header">
+            <h3>Recent Collections</h3>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('collections')">View All</button>
+          </div>
+          <div id="dashboardRecentCollections"></div>
+        </section>
+
+        <section class="content-box">
+          <div class="content-box-header">
+            <h3>Recent Management Expenses</h3>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('expenses')">View All</button>
+          </div>
+          <div id="dashboardRecentExpenses"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 2: Member Personal Statement & Transparency
+         ======================================================================== -->
+    <div id="view-statement" class="app-view">
+      <div id="memberStatementContainer">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 3: Collections
+         ======================================================================== -->
+    <div id="view-collections" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Member Fund Collections</h3>
+            <span id="collectionCountDisplay" style="font-size: 0.78rem; color: var(--text-muted);">Loading members...</span>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button class="btn btn-primary admin-only" onclick="window.JRMApp.openAddCollectionModal()" style="display: none;">
+              + New Entry
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('collections')">
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 180px;">
+            <input type="text" id="collectionSearchInput" class="form-input" placeholder="Search member name or token...">
+          </div>
+          <div style="min-width: 130px;">
+            <select id="collectionStatusFilter" class="form-input">
+              <option value="all">All Status</option>
+              <option value="paid">Paid Only</option>
+              <option value="pending">Pending (BAL) Only</option>
+            </select>
+          </div>
+          <div style="min-width: 130px;">
+            <select id="collectionModeFilter" class="form-input">
+              <option value="all">All Modes</option>
+              <option value="cash">Cash</option>
+              <option value="bank">Bank / UPI</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="collectionsTableContainer"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 4: Expenses
+         ======================================================================== -->
+    <div id="view-expenses" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Program Management Expenses</h3>
+            <span id="expenseTotalDisplay" style="font-size: 0.78rem; color: var(--text-muted);">Loading expenses...</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-primary admin-only" onclick="window.JRMApp.openAddExpenseModal()" style="display: none;">
+              + Log Expense
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('expenses')">
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <div id="expensesTableContainer"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 5: Call Book CRM for Pending Members
+         ======================================================================== -->
+    <div id="view-callbook" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Pending Balance Follow-up (Call Book)</h3>
+            <span id="callBookCountDisplay" style="font-size: 0.78rem; color: var(--status-pending); font-weight: 700;">Tracking pending members...</span>
+          </div>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+          Direct 1-tap phone call aur respectful WhatsApp balance reminder un members ke liye jinka contribution baki hai.
+        </p>
+
+        <div id="callBookGridContainer" class="callbook-list"></div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 6: WhatsApp Message Formatter (Separated Collection & Expense)
+         ======================================================================== -->
+    <div id="view-whatsapp" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>WhatsApp Broadcast Messages</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Payment aur Expense dono message alag alag share karein</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-whatsapp" onclick="window.JRMApp.shareCurrentWhatsApp()">
+              📱 Share on WhatsApp
+            </button>
+            <button class="btn btn-outline" onclick="window.JRMApp.copyCurrentWhatsApp()">
+              📋 Copy Message
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub Tabs to Switch between Payment Msg and Expense Msg -->
+        <div class="sub-tabs">
+          <button id="tabWhatsAppCollection" class="sub-tab-btn active" onclick="window.JRMApp.setWhatsAppTab('collection')">
+            1. Member Collection Message (Fund Jama)
+          </button>
+          <button id="tabWhatsAppExpense" class="sub-tab-btn" onclick="window.JRMApp.setWhatsAppTab('expense')">
+            2. Program Management Expenses (Kharcha)
+          </button>
+        </div>
+
+        <pre id="whatsappMessagePreview" class="msg-preview-box">Loading message...</pre>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button class="btn btn-whatsapp" onclick="window.JRMApp.shareCurrentWhatsApp()">
+            📱 Share this Message
+          </button>
+          <button class="btn btn-outline" onclick="window.JRMApp.copyCurrentWhatsApp()">
+            📋 Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 7: Receipt Verification (Public)
+         ======================================================================== -->
+    <div id="view-verify" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Verify Receipt & Contribution</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Instant verification without costly SMS</span>
+          </div>
+        </div>
+
+        <form id="receiptSearchForm" style="display: flex; gap: 8px; margin-bottom: 16px; max-width: 520px;">
+          <input type="text" id="receiptSearchInput" class="form-input" placeholder="Member name ya Token daalein (e.g. Sayed Yusuf)..." required>
+          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Search</button>
+        </form>
+
+        <div id="receiptLookupResult">
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Apna naam ya token daal kar payment verify karein.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 8: Sheets Sync (Admin)
+         ======================================================================== -->
+    <div id="view-sheets" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Google Sheets Cloud Sync (Zain / Admin)</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">100% Free Google Sheets & Apps Script database</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Google Apps Script Web App URL</label>
+          <input type="url" id="sheetUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Optional API Security Key</label>
+          <input type="text" id="sheetKeyInput" class="form-input" placeholder="API Key (agar Apps Script properties me set hai)">
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+          <button class="btn btn-primary" onclick="window.JRMApp.saveSheetSettings()">Save Config</button>
+          <button id="syncSheetsBtn" class="btn btn-outline" onclick="window.JRMApp.syncGoogleSheets()">Sync with Google Sheets</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('collections')">Export Collections (CSV)</button>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('expenses')">Export Expenses (CSV)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 9: Audit Logs (IST Time)
+         ======================================================================== -->
+    <div id="view-logs" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Audit Trail (India Standard Time — IST)</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Asia/Kolkata timezone timestamped transactions</span>
+          </div>
+        </div>
+        <div id="auditLogsContainer"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==========================================================================
+       Modals
+       ========================================================================== -->
+
+  <!-- Member Login Modal -->
+  <div id="memberLoginModal" class="modal-layer">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3>Member Login (Mera Hisab)</h3>
+        <button class="modal-close-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="memberLoginForm">
+        <div class="modal-body">
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Apna naam chunein taaki aapka personal payment statement, receipts, aur us month ka kul fund & kharcha dekh sakein.
+          </p>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Member List Se Chunein</label>
+            <select id="memberSelectInput" class="form-input">
+              <option value="">-- Loading Members --</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Ya Apna Naam / Phone Type Karein</label>
+            <input type="text" id="memberManualInput" class="form-input" placeholder="e.g. Sayed Yusuf ya 98200...">
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Login As Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin PIN Modal (Zain / Zimmedaran) -->
+  <div id="adminPinModal" class="modal-layer">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3>Admin Access (Zain & Zimmedaran)</h3>
+        <button class="modal-close-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="adminPinForm">
+        <div class="modal-body">
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Entry add karne, edit karne, aur committee hisab manage karne ke liye PIN enter karein (Default: <code>7860</code>).
+          </p>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Security PIN</label>
+            <input type="password" id="adminPinInput" class="form-input" placeholder="PIN daalein" maxlength="8" required>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Unlock Admin Mode</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Collection Modal -->
+  <div id="collectionModal" class="modal-layer">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3>Record Member Collection</h3>
+        <button class="modal-close-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="collectionForm">
+        <input type="hidden" id="collectionId">
+        <div class="modal-body">
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Member Name *</label>
+            <input type="text" id="collectionName" class="form-input" placeholder="e.g. Sayed Yusuf" required>
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Contact Number (Optional)</label>
+            <input type="tel" id="collectionPhone" class="form-input" placeholder="98200...">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Paid Amount (₹) *</label>
+              <input type="number" id="collectionPaid" class="form-input" placeholder="500" min="0" required>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Balance (₹)</label>
+              <input type="number" id="collectionBalance" class="form-input" placeholder="0" min="0" value="0">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Payment Mode</label>
+              <select id="collectionMode" class="form-input">
+                <option value="Cash">Cash</option>
+                <option value="Bank UPI">Bank UPI</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Date (IST)</label>
+              <input type="date" id="collectionDate" class="form-input" required>
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Notes</label>
+            <input type="text" id="collectionNotes" class="form-input" placeholder="Remarks...">
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Expense Modal -->
+  <div id="expenseModal" class="modal-layer">
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <h3>Log Management Expense</h3>
+        <button class="modal-close-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <form id="expenseForm">
+        <input type="hidden" id="expenseId">
+        <div class="modal-body">
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Expense Title / Head *</label>
+            <input type="text" id="expenseTitle" class="form-input" placeholder="e.g. Nazrana, Madrasa Rent, Niyaz..." required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Category</label>
+              <select id="expenseCategory" class="form-input">
+                <option value="Nazrana">Nazrana</option>
+                <option value="Madrasa Rent">Madrasa Rent</option>
+                <option value="Niyaz">Niyaz</option>
+                <option value="Sound">Sound</option>
+                <option value="Social Media">Social Media</option>
+                <option value="Parchun Kharcha">Parchun Kharcha</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Amount (₹) *</label>
+              <input type="number" id="expenseAmount" class="form-input" placeholder="1000" min="0" required>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Paid To</label>
+              <input type="text" id="expensePaidTo" class="form-input" placeholder="Vendor / Name">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Date (IST)</label>
+              <input type="date" id="expenseDate" class="form-input" required>
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Notes</label>
+            <input type="text" id="expenseNotes" class="form-input" placeholder="Remarks...">
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Receipt Viewer Modal -->
+  <div id="receiptModal" class="modal-layer">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-head no-print">
+        <h3>Digital Receipt (IST Time)</h3>
+        <button class="modal-close-btn" style="color: var(--text-muted);">✕</button>
+      </div>
+      <div class="modal-body" id="receiptModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast Box -->
+  <div id="toastContainer" class="toast-box"></div>
+
+  <!-- Footer -->
+  <footer class="jrm-footer">
+    <div class="jrm-footer-inner">
+      <div>
+        <strong>Jamat Raza-e-Mustafa Antophill Mumbai</strong> • Mahana Sunni Deeni Nashisht Portal<br>
+        <small>Zain & Zimmedaran Committee • All timestamps recorded in Indian Standard Time (IST)</small>
+      </div>
+      <div style="text-align: right;">
+        Developed by <a href="https://esitesz.com" target="_blank" rel="noopener" style="font-weight: 700;">esitesz</a><br>
+        <a href="https://jrmantophill.esitesz.com">jrmantophill.esitesz.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/jrm-data.js"></script>
+  <script src="./js/jrm-app.js"></script>
+</body>
+</html>

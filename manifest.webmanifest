@@ -1,0 +1,46 @@
+{
+  "name": "JRM Antophill — Deeni Mehfil & Fund Portal",
+  "short_name": "JRM Portal",
+  "description": "Official Collection, Expense, Member Statement & WhatsApp Portal for Jamat Raza-e-Mustafa Antophill Mumbai. Developed by esitesz.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#061A10",
+  "theme_color": "#0E3D22",
+  "categories": ["finance", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "./icons/jrm-logo.svg",
+      "sizes": "192x192 512x512 any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Member Collections",
+      "short_name": "Collections",
+      "url": "./index.html#collections",
+      "icons": [{ "src": "./icons/jrm-logo.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Call Book & CRM",
+      "short_name": "Call Book",
+      "url": "./index.html#callbook",
+      "icons": [{ "src": "./icons/jrm-logo.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "WhatsApp Formatter",
+      "short_name": "WhatsApp",
+      "url": "./index.html#whatsapp",
+      "icons": [{ "src": "./icons/jrm-logo.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Member Receipt Lookup",
+      "short_name": "Receipts",
+      "url": "./index.html#receipts",
+      "icons": [{ "src": "./icons/jrm-logo.svg", "sizes": "96x96" }]
+    }
+  ]
+}
