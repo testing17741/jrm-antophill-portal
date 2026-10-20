@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>JRM Antophill — Deeni Mehfil & Fund Portal</title>
-  <meta name="description" content="Jamat Raza-e-Mustafa Antophill Mumbai — Mahana Sunni Deeni Nashisht upcoming mehfils, verified receipts, and public fund transparency. Developed by esitesz.">
+  <title>Jamat Raza-E-Mustafa Antophill | Official Organization & Deeni Portal</title>
+  <meta name="description" content="Official website of Jamat Raza-E-Mustafa (JRM) Antophill, Wadala, Mumbai. Branch of the historic Sunni organization founded by Imam Ahmed Raza Khan Bareilvi. Follow upcoming Mahana Sunni Deeni Nashisht gatherings, bio links, and verified accounts.">
   <meta name="theme-color" content="#114B30">
 
   <link rel="icon" type="image/svg+xml" href="./icons/jrm-logo.svg">
@@ -15,14 +15,28 @@
 </head>
 <body>
 
-  <!-- App Header -->
+  <!-- Top Informational Announcement Bar -->
+  <aside class="jrm-topbar">
+    <div class="jrm-topbar-inner">
+      <div>
+        <span>🕌 <strong>Jamat Raza-E-Mustafa</strong> (Bareilly Sharif • Est. 1920) • Antophill Wadala Chapter</span>
+      </div>
+      <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+        <span>📍 Akbar Suleman Compound, Wadala</span>
+        <span>📞 <a href="tel:+918591106632" style="font-weight: 600;">+91 85911 06632</a></span>
+        <span style="color: var(--brand-green); font-weight: 700;">🇮🇳 IST: <strong id="istLiveClock">...</strong></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
   <header class="jrm-header">
     <div class="jrm-header-inner">
-      <div class="jrm-brand" onclick="window.JRMApp.goHome()" style="cursor: pointer;">
-        <img src="./icons/jrm-logo.svg" alt="JRM Logo" class="jrm-brand-logo" width="36" height="36">
+      <div class="jrm-brand" onclick="window.JRMApp.switchView('home')" style="cursor: pointer;">
+        <img src="./icons/jrm-logo.svg" alt="JRM Logo" class="jrm-brand-logo" width="38" height="38">
         <div class="jrm-brand-titles">
           <span class="jrm-brand-name">JAMAT RAZA-E-MUSTAFA</span>
-          <span class="jrm-brand-meta">Antophill, Mumbai • Deeni Mehfil & Fund Portal</span>
+          <span class="jrm-brand-meta">Antophill, Wadala, Mumbai • Official Chapter</span>
         </div>
       </div>
 
@@ -40,118 +54,297 @@
     </div>
   </header>
 
-  <!-- Dynamic Role-Guarded Navigation Bar -->
-  <nav class="jrm-nav" aria-label="Navigation">
+  <!-- Primary Navigation Bar -->
+  <nav class="jrm-nav" aria-label="Primary Navigation">
     <div class="jrm-nav-inner" id="navTabsContainer">
-      <!-- Injected dynamically by JS based on user role (Public / Member / Admin / Super Admin) -->
+      <!-- Injected dynamically by JS based on user role -->
     </div>
   </nav>
 
   <!-- Main Content Container -->
   <main class="jrm-container">
 
-    <!-- Active Program Strip (Live IST Clock & Program Quick Badge) -->
-    <section id="activeProgramStrip" class="program-strip">
-      <!-- Injected by JS -->
-    </section>
-
     <!-- ========================================================================
-         VIEW 1: PUBLIC HOME (Mehfil Details, Poster Banner & Official Bio Links)
+         VIEW 1: HOME (Institutional Landing, Upcoming Mehfil & Bio Hub)
          ======================================================================== -->
-    <div id="view-public-home" class="app-view active">
-      
-      <!-- Upcoming Mehfil & Poster Card -->
-      <section id="publicProgramPosterSection" class="program-poster-card">
-        <!-- Injected by JS -->
+    <div id="view-home" class="app-view active">
+
+      <!-- Hero Banner -->
+      <section class="content-box" style="background: linear-gradient(135deg, rgba(17, 75, 48, 0.08) 0%, rgba(10, 54, 34, 0.02) 100%); border-color: var(--border-strong); padding: 26px 20px;">
+        <div style="max-width: 820px;">
+          <span class="user-session-pill" style="font-size: 0.72rem; font-weight: 700; color: var(--brand-green); margin-bottom: 10px;">
+            Ahle Sunnah wal Jama'ah • Maslak-e-Ala Hazrat
+          </span>
+          <h1 style="font-size: 1.65rem; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: var(--text-main);">
+            Advancing Sunni Deeni Education & Spiritual Welfare in Antophill, Mumbai
+          </h1>
+          <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 18px;">
+            Welcome to the official digital portal of <strong>Jamat Raza-E-Mustafa Antophill, Wadala</strong>. Fulfilling the historic mission founded by Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi in 1920 under the spiritual leadership of Huzoor Qaid-e-Millat.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="https://whatsapp.com/channel/0029VacNKL4DjiOgHMNQdp2j" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">
+              💬 Join Official WhatsApp Channel
+            </a>
+            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.switchView('upcoming-mehfil')">
+              📅 Next Mehfil: Nov 16, 2026
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openAccessPortalModal('member')">
+              👤 Member Statement (Mera Hisab)
+            </button>
+            <a href="https://maps.google.com/?q=Akbar+Suleman+Compound+Antophill+Wadala+Mumbai" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+              📍 Venue Map
+            </a>
+          </div>
+        </div>
       </section>
 
-      <!-- Official Bio Links (Follow JRM Antophill) -->
+      <!-- SPOTLIGHT: UPCOMING 41st MAHANA SUNNI DEENI NASHISHT MEHFIL -->
+      <section class="program-poster-card" id="upcomingProgramSpotlightCard">
+        <!-- Injected dynamically by JS -->
+      </section>
+
+      <!-- Official Social & Bio Links (Verified Hub) -->
       <section class="content-box">
         <div class="content-box-header">
-          <h3>Official Social & Community Bio Links</h3>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">Stay Connected with JRM Antophill</span>
+          <div>
+            <h3>Official Community Channels & Bio Hub</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Verified Accounts of Jamat Raza-E-Mustafa Antophill</span>
+          </div>
         </div>
         <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
-          Mahana Mehfil ke updates, live stream bayanats, aur deeni paigham pane ke liye official channels se judein:
+          Follow our verified community channels for official bayanats, announcements, and direct coordination:
         </p>
-        <div id="bioLinksContainer" class="bio-links-grid">
-          <!-- Injected by JS -->
+
+        <div id="homeBioLinksContainer" class="bio-links-grid">
+          <!-- Injected dynamically by JS -->
         </div>
       </section>
 
-      <!-- Quick Services for Public & Donors -->
+      <!-- Core Organizational Pillars -->
       <section class="content-box">
         <div class="content-box-header">
-          <h3>Donor & Member Services</h3>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">Safe & Transparent</span>
+          <div>
+            <h3>Core Pillars & Community Services</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Our Mission in Antophill, Wadala</span>
+          </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
-          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px;">
-            <h4 style="margin-bottom: 4px;">👤 Member Login (Mera Hisab)</h4>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
-              Agar aapne fund provide kiya hai toh apna personal payment statement aur digital receipts 4-digit PIN ke sath securely dekhein.
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px;">
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">🕌</div>
+            <h4 style="margin-bottom: 4px;">Mahana Deeni Nashisht</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+              Monthly educational and spiritual conferences with Quran recitation, Manqabat-e-Ala Hazrat, and speeches by accredited Ulama.
             </p>
-            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAccessPortalModal('member')">
-              Login to My Statement
-            </button>
           </div>
-          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px;">
-            <h4 style="margin-bottom: 4px;">🔍 Verify Donation Receipt</h4>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
-              Apna receipt token (e.g. <code>JRM-2610-YUSUF</code>) daal kar instant digital record verify karein.
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px;">
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">📖</div>
+            <h4 style="margin-bottom: 4px;">Shariah Awareness & Education</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+              Empowering youth with authentic knowledge of Islamic jurisprudence, ethics, and safeguarding Ahle Sunnah beliefs against sectarian deviations.
             </p>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('verify')">
-              Verify Receipt Token
-            </button>
           </div>
-          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px;">
-            <h4 style="margin-bottom: 4px;">📊 Public Fund Transparency</h4>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
-              Mahana Sunni Deeni Nashisht ka kul kharcha aur fund hisab bina kisi personal member data ke dekhein.
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px;">
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">🍲</div>
+            <h4 style="margin-bottom: 4px;">Niyaz & Tabarruk Distribution</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+              Organizing food langar and tabarruk distribution at every gathering to foster brotherhood and spiritual camaraderie in Wadala-Antophill.
             </p>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('public-transparency')">
-              View Monthly Transparency
-            </button>
           </div>
+          <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px;">
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">⚖️</div>
+            <h4 style="margin-bottom: 4px;">Audited Financial Transparency</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+              100% accountable, transparent fund management where every rupee collected and spent on program management is audited and verified.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest Media & Bayanats Preview -->
+      <section class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Speeches, Bayanats & Video Highlights</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">From @jrmantophill-s8k & Instagram Reels</span>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('media')">View All Media</button>
+        </div>
+        <div id="homeMediaFeedContainer" class="media-grid">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </section>
+
+      <!-- Audited Public Transparency Summary -->
+      <section class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Audited Financial Summary (Institutional Transparency)</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Zero Personal Donor Data Disclosed</span>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('transparency')">View Itemized Accounts</button>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;">
+          Jamat Raza-e-Mustafa Antophill maintains complete transparency. Management expenses for our monthly gatherings are verified:
+        </p>
+        <div id="homeTransparencyStrip" class="transparency-summary-strip">
+          <!-- Injected dynamically by JS -->
         </div>
       </section>
 
     </div>
 
     <!-- ========================================================================
-         VIEW 2: PUBLIC TRANSPARENCY (Monthly Program Expense Breakdown)
+         VIEW 2: ABOUT JRM ANTOPHILL
          ======================================================================== -->
-    <div id="view-public-transparency" class="app-view">
+    <div id="view-about" class="app-view">
       <div class="content-box">
         <div class="content-box-header">
           <div>
-            <h3>Mahana Mehfil Management Expenses & Transparency</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Verified Institutional Records • Zero Personal Data Disclosed</span>
+            <h3>About Jamat Raza-E-Mustafa (JRM) Antophill</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">History, Mission & Leadership</span>
           </div>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
-          Jamat Raza-e-Mustafa Antophill Mumbai har mahana Sunni Deeni Nashisht Mehfil ke intezamat (Madrasa kiraya, Nazrana, Tabarruk, Sound, Media) ka hisab poori deen-dari aur shafafiyat (transparency) ke sath pesh karti hai:
-        </p>
 
-        <!-- Transparency Summary Cards -->
-        <div id="publicTransparencyMetrics" class="transparency-summary-strip">
-          <!-- Injected by JS -->
-        </div>
+        <div style="line-height: 1.7; font-size: 0.88rem; color: var(--text-main);">
+          <h4 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--brand-green);">Historical Origin & Bareilly Sharif Heritage</h4>
+          <p style="margin-bottom: 14px;">
+            <strong>Jamat Raza-E-Mustafa</strong> is an international Sunni Islamic organization founded in <strong>1920</strong> in Bareilly Sharif, Uttar Pradesh, by the eminent reviver of Islam, <strong>Ala Hazrat Imam Ahmed Raza Khan Fazil-e-Bareilvi (رضي الله عنه)</strong>, and consolidated under the spiritual leadership of <strong>Huzoor Mufti-e-Azam Hind Maulana Mustafa Raza Khan Qadri</strong>.
+          </p>
+          <p style="margin-bottom: 16px;">
+            The organization was established to preserve traditional Islamic theology, uphold the creed of the <em>Ahle Sunnah wal Jama'ah</em>, educate the community through systematic deeni learning, and offer social welfare in adherence to Islamic Shariah.
+          </p>
 
-        <!-- Expenses List by Category -->
-        <h4 style="font-size: 0.88rem; margin: 20px 0 10px;">Program Management Expense Heads</h4>
-        <div id="publicExpenseItemsContainer">
-          <!-- Injected by JS -->
-        </div>
+          <h4 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--brand-green);">Antophill Wadala Chapter</h4>
+          <p style="margin-bottom: 14px;">
+            The <strong>Antophill, Wadala branch</strong> operates as an active regional chapter in Mumbai, headquartered at <strong>Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037</strong>.
+          </p>
+          <p style="margin-bottom: 16px;">
+            Under the supreme spiritual patronage of <strong>Huzoor Qaid-e-Millat Madda Zillahul Aali</strong> and supervised locally by accredited Ulama-e-Ahle Sunnat, the Antophill chapter conducts its signature monthly gathering—the <strong>Mahana Sunni Deeni Nashisht</strong>—along with Milad conferences, Urs commemorations, and community assistance.
+          </p>
 
-        <div style="background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 12px; margin-top: 18px; font-size: 0.78rem; color: var(--text-muted);">
-          ℹ️ <strong>Privacy Protection Note:</strong> Individual member names, phone numbers, and balances are strictly kept private and only accessible to authorized committee admins and each contributor via secure PIN login.
+          <h4 style="font-size: 1.05rem; margin-bottom: 8px; color: var(--brand-green);">Our Leadership & Administration</h4>
+          <p style="margin-bottom: 14px;">
+            The local operations and community coordination are managed by <strong>Zain</strong> and the dedicated <strong>JRM Antophill Committee Zimmedaran</strong>, working hand-in-hand with neighborhood elders and contributors (Khuddam).
+          </p>
+
+          <div style="background: var(--bg-subtle); border-left: 3px solid var(--brand-green); padding: 14px; border-radius: var(--radius-sm); margin-top: 18px;">
+            <strong>Official Headquarters:</strong> Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037, Maharashtra, India.<br>
+            <strong>Official Email:</strong> <a href="mailto:jamatrazaemustafa313@gmail.com">jamatrazaemustafa313@gmail.com</a> • <strong>Helpline:</strong> <a href="tel:+918591106632">+91 85911 06632</a>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ========================================================================
-         VIEW 3: MEMBER PERSONAL STATEMENT & LEDGER (Mera Hisab)
+         VIEW 3: UPCOMING MEHFIL SPOTLIGHT & FULL DETAILS
+         ======================================================================== -->
+    <div id="view-upcoming-mehfil" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Upcoming Program Spotlight</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Next Scheduled Mahana Sunni Deeni Nashisht</span>
+          </div>
+        </div>
+        <div id="fullUpcomingProgramContainer">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 4: MEDIA, SPEECHES & INSTAGRAM REELS
+         ======================================================================== -->
+    <div id="view-media" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Official Speeches, Bayanats & Video Reels</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Digital Broadcast from JRM Antophill</span>
+          </div>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
+          Watch recorded lectures by Ulama-e-Kiram, spiritual discourses, and highlights of our Mahana Mehfils:
+        </p>
+
+        <div id="allMediaGridContainer" class="media-grid">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 5: PAST MEHFILS ARCHIVE
+         ======================================================================== -->
+    <div id="view-archive" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Past Mehfils & Programs Archive</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Historical Gatherings & Audited Financial Logs</span>
+          </div>
+        </div>
+        <div id="pastProgramsArchiveContainer">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 6: PUBLIC TRANSPARENCY & AUDITED ACCOUNTS
+         ======================================================================== -->
+    <div id="view-transparency" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Mahana Mehfil Management Expenses & Financial Integrity</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Verified Institutional Records • Privacy Guaranteed</span>
+          </div>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
+          Every gathering is conducted with full accountability. Below is the audited breakdown of management expenses for our monthly programs:
+        </p>
+
+        <div id="publicTransparencyMetrics" class="transparency-summary-strip">
+          <!-- Injected by JS -->
+        </div>
+
+        <h4 style="font-size: 0.9rem; margin: 20px 0 10px;">Program Management Expense Heads</h4>
+        <div id="publicExpenseItemsContainer">
+          <!-- Injected by JS -->
+        </div>
+
+        <div style="background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 12px; margin-top: 18px; font-size: 0.78rem; color: var(--text-muted);">
+          ℹ️ <strong>Privacy Protection Standard:</strong> In compliance with data privacy regulations, individual contributor names and balance records are strictly protected and never displayed on public pages.
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 7: VERIFY RECEIPT (Public Tool)
+         ======================================================================== -->
+    <div id="view-verify" class="app-view">
+      <div class="content-box">
+        <div class="content-box-header">
+          <div>
+            <h3>Official Receipt Verification</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Cryptographic Instant Verification Without SMS Gateways</span>
+          </div>
+        </div>
+
+        <form id="receiptSearchForm" onsubmit="window.JRMApp.searchReceipt(event)" style="display: flex; gap: 8px; margin-bottom: 16px; max-width: 520px;">
+          <input type="text" id="receiptSearchInput" class="form-input" placeholder="Enter Receipt Token (e.g. JRM-2610-YUSUF)..." required>
+          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Verify Receipt</button>
+        </form>
+
+        <div id="receiptLookupResult">
+          <p style="color: var(--text-muted); font-size: 0.85rem;">Enter your official token printed on your digital receipt or WhatsApp voucher.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================
+         VIEW 8: MEMBER PERSONAL STATEMENT & LEDGER (Mera Hisab)
          ======================================================================== -->
     <div id="view-statement" class="app-view">
       <div id="memberStatementContainer">
@@ -160,74 +353,49 @@
     </div>
 
     <!-- ========================================================================
-         VIEW 4: ADMIN DASHBOARD (Zimmedaran & Zain Super Admin)
+         VIEW 9: COMMITTEE ADMIN CONSOLE (Zimmedaran & Super Admin)
          ======================================================================== -->
-    <div id="view-admin-dashboard" class="app-view">
+    <div id="view-admin-console" class="app-view">
+      <!-- Admin Financial KPIs -->
       <section id="adminDashboardKPIs" class="metrics-row">
         <!-- Injected by JS -->
       </section>
 
-      <!-- Quick Action Buttons -->
+      <!-- Admin Actions Toolbar -->
       <section class="content-box">
         <div class="content-box-header">
-          <h3>Admin Management Actions</h3>
+          <h3>Committee Management Actions</h3>
           <span style="font-size: 0.75rem; color: var(--text-muted);">Asia/Kolkata (IST)</span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button class="btn btn-primary" onclick="window.JRMApp.openAddCollectionModal()">
+          <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAddCollectionModal()">
             + Record Member Collection
           </button>
-          <button class="btn btn-outline" onclick="window.JRMApp.openAddExpenseModal()">
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openAddExpenseModal()">
             + Log Program Expense
           </button>
-          <button class="btn btn-outline" onclick="window.JRMApp.switchView('callbook')">
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('admin-callbook')">
             📞 Pending Call Book CRM
           </button>
-          <button class="btn btn-whatsapp" onclick="window.JRMApp.switchView('whatsapp')">
-            📱 WhatsApp Reports
+          <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.switchView('admin-whatsapp')">
+            📱 WhatsApp Broadcast Reports
           </button>
-          <button class="btn btn-outline" onclick="window.JRMApp.switchView('program-manager')">
-            🖼️ Poster & Program Manager
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('admin-program-manager')">
+            🖼️ Program & Poster Manager
           </button>
         </div>
       </section>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
-        <section class="content-box">
-          <div class="content-box-header">
-            <h3>Recent Member Collections</h3>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('collections')">View All</button>
-          </div>
-          <div id="dashboardRecentCollections"></div>
-        </section>
-
-        <section class="content-box">
-          <div class="content-box-header">
-            <h3>Recent Program Expenses</h3>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('expenses')">View All</button>
-          </div>
-          <div id="dashboardRecentExpenses"></div>
-        </section>
-      </div>
-    </div>
-
-    <!-- ========================================================================
-         VIEW 5: COLLECTIONS REGISTER (Admin & Super Admin)
-         ======================================================================== -->
-    <div id="view-collections" class="app-view">
-      <div class="content-box">
+      <!-- Admin Collections Table -->
+      <section class="content-box">
         <div class="content-box-header">
           <div>
             <h3>Member Fund Collections (Admin Only)</h3>
             <span id="collectionCountDisplay" style="font-size: 0.78rem; color: var(--text-muted);">Loading members...</span>
           </div>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAddCollectionModal()">
-              + New Entry
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('collections')">
-              Export CSV
-            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAddCollectionModal()">+ New Entry</button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('collections')">Export CSV</button>
           </div>
         </div>
 
@@ -252,105 +420,77 @@
         </div>
 
         <div id="collectionsTableContainer"></div>
-      </div>
-    </div>
+      </section>
 
-    <!-- ========================================================================
-         VIEW 6: EXPENSES REGISTER (Admin & Super Admin)
-         ======================================================================== -->
-    <div id="view-expenses" class="app-view">
-      <div class="content-box">
+      <!-- Admin Expenses Table -->
+      <section class="content-box">
         <div class="content-box-header">
           <div>
             <h3>Program Management Expenses (Admin Only)</h3>
             <span id="expenseTotalDisplay" style="font-size: 0.78rem; color: var(--text-muted);">Loading expenses...</span>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAddExpenseModal()">
-              + Log Expense
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('expenses')">
-              Export CSV
-            </button>
+            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.openAddExpenseModal()">+ Log Expense</button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.downloadCSV('expenses')">Export CSV</button>
           </div>
         </div>
-
         <div id="expensesTableContainer"></div>
-      </div>
+      </section>
     </div>
 
-    <!-- ========================================================================
-         VIEW 7: CALL BOOK CRM (Admin & Super Admin)
-         ======================================================================== -->
-    <div id="view-callbook" class="app-view">
+    <!-- Admin Sub-View: Call Book CRM -->
+    <div id="view-admin-callbook" class="app-view">
       <div class="content-box">
         <div class="content-box-header">
           <div>
             <h3>Pending Balance Follow-up (Call Book CRM)</h3>
             <span id="callBookCountDisplay" style="font-size: 0.78rem; color: var(--status-pending); font-weight: 700;">Tracking pending members...</span>
           </div>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('admin-console')">Back to Console</button>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
-          Direct 1-tap phone call aur respectful WhatsApp reminder un members ke liye jinka contribution baki hai. (Sirf Admin & Super Admin ko dikhta hai).
+          1-tap voice call and respectful WhatsApp reminders for members with pending contributions:
         </p>
-
         <div id="callBookGridContainer" class="callbook-list"></div>
       </div>
     </div>
 
-    <!-- ========================================================================
-         VIEW 8: WHATSAPP REPORTS GENERATOR (Admin & Super Admin)
-         ======================================================================== -->
-    <div id="view-whatsapp" class="app-view">
+    <!-- Admin Sub-View: WhatsApp Reports -->
+    <div id="view-admin-whatsapp" class="app-view">
       <div class="content-box">
         <div class="content-box-header">
           <div>
-            <h3>WhatsApp Broadcast Messages</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Payment aur Expense dono message alag alag share karein</span>
+            <h3>WhatsApp Broadcast Reports</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Separated Collection & Expense Messages</span>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-whatsapp" onclick="window.JRMApp.shareCurrentWhatsApp()">
-              📱 Share on WhatsApp
-            </button>
-            <button class="btn btn-outline" onclick="window.JRMApp.copyCurrentWhatsApp()">
-              📋 Copy Message
-            </button>
+            <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.shareCurrentWhatsApp()">📱 Share on WhatsApp</button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.copyCurrentWhatsApp()">📋 Copy</button>
           </div>
         </div>
 
-        <!-- Sub Tabs to Switch between Payment Msg and Expense Msg -->
         <div class="sub-tabs">
           <button id="tabWhatsAppCollection" class="sub-tab-btn active" onclick="window.JRMApp.setWhatsAppTab('collection')">
-            1. Member Collection Message (Fund Jama)
+            1. Member Collections Report
           </button>
           <button id="tabWhatsAppExpense" class="sub-tab-btn" onclick="window.JRMApp.setWhatsAppTab('expense')">
-            2. Program Management Expenses (Kharcha)
+            2. Program Management Expenses
           </button>
         </div>
 
         <pre id="whatsappMessagePreview" class="msg-preview-box">Loading message...</pre>
-
-        <div style="display: flex; gap: 8px; justify-content: flex-end;">
-          <button class="btn btn-whatsapp" onclick="window.JRMApp.shareCurrentWhatsApp()">
-            📱 Share this Message
-          </button>
-          <button class="btn btn-outline" onclick="window.JRMApp.copyCurrentWhatsApp()">
-            📋 Copy
-          </button>
-        </div>
       </div>
     </div>
 
-    <!-- ========================================================================
-         VIEW 9: PROGRAM & POSTER MANAGER (Admin & Super Admin)
-         ======================================================================== -->
-    <div id="view-program-manager" class="app-view">
+    <!-- Admin Sub-View: Program & Poster Manager -->
+    <div id="view-admin-program-manager" class="app-view">
       <div class="content-box">
         <div class="content-box-header">
           <div>
-            <h3>Upcoming Program & Poster Management</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Public Portal Par Jo Poster Dikhana Hai Woh Yahan Se Set Karein</span>
+            <h3>Upcoming Program & Poster Manager</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Update what the public sees on the website</span>
           </div>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('admin-console')">Back to Console</button>
         </div>
 
         <form id="programPosterForm" onsubmit="window.JRMApp.saveProgramPoster(event)">
@@ -360,10 +500,10 @@
               <input type="text" id="progTitleInput" class="form-input" required>
             </div>
             <div>
-              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Program Month & Year *</label>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Month & Year *</label>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <input type="text" id="progMonthInput" class="form-input" placeholder="October" required>
-                <input type="number" id="progYearInput" class="form-input" placeholder="2026" required>
+                <input type="text" id="progMonthInput" class="form-input" required>
+                <input type="number" id="progYearInput" class="form-input" required>
               </div>
             </div>
           </div>
@@ -384,25 +524,24 @@
           </div>
 
           <div style="margin-bottom: 14px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Venue / Mukaam *</label>
-            <input type="text" id="progVenueInput" class="form-input" placeholder="Antophill, Wadala East, Mumbai 400037" required>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Venue Location *</label>
+            <input type="text" id="progVenueInput" class="form-input" required>
           </div>
 
           <div style="margin-bottom: 14px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Poster Image URL (or Image File Upload)</label>
-            <input type="url" id="progPosterUrlInput" class="form-input" placeholder="https://example.com/poster.jpg">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Poster Image URL (or upload local poster file)</label>
+            <input type="url" id="progPosterUrlInput" class="form-input" placeholder="https://jrmantophill.esitesz.com/jrmantophill.jpeg">
             <div style="margin-top: 6px;">
               <input type="file" id="progPosterFileInput" accept="image/*" class="form-input" style="padding: 6px;">
-              <small style="color: var(--text-muted);">Tip: Aap online image link daal sakte hain ya local device se poster select kar sakte hain.</small>
             </div>
           </div>
 
           <div style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Public Announcement / Message</label>
-            <textarea id="progAnnouncementInput" class="form-input" rows="3" placeholder="Mehfil announcement text..."></textarea>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Public Announcement Notice</label>
+            <textarea id="progAnnouncementInput" class="form-input" rows="3"></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary">Save Program & Poster</button>
+          <button type="submit" class="btn btn-primary">Save & Publish Program Details</button>
         </form>
       </div>
     </div>
@@ -415,7 +554,7 @@
         <div class="content-box-header">
           <div>
             <h3>👑 Super Admin Master Control (Zain)</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Access PINs, Member Credentials, Bio Links & System Database</span>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Access PINs, Member Credentials, Bio Links & System Backup</span>
           </div>
         </div>
 
@@ -425,11 +564,11 @@
           <form onsubmit="window.JRMApp.saveSecurityPins(event)">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px;">
               <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Zain Super Admin PIN (Master)</label>
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Zain Super Admin Master PIN</label>
                 <input type="password" id="settingSuperPin" class="form-input" required maxlength="10">
               </div>
               <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Committee Admin PIN (Zimmedaran)</label>
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Committee Admin PIN</label>
                 <input type="password" id="settingAdminPin" class="form-input" required maxlength="10">
               </div>
             </div>
@@ -437,70 +576,74 @@
           </form>
         </div>
 
-        <!-- Section 2: Member Credentials & PIN Manager -->
-        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">2. Member Credentials & 4-Digit PIN Manager</h4>
+        <!-- Section 2: Member Credentials & PIN/Phone Manager -->
+        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">2. Member Credentials & OTP/PIN Directory</h4>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
-          Har member ka personal 4-digit PIN yahan manage hota hai taaki koi dusra unka hisab na dekh sake. Aap kisi bhi member ka PIN yahan se reset kar sakte hain:
+          Manage registered phone numbers, email addresses, and 4-digit PINs for all members:
         </p>
         <div style="max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 20px;">
           <div id="memberCredentialsTableContainer"></div>
         </div>
 
         <!-- Section 3: Official Bio Links Editor -->
-        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">3. Official Social & Bio Links Editor</h4>
+        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">3. Official Bio Links & Channels Editor</h4>
         <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
           <form onsubmit="window.JRMApp.saveBioLinks(event)">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px;">
               <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">WhatsApp Channel / Group Link</label>
-                <input type="url" id="bioLinkWhatsApp" class="form-input" placeholder="https://chat.whatsapp.com/...">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">WhatsApp Channel Link</label>
+                <input type="url" id="bioLinkWhatsApp" class="form-input">
               </div>
               <div>
                 <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Instagram Profile Link</label>
-                <input type="url" id="bioLinkInstagram" class="form-input" placeholder="https://instagram.com/...">
+                <input type="url" id="bioLinkInstagram" class="form-input">
               </div>
               <div>
                 <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">YouTube Channel Link</label>
-                <input type="url" id="bioLinkYouTube" class="form-input" placeholder="https://youtube.com/...">
+                <input type="url" id="bioLinkYouTube" class="form-input">
               </div>
               <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Google Maps Location URL</label>
-                <input type="url" id="bioLinkMaps" class="form-input" placeholder="https://maps.google.com/...">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Facebook Page Link</label>
+                <input type="url" id="bioLinkFacebook" class="form-input">
               </div>
               <div>
-                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Contact / Helpline Number</label>
-                <input type="text" id="bioLinkHelpline" class="form-input" placeholder="+91 98200 00000">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Google Maps Venue Link</label>
+                <input type="url" id="bioLinkMaps" class="form-input">
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Helpline Contact Number</label>
+                <input type="text" id="bioLinkHelpline" class="form-input">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Save Bio Links</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Official Bio Links</button>
           </form>
         </div>
 
         <!-- Section 4: Google Sheets Cloud Sync -->
-        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">4. Google Sheets Cloud Integration</h4>
+        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">4. Google Sheets Cloud Sync</h4>
         <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
           <div style="margin-bottom: 10px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Google Apps Script Web App URL</label>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Apps Script Web App URL</label>
             <input type="url" id="sheetUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
           </div>
           <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Optional API Security Key</label>
-            <input type="text" id="sheetKeyInput" class="form-input" placeholder="Security Token">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">API Key (Optional)</label>
+            <input type="text" id="sheetKeyInput" class="form-input">
           </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.saveSheetSettings()">Save Sheets Config</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary btn-sm" onclick="window.JRMApp.saveSheetSettings()">Save Configuration</button>
             <button id="syncSheetsBtn" class="btn btn-outline btn-sm" onclick="window.JRMApp.syncGoogleSheets()">Sync with Google Sheets</button>
           </div>
         </div>
 
-        <!-- Section 5: Audit Logs (IST) -->
+        <!-- Section 5: Audit Trail -->
         <h4 style="font-size: 0.9rem; margin-bottom: 8px;">5. System Audit Trail (Asia/Kolkata IST)</h4>
         <div style="border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 20px; overflow-x: auto;">
           <div id="auditLogsContainer"></div>
         </div>
 
         <!-- Section 6: Backup & Factory Reset -->
-        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">6. Database Backup & Restore</h4>
+        <h4 style="font-size: 0.9rem; margin-bottom: 8px;">6. Database Backup & Factory Reset</h4>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button class="btn btn-outline btn-sm" onclick="window.JRMApp.exportJSONBackup()">Download Full JSON Backup</button>
           <button class="btn btn-outline btn-sm" onclick="window.JRMApp.triggerJSONImport()">Restore JSON Backup</button>
@@ -511,36 +654,13 @@
       </div>
     </div>
 
-    <!-- ========================================================================
-         VIEW 11: RECEIPT VERIFICATION (Universal Public Tool)
-         ======================================================================== -->
-    <div id="view-verify" class="app-view">
-      <div class="content-box">
-        <div class="content-box-header">
-          <div>
-            <h3>Official Receipt Verification</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Instant Digital Verification Without SMS</span>
-          </div>
-        </div>
-
-        <form id="receiptSearchForm" onsubmit="window.JRMApp.searchReceipt(event)" style="display: flex; gap: 8px; margin-bottom: 16px; max-width: 520px;">
-          <input type="text" id="receiptSearchInput" class="form-input" placeholder="Receipt Token daalein (e.g. JRM-2610-YUSUF)..." required>
-          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Verify</button>
-        </form>
-
-        <div id="receiptLookupResult">
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Apne receipt card par diya gaya Token ya number search karein.</p>
-        </div>
-      </div>
-    </div>
-
   </main>
 
   <!-- ==========================================================================
-       Modals
+       MODALS
        ========================================================================== -->
 
-  <!-- Unified Access Portal Modal (Member / Admin / Super Admin) -->
+  <!-- Unified Access Portal Modal (Email/Phone OTP & Admin PIN) -->
   <div id="accessPortalModal" class="modal-layer">
     <div class="modal-dialog">
       <div class="modal-head">
@@ -550,7 +670,7 @@
 
       <div class="login-tabs">
         <button id="loginTabMember" class="login-tab-btn active" onclick="window.JRMApp.switchLoginTab('member')">
-          👤 Member
+          👤 Member (Email / OTP)
         </button>
         <button id="loginTabAdmin" class="login-tab-btn" onclick="window.JRMApp.switchLoginTab('admin')">
           🛡️ Committee Admin
@@ -560,65 +680,116 @@
         </button>
       </div>
 
-      <!-- Tab 1: Member Login -->
-      <form id="memberAuthForm" onsubmit="window.JRMApp.handleMemberLogin(event)">
-        <div class="modal-body">
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-            Apna personal payment statement aur digital receipts dekhne ke liye Registered Phone / Token aur 4-digit PIN enter karein:
-          </p>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Registered Phone Number ya Receipt Token *</label>
-            <input type="text" id="memberLoginIdentifier" class="form-input" placeholder="e.g. 9820011001 ya JRM-2610-YUSUF" required>
+      <!-- Tab 1: Member Email/Mobile OTP Login -->
+      <div id="memberAuthContainer">
+        <!-- Step 1: Request OTP -->
+        <form id="memberOtpRequestForm" onsubmit="window.JRMApp.handleRequestOTP(event)">
+          <div class="modal-body">
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+              Access your personal contribution ledger and download verified receipts securely with instant Email or Mobile OTP verification:
+            </p>
+            <div style="margin-bottom: 12px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+                Registered Email Address OR Mobile Number *
+              </label>
+              <input type="text" id="memberLoginIdentifier" class="form-input" placeholder="e.g. 9820011001 or sayed.yusuf@jrmantophill.org" required>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.72rem;">
+              You can also use your receipt token (e.g. <code>JRM-2610-YUSUF</code>) to log in.
+            </small>
           </div>
-          <div style="margin-bottom: 6px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">4-Digit Member PIN *</label>
-            <input type="password" id="memberLoginPin" class="form-input" placeholder="****" maxlength="4" required>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('accessPortalModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="requestOtpBtn">Send Verification OTP Code</button>
           </div>
-          <small style="color: var(--text-muted); font-size: 0.72rem;">Default PIN: <code>1234</code>. Agar PIN badalna hai toh Zain / Zimmedaran se sampark karein.</small>
-        </div>
-        <div class="modal-foot">
-          <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('accessPortalModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Open My Statement</button>
-        </div>
-      </form>
+        </form>
+
+        <!-- Step 2: Verify OTP (Hidden by default) -->
+        <form id="memberOtpVerifyForm" onsubmit="window.JRMApp.handleVerifyOTP(event)" style="display: none;">
+          <div class="modal-body">
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;">
+              Verification code sent to <strong id="otpMaskedTarget">...</strong>:
+            </p>
+            <div id="otpSimulatedBox" class="otp-display-banner">
+              <!-- Injected by JS -->
+            </div>
+            <div style="margin-bottom: 12px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+                Enter 6-Digit OTP Code *
+              </label>
+              <input type="text" id="memberEnteredOtp" class="form-input" placeholder="******" maxlength="6" required style="font-family: var(--font-mono); font-size: 1.15rem; letter-spacing: 4px; text-align: center;">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="window.JRMApp.resetOtpStep()">Change Number</button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="window.JRMApp.switchToPinFallback()">Use 4-Digit PIN instead</button>
+            </div>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('accessPortalModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Verify & Open Statement</button>
+          </div>
+        </form>
+
+        <!-- Step 3: PIN Fallback Form (Hidden by default) -->
+        <form id="memberPinFallbackForm" onsubmit="window.JRMApp.handleMemberPinLogin(event)" style="display: none;">
+          <div class="modal-body">
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+              Enter your 4-digit Security PIN:
+            </p>
+            <div style="margin-bottom: 10px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Registered Identifier</label>
+              <input type="text" id="memberFallbackIdentifier" class="form-input" required>
+            </div>
+            <div style="margin-bottom: 12px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">4-Digit PIN</label>
+              <input type="password" id="memberFallbackPin" class="form-input" maxlength="4" placeholder="****" required>
+            </div>
+            <small style="color: var(--text-muted); font-size: 0.72rem;">Default PIN: <code>1234</code>. Contact committee if forgotten.</small>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-outline" onclick="window.JRMApp.resetOtpStep()">Back to OTP</button>
+            <button type="submit" class="btn btn-primary">Login with PIN</button>
+          </div>
+        </form>
+      </div>
 
       <!-- Tab 2: Committee Admin Login -->
       <form id="adminAuthForm" onsubmit="window.JRMApp.handleAdminLogin(event)" style="display: none;">
         <div class="modal-body">
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-            JRM Antophill Committee Zimmedaran ke liye collections aur expenses manage karne ka access:
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+            Access for Jamat Raza-E-Mustafa Antophill Committee Zimmedaran:
           </p>
           <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Committee Admin PIN</label>
-            <input type="password" id="adminLoginPin" class="form-input" placeholder="PIN daalein (Default: 7860)" maxlength="10" required>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Committee Security PIN</label>
+            <input type="password" id="adminLoginPin" class="form-input" placeholder="Enter PIN (Default: 7860)" maxlength="10" required>
           </div>
         </div>
         <div class="modal-foot">
           <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('accessPortalModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Unlock Committee Mode</button>
+          <button type="submit" class="btn btn-primary">Unlock Committee Console</button>
         </div>
       </form>
 
       <!-- Tab 3: Super Admin Login (Zain) -->
       <form id="superAuthForm" onsubmit="window.JRMApp.handleSuperLogin(event)" style="display: none;">
         <div class="modal-body">
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-            Master Access (Zain): PIN management, Member Credentials, Bio Links, Sheets Sync, aur Full System Control.
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+            Master Control (Zain): PIN configuration, Member Credentials, Bio Links, Sheets Cloud Sync & Audit Controls.
           </p>
           <div>
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">Super Admin Master PIN</label>
-            <input type="password" id="superLoginPin" class="form-input" placeholder="Master PIN daalein (Default: 9999)" maxlength="10" required>
+            <input type="password" id="superLoginPin" class="form-input" placeholder="Enter Master PIN (Default: 9999)" maxlength="10" required>
           </div>
         </div>
         <div class="modal-foot">
           <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('accessPortalModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Unlock Master Mode</button>
+          <button type="submit" class="btn btn-primary">Unlock Master Control</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Member PIN & Credentials Edit Modal (Super Admin / Admin) -->
+  <!-- Member Credentials Edit Modal (Super Admin / Admin) -->
   <div id="memberPinModal" class="modal-layer">
     <div class="modal-dialog">
       <div class="modal-head">
@@ -634,12 +805,15 @@
           </div>
           <div style="margin-bottom: 10px;">
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Registered Phone Number</label>
-            <input type="tel" id="editMemberPhone" class="form-input" placeholder="98200...">
+            <input type="tel" id="editMemberPhone" class="form-input">
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Registered Email Address</label>
+            <input type="email" id="editMemberEmail" class="form-input">
           </div>
           <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">4-Digit Member Security PIN *</label>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">4-Digit Security PIN</label>
             <input type="text" id="editMemberPin" class="form-input" maxlength="4" required>
-            <small style="color: var(--text-muted);">Yeh PIN member ko unka personal statement kholne ke liye zaroori hoga.</small>
           </div>
         </div>
         <div class="modal-foot">
@@ -665,7 +839,7 @@
             <input type="text" id="collectionName" class="form-input" placeholder="e.g. Sayed Yusuf" required>
           </div>
           <div style="margin-bottom: 10px;">
-            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Contact Number (For Call Book & WhatsApp)</label>
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Contact Mobile</label>
             <input type="tel" id="collectionPhone" class="form-input" placeholder="98200...">
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
@@ -674,7 +848,7 @@
               <input type="number" id="collectionPaid" class="form-input" placeholder="500" min="0" required>
             </div>
             <div>
-              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Balance (₹)</label>
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Balance Due (₹)</label>
               <input type="number" id="collectionBalance" class="form-input" placeholder="0" min="0" value="0">
             </div>
           </div>
@@ -700,7 +874,7 @@
         </div>
         <div class="modal-foot">
           <button type="button" class="btn btn-outline" onclick="window.JRMApp.closeModal('collectionModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Entry</button>
+          <button type="submit" class="btn btn-primary">Save Collection</button>
         </div>
       </form>
     </div>
@@ -734,13 +908,13 @@
             </div>
             <div>
               <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Amount (₹) *</label>
-              <input type="number" id="expenseAmount" class="form-input" placeholder="1000" min="0" required>
+              <input type="number" id="expenseAmount" class="form-input" min="0" required>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
             <div>
               <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Paid To</label>
-              <input type="text" id="expensePaidTo" class="form-input" placeholder="Vendor / Name">
+              <input type="text" id="expensePaidTo" class="form-input" placeholder="Vendor / Recipient">
             </div>
             <div>
               <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 2px;">Date (IST)</label>
@@ -778,12 +952,12 @@
   <footer class="jrm-footer">
     <div class="jrm-footer-inner">
       <div>
-        <strong>Jamat Raza-e-Mustafa Antophill Mumbai</strong> • Sunni Deeni Nashisht Portal<br>
-        <small>Zain & Committee Zimmedaran • All timestamps recorded in Indian Standard Time (IST)</small>
+        <strong>Jamat Raza-E-Mustafa (JRM) Antophill</strong> • Wadala, Mumbai 400037<br>
+        <small>Affiliated with Ahle Sunnah wal Jama'ah • All transactions recorded in Indian Standard Time (IST)</small>
       </div>
       <div style="text-align: right;">
-        Developed by <a href="https://esitesz.com" target="_blank" rel="noopener" style="font-weight: 700;">esitesz</a><br>
-        <a href="https://jrmantophill.esitesz.com">jrmantophill.esitesz.com</a>
+        Official Website: <a href="https://jrmantophill.esitesz.com" style="font-weight: 700;">jrmantophill.esitesz.com</a><br>
+        Developed by <a href="https://esitesz.com" target="_blank" rel="noopener">esitesz</a>
       </div>
     </div>
   </footer>

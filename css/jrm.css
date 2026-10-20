@@ -852,9 +852,124 @@ a {
   border-color: #B9D5EB;
 }
 
+/* Topbar & Announcement */
+.jrm-topbar {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 6px 16px;
+}
+
+.jrm-topbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Countdown Grid */
+.countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-width: 380px;
+  margin: 16px 0;
+}
+
+.countdown-box {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 4px;
+  text-align: center;
+}
+
+.countdown-val {
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #FFF;
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #DCE3DE;
+  margin-top: 3px;
+}
+
+/* Media & Bayanats Feed Grid */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.media-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.media-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.media-type-youtube {
+  background: #FEECEB;
+  color: #C00;
+}
+
+.media-type-reel {
+  background: #FDEBF3;
+  color: #C13584;
+}
+
+/* OTP Banner */
+.otp-display-banner {
+  background: var(--brand-green-light);
+  border: 1px dashed var(--brand-green);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.otp-code-highlight {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: var(--brand-green);
+  display: block;
+  margin: 4px 0;
+}
+
 @media print {
   body { background: #FFF !important; color: #000 !important; }
-  .jrm-header, .jrm-nav, .jrm-footer, .no-print, .btn, .program-strip, .metrics-row { display: none !important; }
+  .jrm-topbar, .jrm-header, .jrm-nav, .jrm-footer, .no-print, .btn, .program-strip, .metrics-row { display: none !important; }
   .jrm-container { padding: 0 !important; max-width: 100% !important; }
   .receipt-paper { border: none !important; box-shadow: none !important; padding: 0 !important; width: 100% !important; }
 }
