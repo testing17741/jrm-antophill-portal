@@ -1,46 +1,40 @@
 /**
  * JRM Antophill — Deeni Mehfil & Fund Portal
- * Application Controller (Minimal, Anti-AI-Slop, IST Timestamped)
- * Organization: Jamat Raza-e-Mustafa Antophill Mumbai
+ * Application Controller, Role-Guarded UI, Public Portal, Member Ledger & WhatsApp Engine
+ * Organization: Jamat Raza-e-Mustafa Antophill, Mumbai
  * Developed by esitesz (jrmantophill.esitesz.com)
  */
 
-(function () {
+(function (window, document) {
   'use strict';
 
   const state = {
-    currentView: 'dashboard',
-    activeProgramId: 'prog-oct-2026',
-    isAdmin: false,
+    role: 'public', // 'public' | 'member' | 'admin' | 'superadmin'
     loggedMember: null,
+    currentView: 'public-home',
+    currentProgramId: null,
+    activeWhatsAppTab: 'collection', // 'collection' | 'expense'
     searchQuery: '',
     statusFilter: 'all',
-    modeFilter: 'all',
-    activeWhatsAppTab: 'collection'
+    modeFilter: 'all'
   };
 
   const el = {};
 
-  // Indian Standard Time Helpers
+  // Indian Standard Time (IST) Helpers
   function getISTDateTime(dateObj = new Date()) {
-    return dateObj.toLocaleString('en-IN', {
+    const d = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj : new Date();
+    const formatter = new Intl.DateTimeFormat('en-IN', {
       timeZone: 'Asia/Kolkata',
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      second: '2-digit',
       hour12: true
-    }) + ' IST';
-  }
-
-  function getISTDate(dateObj = new Date()) {
-    return dateObj.toLocaleDateString('en-IN', {
-      timeZone: 'Asia/Kolkata',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
     });
+    return formatter.format(d) + ' IST';
   }
 
   function getISTISODate() {
@@ -54,7 +48,6 @@
     return formatter.format(now);
   }
 
-  // Live IST Clock update
   function updateISTClock() {
     const clockEl = document.getElementById('istLiveClock');
     if (clockEl) {
@@ -65,8 +58,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     cacheElements();
     initTheme();
-    initState();
     initPWA();
+    syncSessionState();
     initNavigation();
     bindEvents();
     renderAll();
@@ -77,48 +70,19 @@
   });
 
   function cacheElements() {
-    el.themeToggle = document.getElementById('themeToggle');
+    el.navTabsContainer = document.getElementById('navTabsContainer');
     el.userRoleDisplay = document.getElementById('userRoleDisplay');
     el.loginActionBtn = document.getElementById('loginActionBtn');
-    el.views = document.querySelectorAll('.app-view');
-    el.navTabs = document.querySelectorAll('.nav-tab');
+    el.themeToggle = document.getElementById('themeToggle');
     el.toastContainer = document.getElementById('toastContainer');
+    el.activeProgramStrip = document.getElementById('activeProgramStrip');
 
-    el.adminPinModal = document.getElementById('adminPinModal');
-    el.adminPinInput = document.getElementById('adminPinInput');
-    el.memberLoginModal = document.getElementById('memberLoginModal');
-    el.memberSelectInput = document.getElementById('memberSelectInput');
+    // Modals
+    el.accessPortalModal = document.getElementById('accessPortalModal');
     el.collectionModal = document.getElementById('collectionModal');
     el.expenseModal = document.getElementById('expenseModal');
+    el.memberPinModal = document.getElementById('memberPinModal');
     el.receiptModal = document.getElementById('receiptModal');
-  }
-
-  function initState() {
-    state.isAdmin = JRMData.isAdminLoggedIn();
-    state.loggedMember = JRMData.getLoggedInMember();
-
-    const activeProg = JRMData.getActiveProgram();
-    if (activeProg) state.activeProgramId = activeProg.id;
-
-    updateHeaderUserPill();
-    handleHashRoute();
-    window.addEventListener('hashchange', handleHashRoute);
-  }
-
-  function handleHashRoute() {
-    const hash = window.location.hash.replace('#', '');
-    if (!hash) return;
-    if (hash.startsWith('verify/')) {
-      const token = hash.replace('verify/', '');
-      switchView('verify');
-      const searchInput = document.getElementById('receiptSearchInput');
-      if (searchInput) {
-        searchInput.value = token;
-        handleReceiptSearch(token);
-      }
-    } else if (['dashboard', 'statement', 'collections', 'expenses', 'callbook', 'whatsapp', 'verify', 'sheets', 'logs'].includes(hash)) {
-      switchView(hash);
-    }
   }
 
   function initTheme() {
@@ -145,526 +109,733 @@
     }
   }
 
-  // Header Session UI
-  function updateHeaderUserPill() {
-    if (!el.userRoleDisplay || !el.loginActionBtn) return;
-
-    if (state.isAdmin) {
-      el.userRoleDisplay.className = 'user-session-pill admin-badge';
-      el.userRoleDisplay.innerHTML = `<span>Zain (Admin)</span>`;
-      el.loginActionBtn.textContent = 'Logout';
-      el.loginActionBtn.onclick = logoutCurrent;
-      document.querySelectorAll('.admin-only').forEach(n => n.style.display = '');
-    } else if (state.loggedMember) {
-      el.userRoleDisplay.className = 'user-session-pill';
-      el.userRoleDisplay.innerHTML = `<span>👤 ${escapeHTML(state.loggedMember.name)}</span>`;
-      el.loginActionBtn.textContent = 'Logout';
-      el.loginActionBtn.onclick = logoutCurrent;
-      document.querySelectorAll('.admin-only').forEach(n => n.style.display = 'none');
+  function syncSessionState() {
+    if (JRMData.isSuperAdminLoggedIn()) {
+      state.role = 'superadmin';
+      state.loggedMember = null;
+    } else if (JRMData.isAdminLoggedIn()) {
+      state.role = 'admin';
+      state.loggedMember = null;
+    } else if (JRMData.isMemberLoggedIn()) {
+      state.role = 'member';
+      state.loggedMember = JRMData.getLoggedInMember();
     } else {
-      el.userRoleDisplay.className = 'user-session-pill';
-      el.userRoleDisplay.innerHTML = `<span>Public View</span>`;
-      el.loginActionBtn.textContent = 'Login';
-      el.loginActionBtn.onclick = openLoginPicker;
-      document.querySelectorAll('.admin-only').forEach(n => n.style.display = 'none');
+      state.role = 'public';
+      state.loggedMember = null;
     }
   }
 
-  function openLoginPicker() {
-    const choice = confirm("Press OK for Member Login (Apna hisab dekhne ke liye)\nPress Cancel for Admin Login (Zain / Zimmedaran)");
-    if (choice) {
-      openMemberLoginModal();
+  function updateHeaderUserPill() {
+    if (!el.userRoleDisplay || !el.loginActionBtn) return;
+
+    if (state.role === 'superadmin') {
+      el.userRoleDisplay.className = 'user-session-pill superadmin-badge';
+      el.userRoleDisplay.innerHTML = `<span>👑 Zain (Super Admin)</span>`;
+      el.loginActionBtn.textContent = 'Logout';
+      el.loginActionBtn.onclick = logoutCurrent;
+    } else if (state.role === 'admin') {
+      el.userRoleDisplay.className = 'user-session-pill admin-badge';
+      el.userRoleDisplay.innerHTML = `<span>🛡️ Committee Admin</span>`;
+      el.loginActionBtn.textContent = 'Logout';
+      el.loginActionBtn.onclick = logoutCurrent;
+    } else if (state.role === 'member' && state.loggedMember) {
+      el.userRoleDisplay.className = 'user-session-pill member-badge';
+      el.userRoleDisplay.innerHTML = `<span>👤 ${escapeHTML(state.loggedMember.name)}</span>`;
+      el.loginActionBtn.textContent = 'Logout';
+      el.loginActionBtn.onclick = logoutCurrent;
     } else {
-      openAdminPinModal();
+      el.userRoleDisplay.className = 'user-session-pill';
+      el.userRoleDisplay.innerHTML = `<span>Public Portal</span>`;
+      el.loginActionBtn.textContent = 'Login';
+      el.loginActionBtn.onclick = () => openAccessPortalModal('member');
     }
   }
 
   function logoutCurrent() {
-    if (state.isAdmin) {
-      if (confirm('Zain (Admin) mode se logout karna chahte hain?')) {
-        JRMData.logoutAdmin();
-        state.isAdmin = false;
-        updateHeaderUserPill();
-        renderAll();
-        showToast('Logged out of Admin mode.');
-      }
-    } else if (state.loggedMember) {
-      JRMData.logoutMember();
-      state.loggedMember = null;
-      updateHeaderUserPill();
+    if (confirm('Kya aap is session se logout karna chahte hain?')) {
+      JRMData.logoutAll();
+      syncSessionState();
+      switchView('public-home');
       renderAll();
-      showToast('Logged out of Member session.');
+      showToast('Successfully logged out.');
     }
   }
 
-  function openAdminPinModal() {
-    if (!el.adminPinModal) return;
-    el.adminPinInput.value = '';
-    el.adminPinModal.classList.add('active');
-    setTimeout(() => el.adminPinInput.focus(), 100);
-  }
+  // Dynamic Navigation Tabs Based on Role
+  function renderNavTabs() {
+    if (!el.navTabsContainer) return;
 
-  function submitAdminPin() {
-    const pin = (el.adminPinInput.value || '').trim();
-    const res = JRMData.loginAdmin(pin);
-    if (res.success) {
-      state.isAdmin = true;
-      state.loggedMember = null;
-      JRMData.logoutMember();
-      el.adminPinModal.classList.remove('active');
-      updateHeaderUserPill();
-      renderAll();
-      showToast('Zain (Admin) logged in successfully.');
+    let tabs = [];
+
+    if (state.role === 'superadmin') {
+      tabs = [
+        { id: 'admin-dashboard', label: 'Dashboard' },
+        { id: 'collections', label: 'Collections' },
+        { id: 'expenses', label: 'Expenses' },
+        { id: 'callbook', label: 'Call Book (CRM)', badge: getPendingBalanceCount() },
+        { id: 'whatsapp', label: 'WhatsApp Reports' },
+        { id: 'program-manager', label: 'Poster & Program' },
+        { id: 'super-settings', label: '👑 Super Settings' },
+        { id: 'public-home', label: 'Public Portal' },
+        { id: 'verify', label: 'Verify' }
+      ];
+    } else if (state.role === 'admin') {
+      tabs = [
+        { id: 'admin-dashboard', label: 'Dashboard' },
+        { id: 'collections', label: 'Collections' },
+        { id: 'expenses', label: 'Expenses' },
+        { id: 'callbook', label: 'Call Book (CRM)', badge: getPendingBalanceCount() },
+        { id: 'whatsapp', label: 'WhatsApp Reports' },
+        { id: 'program-manager', label: 'Poster & Program' },
+        { id: 'public-home', label: 'Public Portal' },
+        { id: 'verify', label: 'Verify' }
+      ];
+    } else if (state.role === 'member') {
+      tabs = [
+        { id: 'public-home', label: 'Mehfil & Poster' },
+        { id: 'statement', label: 'Mera Hisab & Receipts' },
+        { id: 'public-transparency', label: 'Monthly Transparency' },
+        { id: 'verify', label: 'Verify Receipt' }
+      ];
     } else {
-      showToast(res.error || 'Galat PIN', 'danger');
-      el.adminPinInput.value = '';
-      el.adminPinInput.focus();
+      // Public / Guest
+      tabs = [
+        { id: 'public-home', label: 'Mehfil & Poster' },
+        { id: 'public-transparency', label: 'Monthly Transparency' },
+        { id: 'verify', label: 'Verify Receipt' }
+      ];
     }
+
+    el.navTabsContainer.innerHTML = tabs.map(t => `
+      <button class="nav-tab ${state.currentView === t.id ? 'active' : ''}" data-view="${t.id}" onclick="window.JRMApp.switchView('${t.id}')">
+        ${escapeHTML(t.label)}
+        ${t.badge ? `<span class="nav-counter">${t.badge}</span>` : ''}
+      </button>
+    `).join('');
   }
 
-  function openMemberLoginModal() {
-    if (!el.memberLoginModal) return;
-    const select = document.getElementById('memberSelectInput');
-    if (select) {
-      const collections = JRMData.getCollections();
-      const seen = new Set();
-      const distinct = [];
-      collections.forEach(c => {
-        if (!seen.has(c.name)) {
-          seen.add(c.name);
-          distinct.push(c);
-        }
-      });
-      distinct.sort((a, b) => a.name.localeCompare(b.name));
-      select.innerHTML = `<option value="">-- Apna Naam Chunein --</option>` +
-        distinct.map(m => `<option value="${escapeHTML(m.name)}">${escapeHTML(m.name)}${m.phone ? ` (${m.phone})` : ''}</option>`).join('');
-    }
-    el.memberLoginModal.classList.add('active');
+  function getPendingBalanceCount() {
+    const list = JRMData.getCollections(state.currentProgramId);
+    return list.filter(c => Number(c.balance) > 0).length;
   }
 
-  function submitMemberLogin() {
-    const select = document.getElementById('memberSelectInput');
-    const manualInput = document.getElementById('memberManualInput');
-    const val = (select && select.value) ? select.value : (manualInput ? manualInput.value : '');
-
-    const res = JRMData.loginMember(val);
-    if (res.success) {
-      state.loggedMember = res.member;
-      state.isAdmin = false;
-      JRMData.logoutAdmin();
-      el.memberLoginModal.classList.remove('active');
-      updateHeaderUserPill();
-      switchView('statement');
-      renderAll();
-      showToast(`Welcome, ${state.loggedMember.name}!`);
-    } else {
-      showToast(res.error || 'Member record nahi mila', 'danger');
-    }
-  }
-
-  // Navigation
   function initNavigation() {
-    el.navTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        switchView(tab.getAttribute('data-view'));
-      });
-    });
+    window.addEventListener('hashchange', handleHashRouting);
+    if (window.location.hash) {
+      handleHashRouting();
+    } else {
+      // Set appropriate initial view based on role
+      if (state.role === 'superadmin' || state.role === 'admin') {
+        state.currentView = 'admin-dashboard';
+      } else if (state.role === 'member') {
+        state.currentView = 'statement';
+      } else {
+        state.currentView = 'public-home';
+      }
+    }
   }
 
-  function switchView(viewName) {
-    state.currentView = viewName;
-    window.location.hash = viewName;
+  function handleHashRouting() {
+    const raw = window.location.hash.replace(/^#\/?/, '');
+    if (!raw) return;
 
-    el.navTabs.forEach(tab => {
-      tab.classList.toggle('active', tab.getAttribute('data-view') === viewName);
-    });
+    if (raw.startsWith('verify/')) {
+      const token = raw.split('/')[1];
+      switchView('verify');
+      const input = document.getElementById('receiptSearchInput');
+      if (input && token) {
+        input.value = decodeURIComponent(token);
+        performReceiptSearch(input.value);
+      }
+      return;
+    }
 
-    el.views.forEach(view => {
-      view.classList.toggle('active', view.id === `view-${viewName}`);
-    });
+    const validViews = [
+      'public-home', 'public-transparency', 'statement', 'admin-dashboard',
+      'collections', 'expenses', 'callbook', 'whatsapp', 'program-manager',
+      'super-settings', 'verify'
+    ];
 
-    if (viewName === 'dashboard') renderDashboard();
-    else if (viewName === 'statement') renderStatementView();
-    else if (viewName === 'collections') renderCollections();
-    else if (viewName === 'expenses') renderExpenses();
-    else if (viewName === 'callbook') renderCallBook();
-    else if (viewName === 'whatsapp') renderWhatsAppView();
-    else if (viewName === 'verify') renderVerifyView();
-    else if (viewName === 'sheets') renderSheetsView();
-    else if (viewName === 'logs') renderLogsView();
+    if (validViews.includes(raw)) {
+      switchView(raw);
+    }
+  }
+
+  function switchView(viewId) {
+    // Role guard: Protect admin & superadmin views
+    const adminViews = ['admin-dashboard', 'collections', 'expenses', 'callbook', 'whatsapp', 'program-manager'];
+    const superViews = ['super-settings'];
+
+    if (superViews.includes(viewId) && state.role !== 'superadmin') {
+      showToast('Sirf Super Admin (Zain) is section ko access kar sakte hain.');
+      openAccessPortalModal('super');
+      return;
+    }
+
+    if (adminViews.includes(viewId) && state.role !== 'admin' && state.role !== 'superadmin') {
+      showToast('Kripya Admin PIN se login karein.');
+      openAccessPortalModal('admin');
+      return;
+    }
+
+    if (viewId === 'statement' && state.role !== 'member' && state.role !== 'admin' && state.role !== 'superadmin') {
+      openAccessPortalModal('member');
+      return;
+    }
+
+    state.currentView = viewId;
+    window.location.hash = '#' + viewId;
+
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById('view-' + viewId);
+    if (target) target.classList.add('active');
+
+    renderNavTabs();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function bindEvents() {
+    if (el.themeToggle) el.themeToggle.addEventListener('click', toggleTheme);
+
+    // Collection filters
+    const searchInput = document.getElementById('collectionSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderCollectionsTable();
+      });
+    }
+
+    const statusFilter = document.getElementById('collectionStatusFilter');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', (e) => {
+        state.statusFilter = e.target.value;
+        renderCollectionsTable();
+      });
+    }
+
+    const modeFilter = document.getElementById('collectionModeFilter');
+    if (modeFilter) {
+      modeFilter.addEventListener('change', (e) => {
+        state.modeFilter = e.target.value;
+        renderCollectionsTable();
+      });
+    }
   }
 
   function renderAll() {
-    renderProgramStrip();
-    renderPendingBadge();
-    switchView(state.currentView);
+    syncSessionState();
+    updateHeaderUserPill();
+    renderNavTabs();
+    renderActiveProgramStrip();
+    renderPublicHome();
+    renderPublicTransparency();
+    renderStatementView();
+    renderAdminDashboard();
+    renderCollectionsTable();
+    renderExpensesTable();
+    renderCallBook();
+    renderWhatsAppPreview();
+    renderProgramManagerForm();
+    renderSuperSettings();
   }
 
-  function renderProgramStrip() {
-    const prog = JRMData.getProgramById(state.activeProgramId) || JRMData.getActiveProgram();
-    const banner = document.getElementById('activeProgramStrip');
-    if (!banner || !prog) return;
+  // Active Program Strip
+  function renderActiveProgramStrip() {
+    const banner = el.activeProgramStrip;
+    if (!banner) return;
+
+    const prog = JRMData.getActiveProgram();
+    if (!prog) return;
 
     banner.innerHTML = `
       <div>
         <h2>${escapeHTML(prog.title)}</h2>
-        <p>${escapeHTML(prog.day)}, ${escapeHTML(prog.date)} (${escapeHTML(prog.month)} ${prog.year}) • Antophill, Mumbai • Timezone: Asia/Kolkata (IST)</p>
+        <p>${escapeHTML(prog.day)}, ${escapeHTML(prog.date)} (${escapeHTML(prog.month)} ${prog.year}) • Time: ${escapeHTML(prog.time || '08:30 PM')} • Asia/Kolkata (IST)</p>
       </div>
       <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
         <span class="user-session-pill" style="font-size: 0.72rem; color: var(--brand-green);">
           🇮🇳 IST: <strong id="istLiveClock">${getISTDateTime()}</strong>
         </span>
-        <select id="programSelector" class="form-input" style="width: auto; padding: 4px 8px; font-size: 0.82rem;">
+        <select id="programSelector" class="form-input" onchange="window.JRMApp.handleProgramChange(this.value)" style="width: auto; padding: 4px 8px; font-size: 0.82rem;">
           ${JRMData.getPrograms().map(p => `
             <option value="${p.id}" ${p.id === prog.id ? 'selected' : ''}>${escapeHTML(p.title)} (${p.month} ${p.year})</option>
           `).join('')}
         </select>
-        ${!state.loggedMember && !state.isAdmin ? `
-          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openMemberLoginModal()">Member Login</button>
-        ` : ''}
       </div>
     `;
+  }
 
-    const selector = document.getElementById('programSelector');
-    if (selector) {
-      selector.addEventListener('change', (e) => {
-        state.activeProgramId = e.target.value;
-        renderAll();
-      });
+  function handleProgramChange(progId) {
+    state.currentProgramId = progId;
+    renderAll();
+  }
+
+  // ==========================================================================
+  // VIEW 1: PUBLIC HOME (Mehfil Poster & Official Bio Links)
+  // ==========================================================================
+  function renderPublicHome() {
+    const posterSection = document.getElementById('publicProgramPosterSection');
+    const bioContainer = document.getElementById('bioLinksContainer');
+    const settings = JRMData.getSettings();
+    const prog = JRMData.getActiveProgram();
+    if (!prog) return;
+
+    const posterImage = prog.posterUrl || settings.activePosterUrl || settings.posterImageUrl;
+
+    if (posterSection) {
+      posterSection.innerHTML = `
+        <div class="program-poster-hero">
+          <span style="display: inline-block; font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: var(--radius-full); margin-bottom: 8px; letter-spacing: 0.5px;">
+            JAMAT RAZA-E-MUSTAFA ANTOPHILL MUMBAI
+          </span>
+          <h2>${escapeHTML(prog.title)}</h2>
+          <p>${escapeHTML(prog.day)}, ${escapeHTML(prog.date)} • Ba-Waqt: ${escapeHTML(prog.time || '08:30 PM (IST)')}</p>
+        </div>
+
+        ${posterImage ? `
+          <div style="background: #000; text-align: center;">
+            <img src="${posterImage}" alt="Mehfil Poster" class="program-poster-banner">
+          </div>
+        ` : `
+          <div style="background: var(--bg-subtle); border-bottom: 1px solid var(--border); padding: 24px 20px; text-align: center;">
+            <div style="font-size: 2.4rem; margin-bottom: 8px;">🕌</div>
+            <h3 style="color: var(--brand-green); font-size: 1.1rem; margin-bottom: 6px;">MAHANA SUNNI DEENI NASHISHT MEHFIL</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 520px; margin: 0 auto;">
+              ${escapeHTML(prog.posterAnnouncement || settings.posterAnnouncement || 'In Sha Allah Mahana Deeni Mehfil ba-mukaam Antophill munaqqad hogi.')}
+            </p>
+          </div>
+        `}
+
+        <div class="program-poster-body">
+          <div class="program-meta-row">
+            <div class="program-meta-item">
+              <strong>Tareekh (Date)</strong>
+              ${escapeHTML(prog.day)}, ${escapeHTML(prog.date)} (${escapeHTML(prog.month)} ${prog.year})
+            </div>
+            <div class="program-meta-item">
+              <strong>Waqt (IST)</strong>
+              ${escapeHTML(prog.time || '08:30 PM')} (Indian Standard Time)
+            </div>
+            <div class="program-meta-item">
+              <strong>Mukaam (Venue)</strong>
+              ${escapeHTML(prog.venue)}
+            </div>
+          </div>
+
+          <p style="font-size: 0.84rem; color: var(--text-main); margin-bottom: 16px; line-height: 1.6;">
+            ${escapeHTML(prog.description)}
+          </p>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${settings.bioLinks?.maps ? `
+              <a href="${escapeHTML(settings.bioLinks.maps)}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+                📍 Get Directions / Location
+              </a>
+            ` : ''}
+            <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.shareProgramInfo()">
+              📱 Share Program on WhatsApp
+            </button>
+            ${(state.role === 'admin' || state.role === 'superadmin') ? `
+              <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('program-manager')">
+                ✏️ Edit Program & Poster
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    if (bioContainer) {
+      const bio = settings.bioLinks || {};
+      bioContainer.innerHTML = `
+        ${bio.whatsapp ? `
+          <a href="${escapeHTML(bio.whatsapp)}" target="_blank" rel="noopener" class="bio-link-btn whatsapp-link">
+            💬 WhatsApp Channel
+          </a>
+        ` : ''}
+        ${bio.instagram ? `
+          <a href="${escapeHTML(bio.instagram)}" target="_blank" rel="noopener" class="bio-link-btn instagram-link">
+            📷 Instagram Official
+          </a>
+        ` : ''}
+        ${bio.youtube ? `
+          <a href="${escapeHTML(bio.youtube)}" target="_blank" rel="noopener" class="bio-link-btn youtube-link">
+            📺 YouTube Channel
+          </a>
+        ` : ''}
+        ${bio.maps ? `
+          <a href="${escapeHTML(bio.maps)}" target="_blank" rel="noopener" class="bio-link-btn">
+            📍 Antophill Location
+          </a>
+        ` : ''}
+        ${bio.helpline ? `
+          <a href="tel:${escapeHTML(bio.helpline.replace(/\s+/g, ''))}" class="bio-link-btn">
+            📞 Helpline: ${escapeHTML(bio.helpline)}
+          </a>
+        ` : ''}
+      `;
     }
   }
 
-  function renderPendingBadge() {
-    const badge = document.getElementById('pendingNavBadge');
-    if (!badge) return;
-    const pending = JRMData.getPendingMembers(state.activeProgramId);
-    badge.textContent = pending.length;
-    badge.style.display = pending.length > 0 ? 'inline-block' : 'none';
+  function shareProgramInfo() {
+    const prog = JRMData.getActiveProgram();
+    const settings = JRMData.getSettings();
+    if (!prog) return;
+
+    const text =
+      `*(40) MAHANA SUNNI DEENI NASHISHT MEHFIL*\n` +
+      `*Jamat Raza-e-Mustafa Antophill Mumbai*\n\n` +
+      `*Date:* ${prog.day}, ${prog.date} (${prog.month} ${prog.year})\n` +
+      `*Time:* ${prog.time || '08:30 PM'} (IST)\n` +
+      `*Venue:* ${prog.venue}\n\n` +
+      `${prog.posterAnnouncement || 'In Sha Allah ba-barkat deeni nashisht munaqqad hogi. Sabhi ahl-e-sunnat se shirkat ki guzarish hai.'}\n\n` +
+      `Official Community Link: https://${settings.domain}\n` +
+      `*Zain & Zimmedaran Committee*`;
+
+    const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
   }
 
-  // Dashboard
-  function renderDashboard() {
-    const metrics = JRMData.getMetrics(state.activeProgramId);
-    const container = document.getElementById('dashboardKPIs');
-    if (!container) return;
+  // ==========================================================================
+  // VIEW 2: PUBLIC TRANSPARENCY (Itemized Management Expenses)
+  // ==========================================================================
+  function renderPublicTransparency() {
+    const metricsContainer = document.getElementById('publicTransparencyMetrics');
+    const itemsContainer = document.getElementById('publicExpenseItemsContainer');
+    if (!metricsContainer || !itemsContainer) return;
 
-    container.innerHTML = `
-      <div class="metric-card">
-        <div class="metric-title">Total Fund Collection</div>
-        <div class="metric-number" style="color: var(--brand-green);">${JRMData.formatINR(metrics.totalCollected)}</div>
-        <div class="metric-note">${metrics.paidCount} of ${metrics.totalMembers} members contributed</div>
+    const prog = JRMData.getActiveProgram();
+    const data = JRMData.getPublicTransparency(prog ? prog.id : null);
+
+    metricsContainer.innerHTML = `
+      <div class="transparency-metric-card">
+        <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Mahana Fund Received</span>
+        <div class="transparency-metric-val" style="color: var(--status-paid);">${JRMData.formatINR(data.totalCollected)}</div>
       </div>
-
-      <div class="metric-card">
-        <div class="metric-title">Total Management Expenses</div>
-        <div class="metric-number">${JRMData.formatINR(metrics.totalExpenses)}</div>
-        <div class="metric-note">Nazrana, Rent, Niyaz, Sound, Parchun</div>
+      <div class="transparency-metric-card">
+        <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Total Management Kharcha</span>
+        <div class="transparency-metric-val" style="color: var(--status-pending);">${JRMData.formatINR(data.totalExpenses)}</div>
       </div>
-
-      <div class="metric-card">
-        <div class="metric-title">Net Balance in Hand</div>
-        <div class="metric-number" style="color: ${metrics.netBalance >= 0 ? 'var(--brand-green)' : 'var(--status-pending)'};">
-          ${JRMData.formatINR(metrics.netBalance)}
+      <div class="transparency-metric-card">
+        <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Balance In Hand</span>
+        <div class="transparency-metric-val" style="color: ${data.netBalance >= 0 ? 'var(--brand-green)' : 'var(--status-pending)'};">
+          ${JRMData.formatINR(data.netBalance)}
         </div>
-        <div class="metric-note">Cash: ${JRMData.formatINR(metrics.cashCollected)} | Bank: ${JRMData.formatINR(metrics.bankCollected)}</div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-title">Pending Balance</div>
-        <div class="metric-number" style="color: var(--status-pending);">${JRMData.formatINR(metrics.totalPendingBalance)}</div>
-        <div class="metric-note">${metrics.pendingCount} members pending follow-up</div>
       </div>
     `;
 
-    renderRecentDashboardCollections();
-    renderRecentDashboardExpenses();
-  }
+    if (!data.expensesList || data.expensesList.length === 0) {
+      itemsContainer.innerHTML = `<p style="font-size: 0.85rem; color: var(--text-muted);">Is mahine ke expense abhi record ho rahe hain.</p>`;
+      return;
+    }
 
-  function renderRecentDashboardCollections() {
-    const listContainer = document.getElementById('dashboardRecentCollections');
-    if (!listContainer) return;
-    const collections = JRMData.getCollections(state.activeProgramId).slice(0, 8);
-
-    listContainer.innerHTML = `
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
+    itemsContainer.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Sr</th>
+            <th>Expense Head / Madad</th>
+            <th>Category</th>
+            <th>Date (IST)</th>
+            <th style="text-align: right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.expensesList.map((e, idx) => `
             <tr>
-              <th>#</th>
-              <th>Member Name</th>
-              <th>Paid</th>
-              <th>Balance</th>
-              <th>Mode</th>
-              <th>Receipt</th>
+              <td>${idx + 1}</td>
+              <td><strong>${escapeHTML(e.title)}</strong></td>
+              <td><span class="user-session-pill" style="font-size: 0.72rem;">${escapeHTML(e.category)}</span></td>
+              <td>${escapeHTML(e.date)}</td>
+              <td style="text-align: right; font-weight: 700; color: var(--status-pending);">${JRMData.formatINR(e.amount)}</td>
             </tr>
-          </thead>
-          <tbody>
-            ${collections.map(c => `
-              <tr>
-                <td><strong>${c.memberNo || ''}</strong></td>
-                <td>${escapeHTML(c.name)}</td>
-                <td style="font-weight: 700; color: var(--status-paid);">${JRMData.formatINR(c.paid)}</td>
-                <td style="color: ${c.balance > 0 ? 'var(--status-pending)' : 'var(--text-muted)'}; font-weight: 600;">
-                  ${c.balance > 0 ? JRMData.formatINR(c.balance) : '—'}
-                </td>
-                <td><span class="status-pill mode">${escapeHTML(c.mode || 'Cash')}</span></td>
-                <td>
-                  <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openReceipt('${c.id}')">Receipt</button>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
+          `).join('')}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: 800; background: var(--bg-subtle);">
+            <td colspan="4" style="text-align: right;">Kul Management Expense:</td>
+            <td style="text-align: right; color: var(--status-pending);">${JRMData.formatINR(data.totalExpenses)}</td>
+          </tr>
+        </tfoot>
+      </table>
     `;
   }
 
-  function renderRecentDashboardExpenses() {
-    const listContainer = document.getElementById('dashboardRecentExpenses');
-    if (!listContainer) return;
-    const expenses = JRMData.getExpenses().slice(0, 6);
-
-    listContainer.innerHTML = `
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Head</th>
-              <th>Amount</th>
-              <th>Paid To</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${expenses.map(e => `
-              <tr>
-                <td><strong>${escapeHTML(e.title)}</strong></td>
-                <td><span class="status-pill mode">${escapeHTML(e.category)}</span></td>
-                <td style="font-weight: 700;">${JRMData.formatINR(e.amount)}</td>
-                <td>${escapeHTML(e.paidTo || '—')}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  // Member Statement & Ledger View (Personal History & Month Fund Transparency)
+  // ==========================================================================
+  // VIEW 3: MEMBER STATEMENT & LEDGER (Mera Hisab)
+  // ==========================================================================
   function renderStatementView() {
     const container = document.getElementById('memberStatementContainer');
     if (!container) return;
 
-    if (!state.loggedMember) {
+    if (state.role !== 'member' && state.role !== 'admin' && state.role !== 'superadmin') {
       container.innerHTML = `
-        <div style="text-align: center; padding: 40px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
-          <h3 style="margin-bottom: 8px;">Member Statement & Ledger Access</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">
-            Apna naam chunein taaki aap dekh sakein aapne kab kitna fund diya (with IST Date & Time), receipt download karein, aur us month ka kul fund & kharcha transparently check karein.
+        <div style="text-align: center; padding: 40px 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
+          <div style="font-size: 2.2rem; margin-bottom: 8px;">👤</div>
+          <h3 style="margin-bottom: 8px;">Member Statement & Personal Ledger</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto 16px;">
+            Aapne Mahana Sunni Deeni Nashisht ke liye kab kitna fund jama kiya hai, uska personal hisab aur digital receipts 4-digit PIN ke sath securely dekhein.
           </p>
-          <button class="btn btn-primary" onclick="window.JRMApp.openMemberLoginModal()">Apna Member Account Kholein</button>
+          <button class="btn btn-primary" onclick="window.JRMApp.openAccessPortalModal('member')">
+            Member Login (Mera Hisab Kholein)
+          </button>
         </div>
       `;
       return;
     }
 
-    const memberName = state.loggedMember.name;
-    const ledger = JRMData.getMemberLedger(memberName);
-    const metrics = JRMData.getMetrics(state.activeProgramId);
-    const expenses = JRMData.getExpenses();
+    // Determine which member to show
+    let memberName = state.loggedMember?.name;
+    if (!memberName && (state.role === 'admin' || state.role === 'superadmin')) {
+      const all = JRMData.getCollections();
+      memberName = all[0]?.name || '';
+    }
 
-    const totalMemberPaid = ledger.reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
-    const totalMemberBal = ledger.reduce((acc, c) => acc + (Number(c.balance) || 0), 0);
+    const history = JRMData.getMemberLedger(memberName);
+    const totalPaid = history.reduce((sum, h) => sum + (Number(h.paid) || 0), 0);
+    const totalBal = history.reduce((sum, h) => sum + (Number(h.balance) || 0), 0);
+    const primaryToken = history[0]?.token || '';
 
     container.innerHTML = `
-      <!-- Member Overview -->
-      <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+      <div class="content-box">
+        <div class="content-box-header">
           <div>
-            <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Member Personal Account • India Standard Time (IST)</span>
-            <h2 style="font-size: 1.2rem; font-weight: 800; color: var(--text-main);">${escapeHTML(memberName)}</h2>
-            ${state.loggedMember.phone ? `<p style="font-size: 0.8rem; color: var(--text-muted);">Phone: ${escapeHTML(state.loggedMember.phone)}</p>` : ''}
+            <h3>Mera Hisab — Personal Member Statement</h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Contributor: <strong>${escapeHTML(memberName)}</strong></span>
           </div>
           <div style="display: flex; gap: 8px;">
-            <button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ Print Statement</button>
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.logoutCurrent()">Change Member</button>
+            ${(state.role === 'admin' || state.role === 'superadmin') ? `
+              <select class="form-input" style="font-size: 0.82rem; width: auto;" onchange="window.JRMApp.previewMemberStatement(this.value)">
+                ${JRMData.getCollections().map(c => `
+                  <option value="${escapeHTML(c.name)}" ${c.name === memberName ? 'selected' : ''}>${escapeHTML(c.name)}</option>
+                `).join('')}
+              </select>
+            ` : `
+              <button class="btn btn-outline btn-sm" onclick="window.JRMApp.logoutCurrent()">Logout</button>
+            `}
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 14px;">
-          <div style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">AAPKA KUL YOGDAN (PAID)</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: var(--status-paid); margin-top: 2px;">${JRMData.formatINR(totalMemberPaid)}</div>
+        <!-- Personal Summary Strip -->
+        <div class="transparency-summary-strip">
+          <div class="transparency-metric-card">
+            <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Kul Jama (Paid)</span>
+            <div class="transparency-metric-val" style="color: var(--status-paid);">${JRMData.formatINR(totalPaid)}</div>
           </div>
-          <div style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">BAKI RAKAM (PENDING BAL)</div>
-            <div style="font-size: 1.4rem; font-weight: 800; color: ${totalMemberBal > 0 ? 'var(--status-pending)' : 'var(--text-muted)'}; margin-top: 2px;">${JRMData.formatINR(totalMemberBal)}</div>
+          <div class="transparency-metric-card">
+            <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Baki Balance (Pending)</span>
+            <div class="transparency-metric-val" style="color: ${totalBal > 0 ? 'var(--status-pending)' : 'var(--text-muted)'};">${JRMData.formatINR(totalBal)}</div>
           </div>
-          <div style="background: var(--bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">VERIFIED STATUS</div>
-            <div style="font-size: 1.1rem; font-weight: 700; color: var(--brand-green); margin-top: 4px;">Verified Member (IST Logged)</div>
+          <div class="transparency-metric-card">
+            <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Receipt Verification Token</span>
+            <div style="font-size: 0.95rem; font-family: var(--font-mono); font-weight: 700; margin-top: 8px;"><code>${escapeHTML(primaryToken)}</code></div>
           </div>
         </div>
 
-        <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">Aapka Payment History (Kab Kitna Diya)</h3>
-        <div class="table-wrap">
+        <h4 style="font-size: 0.88rem; margin: 18px 0 10px;">Payment Transactions & Official Receipts</h4>
+        <div style="overflow-x: auto;">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Date (IST)</th>
-                <th>Program / Mehfil</th>
-                <th>Amount Paid</th>
-                <th>Balance</th>
-                <th>Mode</th>
                 <th>Receipt Token</th>
+                <th>Tareekh (IST)</th>
+                <th>Mode</th>
+                <th>Jama Amount</th>
+                <th>Balance</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              ${ledger.map(c => `
+              ${history.map(h => `
                 <tr>
-                  <td><strong>${escapeHTML(c.date)} (IST)</strong></td>
-                  <td>Mahana Sunni Deeni Nashisht</td>
-                  <td style="font-weight: 700; color: var(--status-paid);">${JRMData.formatINR(c.paid)}</td>
-                  <td style="color: ${c.balance > 0 ? 'var(--status-pending)' : 'var(--text-muted)'}; font-weight: 600;">
-                    ${c.balance > 0 ? JRMData.formatINR(c.balance) : 'Nil'}
+                  <td><code>${escapeHTML(h.token || '')}</code></td>
+                  <td>${escapeHTML(h.date)}</td>
+                  <td>${escapeHTML(h.mode || 'Cash')}</td>
+                  <td style="font-weight: 700; color: var(--status-paid);">${JRMData.formatINR(h.paid)}</td>
+                  <td style="color: ${Number(h.balance) > 0 ? 'var(--status-pending)' : 'var(--text-muted)'}; font-weight: 700;">
+                    ${Number(h.balance) > 0 ? JRMData.formatINR(h.balance) : '0'}
                   </td>
-                  <td><span class="status-pill mode">${escapeHTML(c.mode || 'Cash')}</span></td>
-                  <td><code>${escapeHTML(c.token || '')}</code></td>
                   <td>
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openReceipt('${c.id}')">View Receipt</button>
+                    <span class="status-pill status-${h.status || (Number(h.balance) > 0 ? 'pending' : 'paid')}">
+                      ${Number(h.balance) === 0 ? 'Paid ✅' : 'Pending ❌'}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.viewReceipt('${h.id}')">
+                      📄 View / Print Receipt
+                    </button>
                   </td>
                 </tr>
               `).join('')}
             </tbody>
           </table>
         </div>
-      </div>
 
-      <!-- Month Transparency & Fund Breakdown for Member -->
-      <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px;">
-        <div class="content-box-header">
-          <div>
-            <h3>Us Mahine Ka Total Fund & Kharcha (Full Transparency)</h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Mahana Mehfil ke kul hisab ki jankari har member ke liye</span>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px;">
-          <div style="border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">KUL FUND COLLECTION</div>
-            <div style="font-size: 1.3rem; font-weight: 800; color: var(--brand-green); margin-top: 2px;">${JRMData.formatINR(metrics.totalCollected)}</div>
-          </div>
-          <div style="border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">KUL PROGRAM KHARCHA</div>
-            <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${JRMData.formatINR(metrics.totalExpenses)}</div>
-          </div>
-          <div style="border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">NET BACHAT IN HAND</div>
-            <div style="font-size: 1.3rem; font-weight: 800; color: var(--status-paid); margin-top: 2px;">${JRMData.formatINR(metrics.netBalance)}</div>
-          </div>
-        </div>
-
-        <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 10px; color: var(--text-muted); text-transform: uppercase;">Kahan Kahan Kharcha Hua (Expense Breakdown):</h4>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Head</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Recipient / Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${expenses.map(e => `
-                <tr>
-                  <td><strong>${escapeHTML(e.title)}</strong></td>
-                  <td><span class="status-pill mode">${escapeHTML(e.category)}</span></td>
-                  <td style="font-weight: 700;">${JRMData.formatINR(e.amount)}</td>
-                  <td>${escapeHTML(e.paidTo || '')} ${e.notes ? `• <small style="color: var(--text-muted);">${escapeHTML(e.notes)}</small>` : ''}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-top: 20px;">
+          <h4 style="font-size: 0.85rem; margin-bottom: 6px;">Mahana Mehfil Kharcha Transparency</h4>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+            Aapke diye gaye fund se is mahine hone wale kul kharchat:
+          </p>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('public-transparency')">
+            View Complete Program Expenses
+          </button>
         </div>
       </div>
     `;
   }
 
-  // Collections View
-  function renderCollections() {
-    const listContainer = document.getElementById('collectionsTableContainer');
-    if (!listContainer) return;
+  function previewMemberStatement(name) {
+    if (state.role === 'admin' || state.role === 'superadmin') {
+      state.loggedMember = { name: name };
+      renderStatementView();
+    }
+  }
 
-    let collections = JRMData.getCollections(state.activeProgramId);
+  // ==========================================================================
+  // VIEW 4: ADMIN DASHBOARD (KPIs & Quick Management)
+  // ==========================================================================
+  function renderAdminDashboard() {
+    const container = document.getElementById('adminDashboardKPIs');
+    if (!container) return;
+
+    const metrics = JRMData.getMetrics(state.currentProgramId);
+
+    container.innerHTML = `
+      <div class="metric-card">
+        <span class="metric-label">Total Fund Collected</span>
+        <div class="metric-value" style="color: var(--status-paid);">${JRMData.formatINR(metrics.totalCollected)}</div>
+        <span class="metric-sub">From ${metrics.totalMembers} community members</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Management Expenses</span>
+        <div class="metric-value" style="color: var(--status-pending);">${JRMData.formatINR(metrics.totalExpenses)}</div>
+        <span class="metric-sub">Nazrana, Rent, Niyaz, Sound, Media</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Balance In Hand</span>
+        <div class="metric-value" style="color: ${metrics.netBalance >= 0 ? 'var(--brand-green)' : 'var(--status-pending)'};">
+          ${JRMData.formatINR(metrics.netBalance)}
+        </div>
+        <span class="metric-sub">Net surplus fund</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Pending Balances</span>
+        <div class="metric-value" style="color: var(--status-pending);">${JRMData.formatINR(metrics.totalPendingBalance)}</div>
+        <span class="metric-sub">${metrics.pendingCount} members pending in Call Book</span>
+      </div>
+    `;
+
+    // Dashboard Recent Lists
+    const recentColContainer = document.getElementById('dashboardRecentCollections');
+    const recentExpContainer = document.getElementById('dashboardRecentExpenses');
+
+    if (recentColContainer) {
+      const recentCols = JRMData.getCollections(state.currentProgramId).slice(-6).reverse();
+      recentColContainer.innerHTML = recentCols.map(c => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;">
+          <div>
+            <div style="font-weight: 700;">${escapeHTML(c.name)}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${escapeHTML(c.date)} • ${escapeHTML(c.mode || 'Cash')}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 800; color: ${Number(c.balance) > 0 ? 'var(--status-pending)' : 'var(--status-paid)'};">
+              ${JRMData.formatINR(c.paid)}
+            </div>
+            ${Number(c.balance) > 0 ? `<div style="font-size: 0.7rem; color: var(--status-pending);">BAL ${JRMData.formatINR(c.balance)} ❌</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    if (recentExpContainer) {
+      const recentExps = JRMData.getExpenses(state.currentProgramId).slice(-6).reverse();
+      recentExpContainer.innerHTML = recentExps.map(e => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;">
+          <div>
+            <div style="font-weight: 700;">${escapeHTML(e.title)}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">${escapeHTML(e.category)} • ${escapeHTML(e.date)}</div>
+          </div>
+          <div style="font-weight: 800; color: var(--status-pending);">${JRMData.formatINR(e.amount)}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  // ==========================================================================
+  // VIEW 5: COLLECTIONS REGISTER (Admin Only)
+  // ==========================================================================
+  function renderCollectionsTable() {
+    const container = document.getElementById('collectionsTableContainer');
+    const countDisplay = document.getElementById('collectionCountDisplay');
+    if (!container) return;
+
+    let list = JRMData.getCollections(state.currentProgramId);
 
     if (state.searchQuery) {
-      const q = state.searchQuery.toLowerCase();
-      collections = collections.filter(c =>
+      const q = state.searchQuery.toLowerCase().trim();
+      list = list.filter(c =>
         (c.name && c.name.toLowerCase().includes(q)) ||
         (c.phone && c.phone.includes(q)) ||
         (c.token && c.token.toLowerCase().includes(q))
       );
     }
+
     if (state.statusFilter === 'paid') {
-      collections = collections.filter(c => (Number(c.paid) || 0) > 0 && (Number(c.balance) || 0) === 0);
+      list = list.filter(c => Number(c.balance) === 0);
     } else if (state.statusFilter === 'pending') {
-      collections = collections.filter(c => (Number(c.balance) || 0) > 0 || (Number(c.paid) || 0) === 0);
+      list = list.filter(c => Number(c.balance) > 0);
     }
 
     if (state.modeFilter !== 'all') {
-      collections = collections.filter(c => (c.mode || '').toLowerCase().includes(state.modeFilter.toLowerCase()));
+      list = list.filter(c => (c.mode || '').toLowerCase().includes(state.modeFilter));
     }
 
-    const countSpan = document.getElementById('collectionCountDisplay');
-    if (countSpan) {
-      const totalSum = collections.reduce((acc, c) => acc + (Number(c.paid) || 0), 0);
-      countSpan.textContent = `${collections.length} members (Total: ${JRMData.formatINR(totalSum)})`;
+    if (countDisplay) {
+      countDisplay.textContent = `Showing ${list.length} records`;
     }
 
-    listContainer.innerHTML = `
-      <div class="table-wrap">
+    if (list.length === 0) {
+      container.innerHTML = `<p style="padding: 20px; text-align: center; color: var(--text-muted);">Koi record nahi mila.</p>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="overflow-x: auto;">
         <table class="data-table">
           <thead>
             <tr>
               <th>#</th>
               <th>Member Name</th>
-              <th>Contact</th>
-              <th>Paid</th>
+              <th>Phone</th>
+              <th>Paid Amount</th>
               <th>Balance</th>
               <th>Mode</th>
-              <th>Status</th>
-              <th>Token</th>
-              <th>Date (IST)</th>
-              <th style="text-align: right;">Action</th>
+              <th>Tareekh</th>
+              <th>Receipt Token</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${collections.map(c => `
+            ${list.map(c => `
               <tr>
                 <td>${c.memberNo || ''}</td>
-                <td>
-                  <strong>${escapeHTML(c.name)}</strong>
-                  ${c.notes ? `<div style="font-size: 0.72rem; color: var(--text-muted);">${escapeHTML(c.notes)}</div>` : ''}
-                </td>
-                <td>${c.phone ? `<a href="tel:${escapeHTML(c.phone)}" style="color: var(--brand-green);">${escapeHTML(c.phone)}</a>` : '—'}</td>
+                <td><strong>${escapeHTML(c.name)}</strong></td>
+                <td>${escapeHTML(c.phone || '-')}</td>
                 <td style="font-weight: 700; color: var(--status-paid);">${JRMData.formatINR(c.paid)}</td>
-                <td style="color: ${c.balance > 0 ? 'var(--status-pending)' : 'var(--text-muted)'}; font-weight: 600;">
-                  ${c.balance > 0 ? JRMData.formatINR(c.balance) : '0'}
+                <td style="font-weight: 700; color: ${Number(c.balance) > 0 ? 'var(--status-pending)' : 'var(--text-muted)'};">
+                  ${Number(c.balance) > 0 ? `${JRMData.formatINR(c.balance)} ❌` : '0 ✅'}
                 </td>
-                <td><span class="status-pill mode">${escapeHTML(c.mode || 'Cash')}</span></td>
-                <td>
-                  ${c.paid > 0 ? `<span class="status-pill paid">Paid</span>` : `<span class="status-pill pending">BAL</span>`}
-                </td>
+                <td><span class="user-session-pill" style="font-size: 0.72rem;">${escapeHTML(c.mode || 'Cash')}</span></td>
+                <td>${escapeHTML(c.date)}</td>
                 <td><code>${escapeHTML(c.token || '')}</code></td>
-                <td style="font-size: 0.78rem; white-space: nowrap;">${escapeHTML(c.date || '')}</td>
-                <td style="text-align: right; white-space: nowrap;">
-                  <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openReceipt('${c.id}')">Receipt</button>
-                  <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.shareMemberReceiptWhatsApp('${c.id}')">WA</button>
-                  ${state.isAdmin ? `
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')">Edit</button>
-                  ` : ''}
+                <td>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.viewReceipt('${c.id}')" title="View Receipt">📄</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')" title="Edit Entry">✏️</button>
+                    <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')" title="Send Receipt">📱</button>
+                  </div>
                 </td>
               </tr>
             `).join('')}
@@ -674,48 +845,59 @@
     `;
   }
 
-  // Expenses View
-  function renderExpenses() {
-    const listContainer = document.getElementById('expensesTableContainer');
-    if (!listContainer) return;
-    const expenses = JRMData.getExpenses();
-    const totalExpenses = expenses.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
-
+  // ==========================================================================
+  // VIEW 6: EXPENSES REGISTER (Admin Only)
+  // ==========================================================================
+  function renderExpensesTable() {
+    const container = document.getElementById('expensesTableContainer');
     const totalDisplay = document.getElementById('expenseTotalDisplay');
-    if (totalDisplay) totalDisplay.textContent = `Total: ${JRMData.formatINR(totalExpenses)}`;
+    if (!container) return;
 
-    listContainer.innerHTML = `
-      <div class="table-wrap">
+    const list = JRMData.getExpenses(state.currentProgramId);
+    const total = list.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+
+    if (totalDisplay) {
+      totalDisplay.textContent = `Total: ${JRMData.formatINR(total)} (${list.length} items)`;
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `<p style="padding: 20px; text-align: center; color: var(--text-muted);">Koi expense logged nahi hai.</p>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="overflow-x: auto;">
         <table class="data-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Voucher</th>
-              <th>Expense Head</th>
+              <th>Expense Title / Head</th>
               <th>Category</th>
               <th>Amount</th>
               <th>Paid To</th>
               <th>Mode</th>
-              <th>Date (IST)</th>
-              ${state.isAdmin ? `<th style="text-align: right;">Action</th>` : ''}
+              <th>Date</th>
+              <th>Voucher</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${expenses.map((e, idx) => `
+            ${list.map(e => `
               <tr>
-                <td>${e.itemNo || idx + 1}</td>
-                <td><code>${escapeHTML(e.voucherNo || '')}</code></td>
+                <td>${e.itemNo || ''}</td>
                 <td><strong>${escapeHTML(e.title)}</strong></td>
-                <td><span class="status-pill mode">${escapeHTML(e.category)}</span></td>
-                <td style="font-weight: 700; color: var(--text-main);">${JRMData.formatINR(e.amount)}</td>
-                <td>${escapeHTML(e.paidTo || '—')}</td>
+                <td><span class="user-session-pill" style="font-size: 0.72rem;">${escapeHTML(e.category)}</span></td>
+                <td style="font-weight: 800; color: var(--status-pending);">${JRMData.formatINR(e.amount)}</td>
+                <td>${escapeHTML(e.paidTo || '-')}</td>
                 <td>${escapeHTML(e.mode || 'Cash')}</td>
-                <td>${escapeHTML(e.date || '')} (IST)</td>
-                ${state.isAdmin ? `
-                  <td style="text-align: right;">
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditExpenseModal('${e.id}')">Edit</button>
-                  </td>
-                ` : ''}
+                <td>${escapeHTML(e.date)}</td>
+                <td><code>${escapeHTML(e.voucherNo || '')}</code></td>
+                <td>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditExpenseModal('${e.id}')">✏️</button>
+                    <button class="btn btn-outline btn-sm" style="color: var(--status-pending);" onclick="window.JRMApp.deleteExpenseEntry('${e.id}')">🗑️</button>
+                  </div>
+                </td>
               </tr>
             `).join('')}
           </tbody>
@@ -724,341 +906,455 @@
     `;
   }
 
-  // Call Book CRM
+  // ==========================================================================
+  // VIEW 7: CALL BOOK CRM (Pending Balances)
+  // ==========================================================================
   function renderCallBook() {
-    const gridContainer = document.getElementById('callBookGridContainer');
-    if (!gridContainer) return;
-    const pending = JRMData.getPendingMembers(state.activeProgramId);
+    const container = document.getElementById('callBookGridContainer');
     const countDisplay = document.getElementById('callBookCountDisplay');
-    const totalPending = pending.reduce((acc, c) => acc + (Number(c.balance) || 0), 0);
+    if (!container) return;
+
+    const all = JRMData.getCollections(state.currentProgramId);
+    const pendingList = all.filter(c => Number(c.balance) > 0);
 
     if (countDisplay) {
-      countDisplay.textContent = `${pending.length} Members Pending Follow-up (Total: ${JRMData.formatINR(totalPending)})`;
+      countDisplay.textContent = `${pendingList.length} members with pending balance`;
     }
 
-    if (pending.length === 0) {
-      gridContainer.innerHTML = `<p style="padding: 24px; color: var(--text-muted); text-align: center;">Sabhi members ka fund clear hai.</p>`;
+    if (pendingList.length === 0) {
+      container.innerHTML = `
+        <div style="padding: 30px; text-align: center; background: var(--bg-subtle); border-radius: var(--radius-sm);">
+          <div style="font-size: 2rem;">✅</div>
+          <h4 style="color: var(--status-paid); margin: 6px 0;">Alhamdulillah! Koi Pending Balance Nahi Hai</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Sabhi members ke accounts clear hain.</p>
+        </div>
+      `;
       return;
     }
 
-    gridContainer.innerHTML = pending.map(c => `
-      <div class="callbook-item">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    container.innerHTML = pendingList.map(c => `
+      <div class="callbook-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
           <div>
-            <div style="font-weight: 700;">${c.memberNo ? `${c.memberNo}. ` : ''}${escapeHTML(c.name)}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">${c.phone ? `📞 ${escapeHTML(c.phone)}` : 'Phone: Not entered'}</div>
+            <div style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(c.name)}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Phone: ${escapeHTML(c.phone || 'Phone not set')}</div>
           </div>
           <div style="text-align: right;">
-            <div style="font-size: 0.68rem; color: var(--status-pending); font-weight: 700;">BALANCE DUE</div>
-            <div style="font-size: 1.1rem; font-weight: 800; color: var(--status-pending);">${JRMData.formatINR(c.balance || c.paid || 0)}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Balance Due</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--status-pending);">${JRMData.formatINR(c.balance)}</div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 6px; margin-top: 4px;">
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
           ${c.phone ? `
-            <a href="tel:${escapeHTML(c.phone)}" class="btn btn-outline btn-sm" style="flex: 1;">📞 Call</a>
+            <a href="tel:${escapeHTML(c.phone.replace(/\s+/g, ''))}" class="btn btn-outline btn-sm">
+              📞 Direct Call
+            </a>
           ` : `
-            <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="window.JRMApp.promptAddPhone('${c.id}')">+ Add Phone</button>
+            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')">
+              + Add Phone
+            </button>
           `}
-          <button class="btn btn-whatsapp btn-sm" style="flex: 1.4;" onclick="window.JRMApp.sendWhatsAppReminder('${c.id}')">📱 Reminder</button>
-          ${state.isAdmin ? `
-            <button class="btn btn-outline btn-sm" onclick="window.JRMApp.quickSettleModal('${c.id}')">Receive</button>
-          ` : ''}
+          <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.sendWhatsAppReminder('${c.id}')">
+            💬 WhatsApp Reminder
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="window.JRMApp.quickSettleModal('${c.id}')">
+            ✓ Receive Payment
+          </button>
         </div>
       </div>
     `).join('');
   }
 
-  // Separated WhatsApp Messages (Collection & Expense)
-  function generateCollectionWhatsAppMessage() {
-    const prog = JRMData.getProgramById(state.activeProgramId) || JRMData.getActiveProgram();
-    const collections = JRMData.getCollections(state.activeProgramId);
-    const metrics = JRMData.getMetrics(state.activeProgramId);
+  function sendWhatsAppReminder(id) {
+    const c = JRMData.getCollectionById(id);
+    const settings = JRMData.getSettings();
+    const prog = JRMData.getActiveProgram();
+    if (!c) return;
 
-    let dateStr = '19--10--2026';
-    if (prog && prog.date) {
-      const parts = prog.date.split('-');
-      if (parts.length === 3) dateStr = `${parts[2]}--${parts[1]}--${parts[0]}`;
+    const text =
+      `Assalamu Alaikum *${c.name}* Bhai,\n\n` +
+      `Jamat Raza-e-Mustafa Antophill Mumbai *${prog ? prog.title : 'Mahana Mehfil'}* ke silsile me aapka contribution balance *${JRMData.formatINR(c.balance)}* baki hai.\n\n` +
+      `Meharbani karke Cash ya Bank UPI ke zariye apna hisab jama kara dein taaki program intezamat me asani ho sake.\n\n` +
+      `Aap apna statement online bhi dekh sakte hain:\n` +
+      `https://${settings.domain}/#verify/${c.token}\n\n` +
+      `JazakAllah Khair.\n` +
+      `*Zain & Zimmedaran Committee — JRM Antophill*`;
+
+    const phoneClean = (c.phone || '').replace(/[^0-9]/g, '');
+    const phoneParam = phoneClean ? `phone=${phoneClean.length === 10 ? '91' + phoneClean : phoneClean}&` : '';
+    const url = `https://api.whatsapp.com/send?${phoneParam}text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+
+  function quickSettleModal(id) {
+    const c = JRMData.getCollectionById(id);
+    if (!c) return;
+
+    const amountStr = prompt(`Receive payment for ${c.name}\nCurrent Balance: ₹${c.balance}\nEnter amount paid now:`, c.balance);
+    if (!amountStr) return;
+
+    const paidNow = Number(amountStr);
+    if (isNaN(paidNow) || paidNow <= 0) {
+      alert('Sahi amount daalein.');
+      return;
     }
 
-    let text = `*(${collections.length}) MAHANA SUNNI DEENI NASHISHT MEHFIL (Collection) ${prog ? prog.month : 'October'}) In Sha Allah Program Hoga*\n\n`;
-    text += `*Date :${dateStr}/*\n\n`;
+    const newBalance = Math.max(0, (Number(c.balance) || 0) - paidNow);
+    c.paid = (Number(c.paid) || 0) + paidNow;
+    c.balance = newBalance;
+    c.status = newBalance === 0 ? 'paid' : 'pending';
+    c.notes = (c.notes ? c.notes + ' | ' : '') + `Paid ₹${paidNow} on ${getISTISODate()} (IST)`;
+
+    JRMData.saveCollection(c);
+    renderAll();
+    showToast(`Payment of ₹${paidNow} recorded for ${c.name}`);
+  }
+
+  // ==========================================================================
+  // VIEW 8: WHATSAPP REPORTS GENERATOR (Separated Collection & Expense)
+  // ==========================================================================
+  function setWhatsAppTab(tab) {
+    state.activeWhatsAppTab = tab;
+    const tabCol = document.getElementById('tabWhatsAppCollection');
+    const tabExp = document.getElementById('tabWhatsAppExpense');
+
+    if (tabCol) tabCol.classList.toggle('active', tab === 'collection');
+    if (tabExp) tabExp.classList.toggle('active', tab === 'expense');
+
+    renderWhatsAppPreview();
+  }
+
+  function generateWhatsAppCollectionMessage() {
+    const prog = JRMData.getActiveProgram();
+    const collections = JRMData.getCollections(prog ? prog.id : null);
+    const settings = JRMData.getSettings();
+    const metrics = JRMData.getMetrics(prog ? prog.id : null);
+
+    let text = `*${prog ? prog.title : '(40) MAHANA SUNNI DEENI NASHISHT MEHFIL'} (Collection)*\n`;
+    text += `*Jamat Raza-e-Mustafa Antophill Mumbai*\n\n`;
+    text += `*Date :${prog ? prog.date : getISTISODate()}/*\n\n`;
     text += `*👇Team Member Collection 👇*\n\n`;
 
-    collections.forEach(c => {
-      const num = c.memberNo || '';
-      const name = c.name || '';
-      if ((Number(c.paid) || 0) > 0) {
-        text += `*${num}/${name} paid ${c.paid} ✅*\n`;
+    collections.forEach((c) => {
+      const isPaid = Number(c.balance) === 0 && Number(c.paid) > 0;
+      const isPending = Number(c.balance) > 0;
+      const sr = c.memberNo || '';
+
+      if (isPaid) {
+        text += `*${sr}/${c.name} paid ${c.paid} ✅*\n`;
+      } else if (isPending) {
+        if (Number(c.paid) > 0) {
+          text += `*${sr}/${c.name} BAL ${c.balance}*✅\n`;
+        } else {
+          text += `*${sr}/${c.name} BAL ${c.balance} ❌*\n`;
+        }
       } else {
-        text += `*${num}/${name} BAL ${c.balance || 0} ❌*\n`;
+        text += `*${sr}/${c.name} BAL 0*\n`;
       }
     });
 
     text += `\n______________________________\n`;
-    text += `*Total Collection* =           *${metrics.totalCollected.toLocaleString('en-IN')}*₹\n`;
-    text += `*Total Pending Balance* =      *${metrics.totalPendingBalance.toLocaleString('en-IN')}*₹\n`;
-    text += `______________________________\n\n`;
-    text += `*Jamat Raza e Mustafa Antophill Mumbai*\n`;
-    text += `*Report Generated at:* ${getISTDateTime()}\n`;
-    text += `*Official Portal:* https://jrmantophill.esitesz.com\n`;
+    text += `*Total Collection* =           *${metrics.totalCollected.toLocaleString('en-IN')}*₹\n\n`;
+    text += `*Online Verified Records:* https://${settings.domain}\n`;
+    text += `*Zain & Zimmedaran Committee — JRM Antophill Mumbai*`;
 
     return text;
   }
 
-  function generateExpenseWhatsAppMessage() {
-    const prog = JRMData.getProgramById(state.activeProgramId) || JRMData.getActiveProgram();
-    const expenses = JRMData.getExpenses();
-    const metrics = JRMData.getMetrics(state.activeProgramId);
+  function generateWhatsAppExpenseMessage() {
+    const prog = JRMData.getActiveProgram();
+    const expenses = JRMData.getExpenses(prog ? prog.id : null);
+    const settings = JRMData.getSettings();
+    const metrics = JRMData.getMetrics(prog ? prog.id : null);
 
     let text = `*Jamat Raza e Mustafa Antophill Mumbai*\n\n`;
-    text += `*MAAHANA SUNNI DEENI NASHIST PROGRAM* *MANAGEMENT EXPENSES*\n`;
-    text += `*Monday(September) 21-09-2026*\n\n`;
+    text += `*MAAHANA SUNNI DEENI NASHIST PROGRAM MANAGEMENT EXPENSES*\n`;
+    text += `*${prog ? prog.day : 'Monday'}(${prog ? prog.month : 'September'}) ${prog ? prog.date : getISTISODate()}*\n\n`;
 
-    expenses.forEach((e, i) => {
-      text += `*${i + 1}:-${e.title.toUpperCase()}= ${e.amount}*\n`;
+    expenses.forEach((e) => {
+      const sr = e.itemNo || '';
+      const cat = e.title.toUpperCase();
+      text += `*${sr}:-${cat}= ${e.amount}*\n`;
     });
 
-    text += `\n______________________________\n`;
-    text += `*EXPENSE=${metrics.totalExpenses.toLocaleString('en-IN')}*₹\n`;
-    text += `*COLLECTION RECEIVED IN MONTH OF ${prog ? prog.month : 'October'} TOTAL ${metrics.totalCollected.toLocaleString('en-IN')}*₹\n`;
-    text += `*NET BALANCE IN HAND=${metrics.netBalance.toLocaleString('en-IN')}*₹\n`;
-    text += `______________________________\n\n`;
-    text += `*Report Generated at:* ${getISTDateTime()}\n`;
-    text += `*Zain & Zimmedaran — Jamat Raza e Mustafa Antophill*\n`;
-    text += `*Online Verified Records:* https://jrmantophill.esitesz.com\n`;
+    text += `\n*COLLECTION RECEIVED IN MONTH OF ${prog ? (prog.month || '').toUpperCase() : 'PROGRAM'} TOTAL ${metrics.totalCollected}*\n\n`;
+    text += `*EXPENSE=${metrics.totalExpenses.toLocaleString('en-IN')}*\n`;
+    text += `*NET BALANCE IN HAND=${metrics.netBalance.toLocaleString('en-IN')}₹*\n\n`;
+    text += `*Official Portal:* https://${settings.domain}\n`;
+    text += `*Zain & Committee Zimmedaran*`;
 
     return text;
   }
 
-  function renderWhatsAppView() {
-    const previewBox = document.getElementById('whatsappMessagePreview');
-    const tabCollection = document.getElementById('tabWhatsAppCollection');
-    const tabExpense = document.getElementById('tabWhatsAppExpense');
-
-    if (tabCollection) tabCollection.classList.toggle('active', state.activeWhatsAppTab === 'collection');
-    if (tabExpense) tabExpense.classList.toggle('active', state.activeWhatsAppTab === 'expense');
-
-    if (!previewBox) return;
+  function renderWhatsAppPreview() {
+    const preview = document.getElementById('whatsappMessagePreview');
+    if (!preview) return;
 
     if (state.activeWhatsAppTab === 'collection') {
-      previewBox.textContent = generateCollectionWhatsAppMessage();
+      preview.textContent = generateWhatsAppCollectionMessage();
     } else {
-      previewBox.textContent = generateExpenseWhatsAppMessage();
+      preview.textContent = generateWhatsAppExpenseMessage();
     }
-  }
-
-  function setWhatsAppTab(tabName) {
-    state.activeWhatsAppTab = tabName;
-    renderWhatsAppView();
   }
 
   function shareCurrentWhatsApp() {
     const text = state.activeWhatsAppTab === 'collection'
-      ? generateCollectionWhatsAppMessage()
-      : generateExpenseWhatsAppMessage();
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      ? generateWhatsAppCollectionMessage()
+      : generateWhatsAppExpenseMessage();
+
+    const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
   }
 
   function copyCurrentWhatsApp() {
     const text = state.activeWhatsAppTab === 'collection'
-      ? generateCollectionWhatsAppMessage()
-      : generateExpenseWhatsAppMessage();
+      ? generateWhatsAppCollectionMessage()
+      : generateWhatsAppExpenseMessage();
+
     navigator.clipboard.writeText(text).then(() => {
-      showToast(`${state.activeWhatsAppTab === 'collection' ? 'Collection' : 'Expense'} message copied!`);
+      showToast('WhatsApp message copied to clipboard!');
     }).catch(() => {
-      showToast('Could not copy automatically.', 'danger');
+      showToast('Clipboard copy failed.');
     });
   }
 
-  // Receipt Verification (Public)
-  function renderVerifyView() {}
+  // ==========================================================================
+  // VIEW 9: PROGRAM & POSTER MANAGER
+  // ==========================================================================
+  function renderProgramManagerForm() {
+    const prog = JRMData.getActiveProgram();
+    const settings = JRMData.getSettings();
+    if (!prog) return;
 
-  function handleReceiptSearch(query) {
-    const container = document.getElementById('receiptLookupResult');
+    const titleIn = document.getElementById('progTitleInput');
+    const monthIn = document.getElementById('progMonthInput');
+    const yearIn = document.getElementById('progYearInput');
+    const dayIn = document.getElementById('progDayInput');
+    const dateIn = document.getElementById('progDateInput');
+    const timeIn = document.getElementById('progTimeInput');
+    const venueIn = document.getElementById('progVenueInput');
+    const posterIn = document.getElementById('progPosterUrlInput');
+    const announcementIn = document.getElementById('progAnnouncementInput');
+
+    if (titleIn) titleIn.value = prog.title || '';
+    if (monthIn) monthIn.value = prog.month || '';
+    if (yearIn) yearIn.value = prog.year || 2026;
+    if (dayIn) dayIn.value = prog.day || '';
+    if (dateIn) dateIn.value = prog.date || '';
+    if (timeIn) timeIn.value = prog.time || '08:30 PM (IST)';
+    if (venueIn) venueIn.value = prog.venue || '';
+    if (posterIn) posterIn.value = prog.posterUrl || settings.activePosterUrl || '';
+    if (announcementIn) announcementIn.value = prog.posterAnnouncement || settings.posterAnnouncement || '';
+  }
+
+  function saveProgramPoster(e) {
+    e.preventDefault();
+    const prog = JRMData.getActiveProgram();
+    if (!prog) return;
+
+    const fileInput = document.getElementById('progPosterFileInput');
+    const title = document.getElementById('progTitleInput').value.trim();
+    const month = document.getElementById('progMonthInput').value.trim();
+    const year = Number(document.getElementById('progYearInput').value) || 2026;
+    const day = document.getElementById('progDayInput').value.trim();
+    const date = document.getElementById('progDateInput').value.trim();
+    const time = document.getElementById('progTimeInput').value.trim();
+    const venue = document.getElementById('progVenueInput').value.trim();
+    const posterUrl = document.getElementById('progPosterUrlInput').value.trim();
+    const announcement = document.getElementById('progAnnouncementInput').value.trim();
+
+    function finalize(imgUrl) {
+      prog.title = title;
+      prog.month = month;
+      prog.year = year;
+      prog.day = day;
+      prog.date = date;
+      prog.time = time;
+      prog.venue = venue;
+      prog.posterUrl = imgUrl;
+      prog.posterAnnouncement = announcement;
+
+      JRMData.saveProgram(prog);
+      JRMData.saveSettings({
+        activePosterUrl: imgUrl,
+        posterAnnouncement: announcement
+      });
+
+      renderAll();
+      showToast('Upcoming Program & Poster updated successfully!');
+      switchView('public-home');
+    }
+
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (ev) => finalize(ev.target.result);
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      finalize(posterUrl);
+    }
+  }
+
+  // ==========================================================================
+  // VIEW 10: SUPER ADMIN MASTER SETTINGS (Zain Only)
+  // ==========================================================================
+  function renderSuperSettings() {
+    const settings = JRMData.getSettings();
+
+    const superPinIn = document.getElementById('settingSuperPin');
+    const adminPinIn = document.getElementById('settingAdminPin');
+    if (superPinIn) superPinIn.value = settings.superAdminPin || '9999';
+    if (adminPinIn) adminPinIn.value = settings.adminPin || '7860';
+
+    // Bio links
+    const bio = settings.bioLinks || {};
+    const bioWa = document.getElementById('bioLinkWhatsApp');
+    const bioIg = document.getElementById('bioLinkInstagram');
+    const bioYt = document.getElementById('bioLinkYouTube');
+    const bioMap = document.getElementById('bioLinkMaps');
+    const bioHelp = document.getElementById('bioLinkHelpline');
+
+    if (bioWa) bioWa.value = bio.whatsapp || '';
+    if (bioIg) bioIg.value = bio.instagram || '';
+    if (bioYt) bioYt.value = bio.youtube || '';
+    if (bioMap) bioMap.value = bio.maps || '';
+    if (bioHelp) bioHelp.value = bio.helpline || '';
+
+    // Sheets config
+    const sheetUrlIn = document.getElementById('sheetUrlInput');
+    const sheetKeyIn = document.getElementById('sheetKeyInput');
+    if (sheetUrlIn) sheetUrlIn.value = settings.googleSheetUrl || '';
+    if (sheetKeyIn) sheetKeyIn.value = settings.googleSheetApiKey || '';
+
+    renderMemberCredentialsTable();
+    renderAuditLogsTable();
+  }
+
+  function renderMemberCredentialsTable() {
+    const container = document.getElementById('memberCredentialsTableContainer');
     if (!container) return;
-    if (!query || !query.trim()) {
-      container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">Contributor name ya token daalein.</p>`;
-      return;
-    }
 
-    const results = JRMData.searchCollections(query);
-    if (results.length === 0) {
-      container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted);">No verified record found matching "${escapeHTML(query)}".</div>`;
-      return;
-    }
+    const list = JRMData.getCollections();
 
-    container.innerHTML = results.map(r => `
-      <div style="background: var(--bg-surface); border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div>
-          <div style="font-weight: 700;">${escapeHTML(r.name)}</div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Token: <code>${escapeHTML(r.token || '')}</code> • Date: ${escapeHTML(r.date)} (IST)</div>
-        </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <div style="font-weight: 800; color: var(--status-paid);">${JRMData.formatINR(r.paid)}</div>
-          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openReceipt('${r.id}')">View Receipt</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  // Official Receipt Print View
-  function openReceipt(collectionId) {
-    const c = JRMData.getCollectionById(collectionId);
-    if (!c || !el.receiptModal) return;
-
-    const prog = JRMData.getProgramById(c.programId) || JRMData.getActiveProgram();
-    const settings = JRMData.getSettings();
-    const body = document.getElementById('receiptModalContent');
-    if (!body) return;
-
-    const formattedIST = c.date ? `${c.date} (Asia/Kolkata IST)` : getISTDateTime();
-
-    body.innerHTML = `
-      <div class="receipt-paper">
-        <div class="receipt-head">
-          <div class="receipt-org">${escapeHTML(settings.orgFull)}</div>
-          <div class="receipt-sub">${escapeHTML(settings.orgBranch)} • Jamat Raza-e-Mustafa</div>
-          <div style="font-size: 0.7rem; font-weight: 700; color: var(--brand-green); margin-top: 4px; letter-spacing: 0.5px;">OFFICIAL DONATION RECEIPT • IST VERIFIED</div>
-        </div>
-
-        <div class="receipt-grid">
-          <div><strong>Receipt No:</strong> ${escapeHTML(c.token || '')}</div>
-          <div style="text-align: right;"><strong>Date & Time:</strong> ${escapeHTML(formattedIST)}</div>
-          <div><strong>Program:</strong> ${escapeHTML(prog ? prog.title : 'Mahana Mehfil')}</div>
-          <div style="text-align: right;"><strong>Payment Mode:</strong> ${escapeHTML(c.mode || 'Cash')}</div>
-        </div>
-
-        <div class="receipt-amt">
-          <div style="font-size: 0.72rem; color: #555; text-transform: uppercase;">Amount Received with Thanks</div>
-          <div class="receipt-amt-num">${JRMData.formatINR(c.paid)}</div>
-          <div class="receipt-amt-txt">${JRMData.numberToWordsINR(c.paid)}</div>
-        </div>
-
-        <table style="width: 100%; font-size: 0.82rem; margin-bottom: 14px; border-collapse: collapse;">
+    container.innerHTML = `
+      <table class="data-table">
+        <thead>
           <tr>
-            <td style="padding: 4px 0; color: #666;">Received From:</td>
-            <td style="padding: 4px 0; text-align: right; font-weight: 700;">${escapeHTML(c.name)}</td>
+            <th>Member Name</th>
+            <th>Registered Phone</th>
+            <th>4-Digit PIN</th>
+            <th>Receipt Token</th>
+            <th>Action</th>
           </tr>
-          ${c.phone ? `
+        </thead>
+        <tbody>
+          ${list.map(c => `
             <tr>
-              <td style="padding: 4px 0; color: #666;">Contact No:</td>
-              <td style="padding: 4px 0; text-align: right;">${escapeHTML(c.phone)}</td>
+              <td><strong>${escapeHTML(c.name)}</strong></td>
+              <td>${escapeHTML(c.phone || 'Not registered')}</td>
+              <td><code>${escapeHTML(c.pin || '1234')}</code></td>
+              <td><code>${escapeHTML(c.token || '')}</code></td>
+              <td>
+                <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openMemberPinModal('${c.id}')">
+                  🔑 Edit PIN & Phone
+                </button>
+              </td>
             </tr>
-          ` : ''}
-          <tr>
-            <td style="padding: 4px 0; color: #666;">Purpose:</td>
-            <td style="padding: 4px 0; text-align: right;">Mahana Sunni Deeni Nashisht Fund</td>
-          </tr>
-          <tr>
-            <td style="padding: 4px 0; color: #666;">Balance Status:</td>
-            <td style="padding: 4px 0; text-align: right; font-weight: 700;">${c.balance > 0 ? `Pending: ${JRMData.formatINR(c.balance)}` : 'Nil (Fully Settled)'}</td>
-          </tr>
-        </table>
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #DDD; padding-top: 10px; font-size: 0.72rem; color: #777;">
-          <div>
-            Verified Digital Record • Indian Standard Time (IST)<br>
-            Developed by esitesz • jrmantophill.esitesz.com
-          </div>
-          <div style="text-align: center; border-top: 1px dashed #999; width: 140px; padding-top: 2px;">
-            Zain & Zimmedaran<br>
-            JRM Antophill Committee
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; margin-top: 16px; justify-content: flex-end;" class="no-print">
-          <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.shareMemberReceiptWhatsApp('${c.id}')">📱 Send via WhatsApp</button>
-          <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Print / Save PDF</button>
-        </div>
-      </div>
+          `).join('')}
+        </tbody>
+      </table>
     `;
-
-    el.receiptModal.classList.add('active');
   }
 
-  function shareMemberReceiptWhatsApp(collectionId) {
-    const c = JRMData.getCollectionById(collectionId);
-    if (!c) return;
-    const settings = JRMData.getSettings();
-    const prog = JRMData.getProgramById(c.programId) || JRMData.getActiveProgram();
+  function renderAuditLogsTable() {
+    const container = document.getElementById('auditLogsContainer');
+    if (!container) return;
 
-    const msg = `*Assalamu Alaikum ${c.name} Bhai,*\n\n` +
-      `Jamat Raza e Mustafa (Antophill Mumbai) ke *${prog ? prog.title : 'Mahana Mehfil'}* ke silsile me aapka contribution verify ho gaya hai:\n\n` +
-      `*Receipt No:* ${c.token}\n` +
-      `*Amount Received:* ${JRMData.formatINR(c.paid)}\n` +
-      `*Payment Mode:* ${c.mode || 'Cash'}\n` +
-      `*Date (IST):* ${c.date} (Indian Standard Time)\n` +
-      `${c.balance > 0 ? `*Balance Pending:* ${JRMData.formatINR(c.balance)}\n` : `*Status:* Paid in full ✅\n`}\n` +
-      `Aap apni official digital receipt aur apna personal statement online dekh sakte hain:\n` +
-      `https://${settings.domain}/#verify/${c.token}\n\n` +
-      `JazakAllah Khair.\n` +
-      `*Zain & Zimmedaran — Jamat Raza e Mustafa Antophill Mumbai*`;
+    const logs = JRMData.getLogs(60);
 
-    let targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-    if (c.phone) {
-      const cleanPhone = c.phone.replace(/[^0-9]/g, '');
-      const fullPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-      targetUrl = `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(msg)}`;
+    container.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>IST Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${logs.map(l => `
+            <tr>
+              <td style="white-space: nowrap; font-size: 0.75rem;"><strong>${l.istTime || getISTDateTime(new Date(l.timestamp))}</strong></td>
+              <td>${escapeHTML(l.user)}</td>
+              <td><code>${escapeHTML(l.action)}</code></td>
+              <td style="font-size: 0.8rem;">${escapeHTML(l.details)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function saveSecurityPins(e) {
+    e.preventDefault();
+    const superPin = document.getElementById('settingSuperPin').value.trim();
+    const adminPin = document.getElementById('settingAdminPin').value.trim();
+
+    if (!superPin || !adminPin) {
+      alert('Dono PINs zaroori hain.');
+      return;
     }
-    window.open(targetUrl, '_blank');
+
+    JRMData.saveSettings({
+      superAdminPin: superPin,
+      adminPin: adminPin
+    });
+
+    JRMData.log('SECURITY_PIN_CHANGE', 'Super Admin updated access PINs.');
+    showToast('Security PINs updated successfully!');
   }
 
-  function sendWhatsAppReminder(collectionId) {
-    const c = JRMData.getCollectionById(collectionId);
-    if (!c) return;
-    const settings = JRMData.getSettings();
-    const prog = JRMData.getProgramById(c.programId) || JRMData.getActiveProgram();
-    const balanceAmt = c.balance || 0;
+  function saveBioLinks(e) {
+    e.preventDefault();
+    const bioLinks = {
+      whatsapp: document.getElementById('bioLinkWhatsApp').value.trim(),
+      instagram: document.getElementById('bioLinkInstagram').value.trim(),
+      youtube: document.getElementById('bioLinkYouTube').value.trim(),
+      maps: document.getElementById('bioLinkMaps').value.trim(),
+      helpline: document.getElementById('bioLinkHelpline').value.trim()
+    };
 
-    const msg = `*Assalamu Alaikum ${c.name} Bhai,*\n\n` +
-      `Jamat Raza e Mustafa (Antophill) ke *${prog ? prog.title : 'Mahana Sunni Deeni Nashisht Mehfil'}* ke silsile me aapka *${JRMData.formatINR(balanceAmt)}* balance pending hai.\n\n` +
-      `Meharbani karke Cash ya Bank UPI ke zariye jama kara dein taaki program intezamaat ba-aasani ho sakein.\n\n` +
-      `JazakAllah Khair.\n` +
-      `*Zain & Zimmedaran — Jamat Raza e Mustafa Antophill Mumbai*`;
-
-    let targetUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-    if (c.phone) {
-      const cleanPhone = c.phone.replace(/[^0-9]/g, '');
-      const fullPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
-      targetUrl = `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(msg)}`;
-    }
-    window.open(targetUrl, '_blank');
-  }
-
-  // Sheets Sync & Backup
-  function renderSheetsView() {
-    const settings = JRMData.getSettings();
-    const urlInput = document.getElementById('sheetUrlInput');
-    const keyInput = document.getElementById('sheetKeyInput');
-    if (urlInput) urlInput.value = settings.googleSheetUrl || '';
-    if (keyInput) keyInput.value = settings.googleSheetApiKey || '';
+    JRMData.saveSettings({ bioLinks });
+    JRMData.log('BIO_LINKS_UPDATE', 'Updated official community bio links.');
+    renderPublicHome();
+    showToast('Official Bio Links updated!');
   }
 
   function saveSheetSettings() {
-    const url = (document.getElementById('sheetUrlInput').value || '').trim();
-    const key = (document.getElementById('sheetKeyInput').value || '').trim();
-    JRMData.saveSettings({ googleSheetUrl: url, googleSheetApiKey: key });
+    const url = document.getElementById('sheetUrlInput').value.trim();
+    const key = document.getElementById('sheetKeyInput').value.trim();
+    JRMData.saveSettings({
+      googleSheetUrl: url,
+      googleSheetApiKey: key
+    });
     showToast('Google Sheets configuration saved.');
   }
 
   async function syncGoogleSheets() {
     const settings = JRMData.getSettings();
     if (!settings.googleSheetUrl) {
-      showToast('Pehle Google Apps Script Web App URL enter karein.', 'danger');
+      alert('Kripya pehle Google Apps Script Web App URL save karein.');
       return;
     }
 
     const btn = document.getElementById('syncSheetsBtn');
-    if (btn) btn.disabled = true;
-    showToast('Syncing with Google Sheets...');
+    if (btn) btn.textContent = 'Syncing...';
 
     try {
       const payload = {
-        action: 'sync_all',
+        action: 'sync',
         apiKey: settings.googleSheetApiKey,
-        user: state.isAdmin ? 'Zain (Admin)' : 'Portal Sync',
         collections: JRMData.getCollections(),
         expenses: JRMData.getExpenses(),
         programs: JRMData.getPrograms()
@@ -1077,229 +1373,447 @@
       } else {
         throw new Error(res.error || 'Failed to sync');
       }
-    } catch (e) {
-      showToast('Error syncing: ' + e.message, 'danger');
+    } catch (err) {
+      showToast('Sheets Sync Error: ' + err.message);
     } finally {
-      if (btn) btn.disabled = false;
+      if (btn) btn.textContent = 'Sync with Google Sheets';
     }
   }
 
-  function downloadCSV(type) {
-    const content = type === 'collections' ? JRMData.exportCollectionsCSV() : JRMData.exportExpensesCSV();
-    const filename = `JRM_${type}_IST_${getISTISODate()}.csv`;
-    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  function exportJSONBackup() {
+    const json = JRMData.exportFullBackup();
+    const blob = new Blob([json], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
+    link.download = `JRM_Database_Backup_IST_${getISTISODate()}.json`;
     link.click();
-    document.body.removeChild(link);
+    showToast('JSON Backup downloaded.');
   }
 
-  // Audit Logs View (IST Time)
-  function renderLogsView() {
-    const container = document.getElementById('auditLogsContainer');
-    if (!container) return;
-    const logs = JRMData.getLogs(100);
-
-    container.innerHTML = `
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Timestamp (Indian Standard Time)</th>
-              <th>User</th>
-              <th>Action</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${logs.map(l => `
-              <tr>
-                <td style="white-space: nowrap; font-family: var(--font-mono); font-size: 0.75rem;">
-                  <strong>${l.istTime || getISTDateTime(new Date(l.timestamp))}</strong>
-                </td>
-                <td><strong>${escapeHTML(l.user)}</strong></td>
-                <td><code>${escapeHTML(l.action)}</code></td>
-                <td>${escapeHTML(l.details)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
+  function triggerJSONImport() {
+    const fileIn = document.getElementById('jsonImportInput');
+    if (fileIn) fileIn.click();
   }
 
-  // Modals & Form Handlers
-  function openAddCollectionModal() {
-    if (!state.isAdmin) {
-      openAdminPinModal();
+  function handleJSONImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const res = JRMData.importFullBackup(ev.target.result);
+      if (res.success) {
+        renderAll();
+        showToast('Database successfully restored from JSON!');
+      } else {
+        alert('Invalid backup file: ' + res.error);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetDatabase() {
+    if (confirm('CAUTION: Kya aap poore database ko factory default par reset karna chahte hain?')) {
+      JRMData.resetToDefault();
+      renderAll();
+      showToast('Database reset to factory default.');
+    }
+  }
+
+  // ==========================================================================
+  // RECEIPT & VERIFY ENGINE
+  // ==========================================================================
+  function searchReceipt(e) {
+    e.preventDefault();
+    const input = document.getElementById('receiptSearchInput');
+    if (!input) return;
+    performReceiptSearch(input.value);
+  }
+
+  function performReceiptSearch(query) {
+    const resultBox = document.getElementById('receiptLookupResult');
+    if (!resultBox) return;
+
+    if (!query || !query.trim()) {
+      resultBox.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Token enter karein.</p>`;
       return;
     }
-    const form = document.getElementById('collectionForm');
-    if (!form) return;
-    form.reset();
+
+    const clean = query.trim().toUpperCase();
+    const all = JRMData.getCollections();
+    const matches = all.filter(c =>
+      (c.token && c.token.toUpperCase().includes(clean)) ||
+      (c.name && c.name.toUpperCase().includes(clean))
+    );
+
+    if (matches.length === 0) {
+      resultBox.innerHTML = `
+        <div style="background: var(--status-pending-bg); border: 1px solid var(--status-pending); padding: 14px; border-radius: var(--radius-sm); color: var(--status-pending); font-size: 0.85rem;">
+          ❌ Koi verified record nahi mila: <strong>${escapeHTML(query)}</strong>.
+        </div>
+      `;
+      return;
+    }
+
+    resultBox.innerHTML = matches.map(r => `
+      <div style="background: var(--bg-surface); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius-sm); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <div style="font-weight: 700; font-size: 0.95rem;">${escapeHTML(r.name)}</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Receipt Token: <code>${escapeHTML(r.token || '')}</code> • Date: ${escapeHTML(r.date)} (IST)</div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div style="font-weight: 800; color: var(--status-paid); font-size: 1.1rem;">${JRMData.formatINR(r.paid)}</div>
+          <button class="btn btn-primary btn-sm" onclick="window.JRMApp.viewReceipt('${r.id}')">View Official Receipt</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function viewReceipt(id) {
+    const c = JRMData.getCollectionById(id);
+    const settings = JRMData.getSettings();
+    const prog = JRMData.getActiveProgram();
+    if (!c) return;
+
+    const modalContent = document.getElementById('receiptModalContent');
+    if (!modalContent) return;
+
+    modalContent.innerHTML = `
+      <div class="receipt-paper">
+        <div class="receipt-head">
+          <div class="receipt-org">${escapeHTML(settings.orgFull)}</div>
+          <div class="receipt-sub">${escapeHTML(settings.orgBranch)} • Jamat Raza-e-Mustafa</div>
+          <div style="font-size: 0.7rem; font-weight: 700; color: var(--brand-green); margin-top: 4px; letter-spacing: 0.5px;">OFFICIAL DONATION RECEIPT • IST VERIFIED</div>
+        </div>
+
+        <div class="receipt-grid">
+          <div>
+            <span class="receipt-label">Receipt No. / Token</span>
+            <span class="receipt-val"><code>${escapeHTML(c.token || '')}</code></span>
+          </div>
+          <div>
+            <span class="receipt-label">Date (IST)</span>
+            <span class="receipt-val">${escapeHTML(c.date)}</span>
+          </div>
+          <div>
+            <span class="receipt-label">Received From (Member)</span>
+            <span class="receipt-val"><strong>${escapeHTML(c.name)}</strong></span>
+          </div>
+          <div>
+            <span class="receipt-label">Payment Mode</span>
+            <span class="receipt-val">${escapeHTML(c.mode || 'Cash')}</span>
+          </div>
+          <div>
+            <span class="receipt-label">Program Purpose</span>
+            <span class="receipt-val">${escapeHTML(prog ? prog.title : 'Mahana Sunni Deeni Nashisht')}</span>
+          </div>
+          <div>
+            <span class="receipt-label">Amount Received</span>
+            <span class="receipt-val" style="font-size: 1.1rem; color: var(--brand-green);">${JRMData.formatINR(c.paid)}</span>
+          </div>
+        </div>
+
+        <div style="background: #F8FBF9; border: 1px dashed #BAC7BE; padding: 10px; border-radius: 4px; margin-bottom: 14px; font-size: 0.8rem;">
+          <strong>Amount in Words:</strong> ${JRMData.numberToWordsINR(c.paid)}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #DDD; padding-top: 10px; font-size: 0.72rem; color: #777;">
+          <div>
+            Verified Digital Record • Indian Standard Time (IST)<br>
+            Developed by esitesz • jrmantophill.esitesz.com
+          </div>
+          <div style="text-align: center; border-top: 1px dashed #999; width: 140px; padding-top: 2px;">
+            Authorized Signatory<br>
+            <strong>Zain / Zimmedaran</strong>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px;" class="no-print">
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Print Receipt</button>
+        <button class="btn btn-whatsapp" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')">📱 Send on WhatsApp</button>
+      </div>
+    `;
+
+    openModal('receiptModal');
+  }
+
+  function sendWhatsAppReceipt(id) {
+    const c = JRMData.getCollectionById(id);
+    const settings = JRMData.getSettings();
+    const prog = JRMData.getActiveProgram();
+    if (!c) return;
+
+    const text =
+      `*JAMAT RAZA-E-MUSTAFA ANTOPHILL MUMBAI*\n` +
+      `*OFFICIAL DONATION RECEIPT*\n\n` +
+      `Assalamu Alaikum *${c.name}* Bhai,\n` +
+      `Aapka mehfil fund Alhamdulillah received ho gaya hai:\n\n` +
+      `*Program:* ${prog ? prog.title : 'Mahana Sunni Deeni Nashisht'}\n` +
+      `*Receipt No:* ${c.token}\n` +
+      `*Amount Received:* ${JRMData.formatINR(c.paid)}\n` +
+      `*Payment Mode:* ${c.mode || 'Cash'}\n` +
+      `*Date (IST):* ${c.date} (Indian Standard Time)\n` +
+      `${c.balance > 0 ? `*Balance Pending:* ${JRMData.formatINR(c.balance)}\n` : `*Status:* Paid in full ✅\n`}\n` +
+      `Aap apni official digital receipt aur apna personal statement online dekh sakte hain:\n` +
+      `https://${settings.domain}/#verify/${c.token}\n\n` +
+      `JazakAllah Khair.\n` +
+      `*Zain & Zimmedaran — Jamat Raza e Mustafa Antophill Mumbai*`;
+
+    const phoneClean = (c.phone || '').replace(/[^0-9]/g, '');
+    const phoneParam = phoneClean ? `phone=${phoneClean.length === 10 ? '91' + phoneClean : phoneClean}&` : '';
+    const url = `https://api.whatsapp.com/send?${phoneParam}text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+
+  // ==========================================================================
+  // MODALS & AUTHENTICATION HANDLERS
+  // ==========================================================================
+  function openAccessPortalModal(defaultTab = 'member') {
+    switchLoginTab(defaultTab);
+    openModal('accessPortalModal');
+  }
+
+  function switchLoginTab(tab) {
+    const tabMember = document.getElementById('loginTabMember');
+    const tabAdmin = document.getElementById('loginTabAdmin');
+    const tabSuper = document.getElementById('loginTabSuper');
+
+    const formMember = document.getElementById('memberAuthForm');
+    const formAdmin = document.getElementById('adminAuthForm');
+    const formSuper = document.getElementById('superAuthForm');
+
+    if (tabMember) tabMember.classList.toggle('active', tab === 'member');
+    if (tabAdmin) tabAdmin.classList.toggle('active', tab === 'admin');
+    if (tabSuper) tabSuper.classList.toggle('active', tab === 'super');
+
+    if (formMember) formMember.style.display = tab === 'member' ? 'block' : 'none';
+    if (formAdmin) formAdmin.style.display = tab === 'admin' ? 'block' : 'none';
+    if (formSuper) formSuper.style.display = tab === 'super' ? 'block' : 'none';
+  }
+
+  function handleMemberLogin(e) {
+    e.preventDefault();
+    const id = document.getElementById('memberLoginIdentifier').value.trim();
+    const pin = document.getElementById('memberLoginPin').value.trim();
+
+    const res = JRMData.loginMember(id, pin);
+    if (res.success) {
+      closeModal('accessPortalModal');
+      syncSessionState();
+      switchView('statement');
+      renderAll();
+      showToast(`Welcome ${res.member.name}! Statement unlocked.`);
+    } else {
+      alert(res.error);
+    }
+  }
+
+  function handleAdminLogin(e) {
+    e.preventDefault();
+    const pin = document.getElementById('adminLoginPin').value.trim();
+
+    const res = JRMData.loginAdmin(pin);
+    if (res.success) {
+      closeModal('accessPortalModal');
+      syncSessionState();
+      switchView('admin-dashboard');
+      renderAll();
+      showToast('Committee Admin mode unlocked.');
+    } else {
+      alert(res.error);
+    }
+  }
+
+  function handleSuperLogin(e) {
+    e.preventDefault();
+    const pin = document.getElementById('superLoginPin').value.trim();
+
+    const res = JRMData.loginSuperAdmin(pin);
+    if (res.success) {
+      closeModal('accessPortalModal');
+      syncSessionState();
+      switchView('admin-dashboard');
+      renderAll();
+      showToast('👑 Zain Super Admin Master mode unlocked.');
+    } else {
+      alert(res.error);
+    }
+  }
+
+  // Member PIN Edit Modal (Super Admin / Admin)
+  function openMemberPinModal(memberId) {
+    const member = JRMData.getCollectionById(memberId);
+    if (!member) return;
+
+    document.getElementById('editMemberId').value = member.id;
+    document.getElementById('editMemberName').value = member.name;
+    document.getElementById('editMemberPhone').value = member.phone || '';
+    document.getElementById('editMemberPin').value = member.pin || '1234';
+
+    openModal('memberPinModal');
+  }
+
+  function saveMemberPinEdit(e) {
+    e.preventDefault();
+    const id = document.getElementById('editMemberId').value;
+    const phone = document.getElementById('editMemberPhone').value.trim();
+    const pin = document.getElementById('editMemberPin').value.trim();
+
+    const res = JRMData.updateMemberCredentials(id, pin, phone);
+    if (res.success) {
+      closeModal('memberPinModal');
+      renderAll();
+      showToast('Member credentials and 4-digit PIN updated successfully.');
+    } else {
+      alert(res.error);
+    }
+  }
+
+  // Collection Entry Modals
+  function openAddCollectionModal() {
+    document.getElementById('collectionForm').reset();
     document.getElementById('collectionId').value = '';
     document.getElementById('collectionDate').value = getISTISODate();
-    el.collectionModal.classList.add('active');
+    openModal('collectionModal');
   }
 
   function openEditCollectionModal(id) {
-    if (!state.isAdmin) return;
     const c = JRMData.getCollectionById(id);
     if (!c) return;
 
     document.getElementById('collectionId').value = c.id;
-    document.getElementById('collectionName').value = c.name || '';
+    document.getElementById('collectionName').value = c.name;
     document.getElementById('collectionPhone').value = c.phone || '';
-    document.getElementById('collectionPaid').value = c.paid || 0;
+    document.getElementById('collectionPaid').value = c.paid;
     document.getElementById('collectionBalance').value = c.balance || 0;
     document.getElementById('collectionMode').value = c.mode || 'Cash';
     document.getElementById('collectionDate').value = c.date || getISTISODate();
     document.getElementById('collectionNotes').value = c.notes || '';
 
-    el.collectionModal.classList.add('active');
+    openModal('collectionModal');
   }
 
-  function saveCollectionForm(e) {
+  function saveCollectionEntry(e) {
     e.preventDefault();
     const id = document.getElementById('collectionId').value;
-    const name = (document.getElementById('collectionName').value || '').trim();
-    if (!name) return;
-
+    const name = document.getElementById('collectionName').value.trim();
+    const phone = document.getElementById('collectionPhone').value.trim();
     const paid = Number(document.getElementById('collectionPaid').value) || 0;
     const balance = Number(document.getElementById('collectionBalance').value) || 0;
-    const mode = document.getElementById('collectionMode').value || 'Cash';
-    const phone = (document.getElementById('collectionPhone').value || '').trim();
-    const date = document.getElementById('collectionDate').value || getISTISODate();
-    const notes = (document.getElementById('collectionNotes').value || '').trim();
+    const mode = document.getElementById('collectionMode').value;
+    const date = document.getElementById('collectionDate').value;
+    const notes = document.getElementById('collectionNotes').value.trim();
+    const prog = JRMData.getActiveProgram();
 
     const existing = id ? JRMData.getCollectionById(id) : null;
+
     const entry = {
       id: id || undefined,
-      memberNo: existing ? existing.memberNo : undefined,
-      name: name,
-      phone: phone,
-      programId: state.activeProgramId,
-      paid: paid,
-      balance: balance,
-      mode: mode,
-      status: paid > 0 && balance === 0 ? 'paid' : (balance > 0 ? 'pending' : 'paid'),
-      token: existing ? existing.token : JRMData.generateVerificationToken(),
-      date: date,
-      notes: notes
+      name,
+      phone,
+      paid,
+      balance,
+      mode,
+      date,
+      notes,
+      programId: prog ? prog.id : 'prog-oct-2026',
+      status: balance === 0 ? 'paid' : 'pending',
+      token: existing?.token,
+      pin: existing?.pin || '1234'
     };
 
-    const saved = JRMData.saveCollection(entry);
-    el.collectionModal.classList.remove('active');
+    JRMData.saveCollection(entry);
+    closeModal('collectionModal');
     renderAll();
-    showToast(`Saved entry for ${name}.`);
-
-    if (confirm(`Entry saved! ${name} ko WhatsApp receipt share karni hai?`)) {
-      shareMemberReceiptWhatsApp(saved.id);
-    }
+    showToast(`Collection record saved for ${name}`);
   }
 
+  // Expense Entry Modals
   function openAddExpenseModal() {
-    if (!state.isAdmin) {
-      openAdminPinModal();
-      return;
-    }
-    const form = document.getElementById('expenseForm');
-    if (!form) return;
-    form.reset();
+    document.getElementById('expenseForm').reset();
     document.getElementById('expenseId').value = '';
     document.getElementById('expenseDate').value = getISTISODate();
-    el.expenseModal.classList.add('active');
+    openModal('expenseModal');
   }
 
   function openEditExpenseModal(id) {
-    if (!state.isAdmin) return;
-    const ex = JRMData.getExpenses().find(e => e.id === id);
-    if (!ex) return;
+    const e = JRMData.getExpenses().find(item => item.id === id);
+    if (!e) return;
 
-    document.getElementById('expenseId').value = ex.id;
-    document.getElementById('expenseTitle').value = ex.title || '';
-    document.getElementById('expenseCategory').value = ex.category || 'Parchun Kharcha';
-    document.getElementById('expenseAmount').value = ex.amount || 0;
-    document.getElementById('expensePaidTo').value = ex.paidTo || '';
-    document.getElementById('expenseMode').value = ex.mode || 'Cash';
-    document.getElementById('expenseVoucher').value = ex.voucherNo || '';
-    document.getElementById('expenseDate').value = ex.date || getISTISODate();
-    document.getElementById('expenseNotes').value = ex.notes || '';
+    document.getElementById('expenseId').value = e.id;
+    document.getElementById('expenseTitle').value = e.title;
+    document.getElementById('expenseCategory').value = e.category || 'Nazrana';
+    document.getElementById('expenseAmount').value = e.amount;
+    document.getElementById('expensePaidTo').value = e.paidTo || '';
+    document.getElementById('expenseDate').value = e.date || getISTISODate();
+    document.getElementById('expenseNotes').value = e.notes || '';
 
-    el.expenseModal.classList.add('active');
+    openModal('expenseModal');
   }
 
-  function saveExpenseForm(e) {
+  function saveExpenseEntry(e) {
     e.preventDefault();
     const id = document.getElementById('expenseId').value;
-    const title = (document.getElementById('expenseTitle').value || '').trim();
-    if (!title) return;
-
+    const title = document.getElementById('expenseTitle').value.trim();
+    const category = document.getElementById('expenseCategory').value;
     const amount = Number(document.getElementById('expenseAmount').value) || 0;
-    const category = document.getElementById('expenseCategory').value || 'Parchun Kharcha';
-    const paidTo = (document.getElementById('expensePaidTo').value || '').trim();
-    const mode = document.getElementById('expenseMode').value || 'Cash';
-    const voucherNo = (document.getElementById('expenseVoucher').value || '').trim();
-    const date = document.getElementById('expenseDate').value || getISTISODate();
-    const notes = (document.getElementById('expenseNotes').value || '').trim();
+    const paidTo = document.getElementById('expensePaidTo').value.trim();
+    const date = document.getElementById('expenseDate').value;
+    const notes = document.getElementById('expenseNotes').value.trim();
+    const prog = JRMData.getActiveProgram();
 
-    JRMData.saveExpense({
+    const entry = {
       id: id || undefined,
-      title: title,
-      category: category,
-      amount: amount,
-      programId: state.activeProgramId,
-      paidTo: paidTo,
-      mode: mode,
-      voucherNo: voucherNo,
-      date: date,
-      notes: notes
-    });
+      title,
+      category,
+      amount,
+      paidTo,
+      date,
+      notes,
+      programId: prog ? prog.id : 'prog-sep-2026'
+    };
 
-    el.expenseModal.classList.remove('active');
+    JRMData.saveExpense(entry);
+    closeModal('expenseModal');
     renderAll();
-    showToast(`Logged expense: ${title} (${JRMData.formatINR(amount)})`);
+    showToast(`Expense logged: ${title}`);
   }
 
-  function quickSettleModal(collectionId) {
-    const c = JRMData.getCollectionById(collectionId);
-    if (!c) return;
-
-    const amt = prompt(`${c.name} se mili hui rakam enter karein (Current Balance: ${c.balance}):`, c.balance);
-    if (amt === null) return;
-    const paidNow = Number(amt) || 0;
-    if (paidNow <= 0) return;
-
-    const newBalance = Math.max(0, (c.balance || 0) - paidNow);
-    c.paid = (c.paid || 0) + paidNow;
-    c.balance = newBalance;
-    c.status = newBalance === 0 ? 'paid' : 'pending';
-    c.notes = (c.notes ? c.notes + ' | ' : '') + `Paid ₹${paidNow} on ${getISTISODate()} (IST)`;
-
-    JRMData.saveCollection(c);
-    renderAll();
-    showToast(`Received ${JRMData.formatINR(paidNow)} from ${c.name}.`);
-
-    if (confirm(`Receipt WhatsApp par bhejein?`)) {
-      shareMemberReceiptWhatsApp(c.id);
-    }
-  }
-
-  function promptAddPhone(collectionId) {
-    const c = JRMData.getCollectionById(collectionId);
-    if (!c) return;
-    const phone = prompt(`${c.name} ka contact number enter karein:`, c.phone || '');
-    if (phone !== null) {
-      c.phone = phone.trim();
-      JRMData.saveCollection(c);
+  function deleteExpenseEntry(id) {
+    if (confirm('Kya aap is expense ko delete karna chahte hain?')) {
+      JRMData.deleteExpense(id);
       renderAll();
-      showToast(`Updated phone for ${c.name}`);
+      showToast('Expense entry deleted.');
     }
   }
 
-  function showToast(msg, type = 'info') {
+  function downloadCSV(type) {
+    const content = type === 'collections'
+      ? JRMData.exportCollectionsCSV(state.currentProgramId)
+      : JRMData.exportExpensesCSV(state.currentProgramId);
+
+    const filename = `JRM_${type}_IST_${getISTISODate()}.csv`;
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    showToast(`Exported ${filename}`);
+  }
+
+  // Generic Modal Helpers
+  function openModal(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) m.classList.add('active');
+  }
+
+  function closeModal(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) m.classList.remove('active');
+  }
+
+  function showToast(msg) {
     if (!el.toastContainer) return;
     const t = document.createElement('div');
     t.className = 'toast-msg';
@@ -1310,102 +1824,62 @@
     }, 3200);
   }
 
-  function bindEvents() {
-    if (el.themeToggle) el.themeToggle.addEventListener('click', toggleTheme);
-
-    const pinForm = document.getElementById('adminPinForm');
-    if (pinForm) {
-      pinForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        submitAdminPin();
-      });
-    }
-
-    const memberLoginForm = document.getElementById('memberLoginForm');
-    if (memberLoginForm) {
-      memberLoginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        submitMemberLogin();
-      });
-    }
-
-    const colSearch = document.getElementById('collectionSearchInput');
-    if (colSearch) colSearch.addEventListener('input', (e) => {
-      state.searchQuery = e.target.value;
-      renderCollections();
-    });
-
-    const colStatus = document.getElementById('collectionStatusFilter');
-    if (colStatus) colStatus.addEventListener('change', (e) => {
-      state.statusFilter = e.target.value;
-      renderCollections();
-    });
-
-    const colMode = document.getElementById('collectionModeFilter');
-    if (colMode) colMode.addEventListener('change', (e) => {
-      state.modeFilter = e.target.value;
-      renderCollections();
-    });
-
-    const colForm = document.getElementById('collectionForm');
-    if (colForm) colForm.addEventListener('submit', saveCollectionForm);
-
-    const expForm = document.getElementById('expenseForm');
-    if (expForm) expForm.addEventListener('submit', saveExpenseForm);
-
-    const verifyForm = document.getElementById('receiptSearchForm');
-    if (verifyForm) {
-      verifyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const q = (document.getElementById('receiptSearchInput').value || '').trim();
-        handleReceiptSearch(q);
-      });
-    }
-
-    document.querySelectorAll('.modal-close-btn').forEach(b => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('.modal-layer').forEach(m => m.classList.remove('active'));
-      });
-    });
-
-    document.querySelectorAll('.modal-layer').forEach(m => {
-      m.addEventListener('click', (e) => {
-        if (e.target === m) m.classList.remove('active');
-      });
-    });
-  }
-
   function escapeHTML(str) {
     if (!str) return '';
-    return String(str)
+    return str.toString()
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/'/g, '&#039;');
   }
 
+  function goHome() {
+    switchView('public-home');
+  }
+
+  // Public API Export
   window.JRMApp = {
+    goHome,
     switchView,
+    openAccessPortalModal,
+    switchLoginTab,
+    handleMemberLogin,
+    handleAdminLogin,
+    handleSuperLogin,
+    logoutCurrent,
+    openMemberPinModal,
+    saveMemberPinEdit,
+    previewMemberStatement,
+    openAddCollectionModal,
+    openEditCollectionModal,
+    saveCollectionEntry,
+    openAddExpenseModal,
+    openEditExpenseModal,
+    saveExpenseEntry,
+    deleteExpenseEntry,
+    sendWhatsAppReminder,
+    quickSettleModal,
     setWhatsAppTab,
     shareCurrentWhatsApp,
     copyCurrentWhatsApp,
-    openAddCollectionModal,
-    openEditCollectionModal,
-    openAddExpenseModal,
-    openEditExpenseModal,
-    openReceipt,
-    shareMemberReceiptWhatsApp,
-    sendWhatsAppReminder,
-    quickSettleModal,
-    promptAddPhone,
-    openMemberLoginModal,
-    openAdminPinModal,
-    logoutCurrent,
+    saveProgramPoster,
+    saveSecurityPins,
+    saveBioLinks,
     saveSheetSettings,
     syncGoogleSheets,
+    exportJSONBackup,
+    triggerJSONImport,
+    handleJSONImport,
+    resetDatabase,
+    searchReceipt,
+    viewReceipt,
+    sendWhatsAppReceipt,
+    shareProgramInfo,
     downloadCSV,
-    showToast
+    openModal,
+    closeModal,
+    handleProgramChange
   };
 
-})();
+})(window, document);

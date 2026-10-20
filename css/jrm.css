@@ -676,6 +676,182 @@ a {
   box-shadow: var(--shadow-md);
 }
 
+/* Bio Links Grid & Buttons */
+.bio-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.bio-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.bio-link-btn:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
+}
+
+.bio-link-btn.whatsapp-link {
+  border-color: #25D366;
+  color: #0E623B;
+  background: #EAF7F0;
+}
+
+.bio-link-btn.youtube-link {
+  border-color: #FF0000;
+  color: #A8281E;
+}
+
+.bio-link-btn.instagram-link {
+  border-color: #E1306C;
+  color: #9C1B4E;
+}
+
+/* Program Poster Card */
+.program-poster-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.program-poster-hero {
+  background: linear-gradient(135deg, var(--brand-green) 0%, #0A3622 100%);
+  color: #FFF;
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.program-poster-hero h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.program-poster-hero p {
+  font-size: 0.9rem;
+  color: #DCE3DE;
+}
+
+.program-poster-banner {
+  max-width: 100%;
+  max-height: 400px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.program-poster-body {
+  padding: 18px 20px;
+}
+
+.program-meta-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.program-meta-item {
+  font-size: 0.82rem;
+}
+
+.program-meta-item strong {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+
+/* Public Transparency Section */
+.transparency-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.transparency-metric-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+}
+
+.transparency-metric-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--brand-green);
+  margin-top: 4px;
+}
+
+/* Login Tabs */
+.login-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.login-tab-btn {
+  flex: 1;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+
+.login-tab-btn.active {
+  color: var(--brand-green);
+  border-bottom-color: var(--brand-green);
+}
+
+.user-session-pill.superadmin-badge {
+  background: #114B30;
+  color: #FFF;
+  border-color: #0A3622;
+}
+
+.user-session-pill.admin-badge {
+  background: #E7F3EC;
+  color: #0E623B;
+  border-color: #BAC7BE;
+}
+
+.user-session-pill.member-badge {
+  background: #EBF3FA;
+  color: #175282;
+  border-color: #B9D5EB;
+}
+
 @media print {
   body { background: #FFF !important; color: #000 !important; }
   .jrm-header, .jrm-nav, .jrm-footer, .no-print, .btn, .program-strip, .metrics-row { display: none !important; }
