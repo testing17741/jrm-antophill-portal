@@ -1248,47 +1248,39 @@ a {
 }
 
 /* ==========================================================================
-   DRIBBLE-GRADE ISLAMIC TRUST UI & SOCIAL SCRAPER COMPONENTS
+   INSTITUTIONAL ISLAMIC TRUST DESIGN SYSTEM & MEDIA FEED COMPONENTS
+   Anti-AI-Slop Craft: Zero decorative pulses, zero emoji decoration, zero fake metrics.
    ========================================================================== */
 
-/* Islamic Star Pattern Ambient Watermark */
-.islamic-pattern-accent {
-  background-image: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
+/* Focus indicators for keyboard accessibility (WCAG AA - R-32, R-39) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 2px;
 }
 
-/* Pulse Dot Animation for Live Scraper Status */
-@keyframes pulse-dot {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(14, 186, 92, 0.7); }
-  70% { transform: scale(1.15); box-shadow: 0 0 0 7px rgba(14, 186, 92, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(14, 186, 92, 0); }
+[data-theme="dark"] a:focus-visible,
+[data-theme="dark"] button:focus-visible,
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] select:focus-visible,
+[data-theme="dark"] textarea:focus-visible {
+  outline: 2px solid var(--brand-gold);
 }
 
-.pulse-dot {
-  width: 9px;
-  height: 9px;
-  background-color: #0EBA5C;
-  border-radius: 50%;
-  display: inline-block;
-  animation: pulse-dot 1.8s infinite;
-  flex-shrink: 0;
+/* Base button and link interactivity rules */
+button, a.btn, [role="button"] {
+  cursor: pointer;
+  min-height: 38px;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.spin-icon {
-  display: inline-block;
-  animation: spin 1s linear infinite;
-}
-
-/* Live Social Media Scraper Banner */
-.social-sync-bar {
+/* Feed Sync Metadata Bar */
+.trust-feed-meta-bar {
   background: var(--bg-surface);
-  border: 1px solid var(--border-gold);
-  border-left: 4px solid var(--brand-gold);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand-green);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   margin-bottom: 16px;
@@ -1299,43 +1291,40 @@ a {
   gap: 10px;
 }
 
-.social-sync-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.8rem;
+.trust-feed-meta-info {
+  font-size: 0.82rem;
   color: var(--text-main);
+  line-height: 1.4;
 }
 
-.social-sync-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-sync {
-  background: var(--brand-green-light);
-  border: 1px solid var(--brand-green);
+.trust-feed-meta-info strong {
   color: var(--brand-green);
-  font-size: 0.76rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
+}
+
+.btn-sync-feed {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: all 0.2s ease;
+  gap: 6px;
+  transition: all 0.15s ease;
 }
 
-.btn-sync:hover {
+.btn-sync-feed:hover {
   background: var(--brand-green);
-  color: #FFF;
+  border-color: var(--brand-green);
+  color: #FFFFFF;
 }
 
-/* Dribbble Platform Filter Tabs */
+/* Platform Filter Navigation */
 .social-platform-nav {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 4px;
   margin-bottom: 16px;
@@ -1345,85 +1334,115 @@ a {
 .social-platform-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   padding: 6px 14px;
-  border-radius: var(--radius-full);
-  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
   font-weight: 600;
   border: 1px solid var(--border);
   background: var(--bg-surface);
   color: var(--text-muted);
   white-space: nowrap;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease;
 }
 
 .social-platform-pill:hover {
   border-color: var(--brand-green);
   color: var(--brand-green);
-  transform: translateY(-1px);
 }
 
 .social-platform-pill.active {
   background: var(--brand-green);
   border-color: var(--brand-green);
-  color: #FFF;
-  box-shadow: 0 2px 8px rgba(11, 59, 36, 0.25);
+  color: #FFFFFF;
 }
 
-/* Platform Badge Colors */
+[data-theme="dark"] .social-platform-pill.active {
+  background: var(--brand-green);
+  border-color: var(--brand-green);
+  color: #FFFFFF;
+}
+
+/* Platform Badges */
 .badge-platform {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   font-size: 0.7rem;
   font-weight: 700;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
 }
 
 .badge-youtube {
-  background: #FF0000;
-  color: #FFFFFF;
+  background: #EBF3EE;
+  color: #0B3B24;
+  border: 1px solid #BAC7BE;
 }
 
 .badge-instagram {
-  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
-  color: #FFFFFF;
+  background: #FDF4E7;
+  color: #8C5815;
+  border: 1px solid #DFD5C4;
 }
 
 .badge-whatsapp {
-  background: #25D366;
-  color: #FFFFFF;
+  background: #E8F5ED;
+  color: #0B5B34;
+  border: 1px solid #BAC7BE;
 }
 
 .badge-facebook {
-  background: #1877F2;
-  color: #FFFFFF;
+  background: #EEF3FA;
+  color: #174276;
+  border: 1px solid #C8D6E5;
 }
 
-/* Dribbble Enhanced Video Card */
+[data-theme="dark"] .badge-youtube {
+  background: #153424;
+  color: #79D29F;
+  border-color: #2D543F;
+}
+
+[data-theme="dark"] .badge-instagram {
+  background: #281D0E;
+  color: #F0B863;
+  border-color: #4A3519;
+}
+
+[data-theme="dark"] .badge-whatsapp {
+  background: #102C1E;
+  color: #52C28A;
+  border-color: #234E35;
+}
+
+[data-theme="dark"] .badge-facebook {
+  background: #0E1F35;
+  color: #78A8E8;
+  border-color: #1F3F6B;
+}
+
+/* Dignified Media Card */
 .social-card-v2 {
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .social-card-v2:hover {
-  transform: translateY(-4px);
+  border-color: var(--brand-gold-dark);
   box-shadow: var(--shadow-md);
-  border-color: var(--brand-gold);
 }
 
 .social-card-media {
   position: relative;
   width: 100%;
-  height: 165px;
+  height: 175px;
   background: #08140D;
   overflow: hidden;
   cursor: pointer;
@@ -1433,11 +1452,11 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
 }
 
 .social-card-v2:hover .social-card-img {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .social-card-overlay {
@@ -1446,7 +1465,7 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: rgba(8, 20, 13, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1455,20 +1474,20 @@ a {
 .social-play-btn {
   width: 44px;
   height: 44px;
-  background: rgba(197, 160, 89, 0.95);
+  background: var(--brand-gold);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #072517;
-  font-size: 1.15rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s ease, background 0.2s ease;
+  font-size: 1rem;
+  font-weight: 800;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .social-card-media:hover .social-play-btn {
-  transform: scale(1.15);
-  background: #E8C882;
+  background: #D8B772;
+  transform: scale(1.1);
 }
 
 .social-card-badge-top {
@@ -1477,41 +1496,29 @@ a {
   left: 10px;
 }
 
-.social-card-views-top {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #FFF;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
 .social-card-duration-bottom {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #FFF;
-  font-size: 0.68rem;
+  background: rgba(0, 0, 0, 0.85);
+  color: #FFFFFF;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 3px;
 }
 
 .social-card-body {
-  padding: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
 .social-card-title {
-  font-size: 0.94rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--text-main);
   margin-bottom: 6px;
   cursor: pointer;
@@ -1522,35 +1529,36 @@ a {
 }
 
 .social-card-speaker {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--brand-green);
   margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+}
+
+[data-theme="dark"] .social-card-speaker {
+  color: var(--brand-gold);
 }
 
 .social-card-desc {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.5;
-  margin-bottom: 12px;
+  line-height: 1.55;
+  margin-bottom: 14px;
   flex: 1;
 }
 
 .social-card-foot {
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: var(--bg-subtle);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
 }
 
 .social-card-channel-name {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
 }

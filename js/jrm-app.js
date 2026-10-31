@@ -1,5 +1,5 @@
 /**
- * JRM Antophill — Official Deeni Portal & Organization Platform
+ * JRM Antophill: Official Deeni Portal & Organization Platform
  * Application Controller, Navigation, OTP Verification, Live Countdown & Media Engine
  * Organization: Jamat Raza-E-Mustafa Antophill, Wadala, Mumbai
  * Developed by esitesz (jrmantophill.esitesz.com)
@@ -97,7 +97,7 @@
     const saved = localStorage.getItem('jrm_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', saved);
     if (el.themeToggle) {
-      el.themeToggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+      el.themeToggle.textContent = saved === 'dark' ? 'Light Mode' : 'Dark Mode';
     }
   }
 
@@ -106,7 +106,7 @@
     const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('jrm_theme', next);
-    if (el.themeToggle) el.themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+    if (el.themeToggle) el.themeToggle.textContent = next === 'dark' ? 'Light Mode' : 'Dark Mode';
   }
 
   function initPWA() {
@@ -138,17 +138,17 @@
 
     if (state.role === 'superadmin') {
       el.userRoleDisplay.className = 'user-session-pill superadmin-badge';
-      el.userRoleDisplay.innerHTML = `<span>👑 Zain (Super Admin)</span>`;
+      el.userRoleDisplay.innerHTML = `<span>Zain (Super Admin)</span>`;
       el.loginActionBtn.textContent = 'Logout';
       el.loginActionBtn.onclick = logoutCurrent;
     } else if (state.role === 'admin') {
       el.userRoleDisplay.className = 'user-session-pill admin-badge';
-      el.userRoleDisplay.innerHTML = `<span>🛡️ Committee Admin</span>`;
+      el.userRoleDisplay.innerHTML = `<span>Committee Admin</span>`;
       el.loginActionBtn.textContent = 'Logout';
       el.loginActionBtn.onclick = logoutCurrent;
     } else if (state.role === 'member' && state.loggedMember) {
       el.userRoleDisplay.className = 'user-session-pill member-badge';
-      el.userRoleDisplay.innerHTML = `<span>👤 ${escapeHTML(state.loggedMember.name)}</span>`;
+      el.userRoleDisplay.innerHTML = `<span>Member: ${escapeHTML(state.loggedMember.name)}</span>`;
       el.loginActionBtn.textContent = 'Logout';
       el.loginActionBtn.onclick = logoutCurrent;
     } else {
@@ -192,7 +192,7 @@
     }
 
     if (state.role === 'superadmin') {
-      tabs.push({ id: 'super-settings', label: '👑 Super Settings' });
+      tabs.push({ id: 'super-settings', label: 'Super Settings' });
     }
 
     el.navTabsContainer.innerHTML = tabs.map(t => `
@@ -375,22 +375,22 @@
         </p>
 
         <div style="background: var(--bg-subtle); border-left: 3px solid var(--brand-green); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.82rem; color: var(--text-muted);">
-          📢 <strong>Official Announcement:</strong> ${escapeHTML(prog.posterAnnouncement || settings.posterAnnouncement)}
+          <strong>Official Announcement:</strong> ${escapeHTML(prog.posterAnnouncement || settings.posterAnnouncement)}
         </div>
 
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <a href="${escapeHTML(settings.bioLinks.maps)}" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
-            📍 Open in Google Maps
+            Open in Google Maps
           </a>
           <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.shareProgramInfo()">
-            📱 Share Details on WhatsApp
+            Share Details on WhatsApp
           </button>
           <button class="btn btn-primary btn-sm" onclick="window.JRMApp.handleRsvp()">
-            🔔 Confirm Attendance / RSVP (<span id="rsvpCounter">${prog.rsvpCount || 168}</span> Attending)
+            Confirm Attendance / RSVP (<span id="rsvpCounter">${prog.rsvpCount || 168}</span> Attending)
           </button>
           ${(state.role === 'admin' || state.role === 'superadmin') ? `
             <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('admin-program-manager')">
-              ✏️ Edit Program & Poster
+              Edit Program & Poster
             </button>
           ` : ''}
         </div>
@@ -482,32 +482,32 @@
     container.innerHTML = `
       ${bio.whatsapp ? `
         <a href="${escapeHTML(bio.whatsapp)}" target="_blank" rel="noopener noreferrer" class="bio-link-btn whatsapp-link">
-          💬 WhatsApp Channel
+          WhatsApp Channel
         </a>
       ` : ''}
       ${bio.instagram ? `
         <a href="${escapeHTML(bio.instagram)}" target="_blank" rel="noopener noreferrer" class="bio-link-btn instagram-link">
-          📷 Instagram Official
+          Instagram Official
         </a>
       ` : ''}
       ${bio.youtube ? `
         <a href="${escapeHTML(bio.youtube)}" target="_blank" rel="noopener noreferrer" class="bio-link-btn youtube-link">
-          📺 YouTube Channel
+          YouTube Channel
         </a>
       ` : ''}
       ${bio.facebook ? `
         <a href="${escapeHTML(bio.facebook)}" target="_blank" rel="noopener noreferrer" class="bio-link-btn" style="color: #1877F2; border-color: #BAC7BE;">
-          📘 Facebook Official
+          Facebook Official
         </a>
       ` : ''}
       ${bio.maps ? `
         <a href="${escapeHTML(bio.maps)}" target="_blank" rel="noopener noreferrer" class="bio-link-btn">
-          📍 Akbar Suleman Compound Map
+          Akbar Suleman Compound Map
         </a>
       ` : ''}
       ${bio.helpline ? `
         <a href="tel:${escapeHTML(bio.helpline.replace(/\s+/g, ''))}" class="bio-link-btn">
-          📞 Helpline: ${escapeHTML(bio.helpline)}
+          Helpline: ${escapeHTML(bio.helpline)}
         </a>
       ` : ''}
     `;
@@ -525,7 +525,7 @@
       <div class="personality-card">
         <div>
           <div class="personality-header">
-            <span class="personality-icon">${escapeHTML(p.icon || '🕌')}</span>
+            <span class="personality-icon">${escapeHTML(p.icon || '01')}</span>
             <div>
               <div class="personality-name">${escapeHTML(p.name)}</div>
               <div class="personality-title">${escapeHTML(p.title)}</div>
@@ -594,8 +594,8 @@
 
     const homeBtn = document.getElementById('homeSyncBtn');
     const mediaBtn = document.getElementById('mediaSyncBtn');
-    if (homeBtn) homeBtn.innerHTML = '<span class="spin-icon">⚡</span> Syncing...';
-    if (mediaBtn) mediaBtn.innerHTML = '<span class="spin-icon">⚡</span> Scraping...';
+    if (homeBtn) homeBtn.textContent = 'Syncing...';
+    if (mediaBtn) mediaBtn.textContent = 'Refreshing...';
 
     try {
       const res = await JRMData.syncSocialMediaFeed(true);
@@ -608,7 +608,7 @@
       renderMediaFeed();
 
       if (userInitiated) {
-        showToast(`⚡ Social Feeds Synced! (${res.count} items refreshed)`);
+        showToast(`Social feeds synced (${res.count} items refreshed).`);
       }
     } catch (err) {
       if (userInitiated) {
@@ -616,8 +616,8 @@
       }
     } finally {
       state.isSyncingSocial = false;
-      if (homeBtn) homeBtn.innerHTML = '⚡ Sync Feeds Now';
-      if (mediaBtn) mediaBtn.innerHTML = '⚡ Scrape & Refresh';
+      if (homeBtn) homeBtn.textContent = 'Sync Feeds';
+      if (mediaBtn) mediaBtn.textContent = 'Refresh Feed';
     }
   }
 
@@ -635,23 +635,22 @@
 
     if (titleEl) titleEl.textContent = item.title;
     if (speakerEl) speakerEl.textContent = 'Speaker: ' + (item.speaker || 'Ulama-e-Ahle Sunnat');
-    if (durationEl) durationEl.textContent = '⏱️ ' + (item.duration || 'N/A') + ' • ' + (item.date || '');
+    if (durationEl) durationEl.textContent = (item.duration || 'Video') + ' • ' + (item.date || '');
     if (descEl) descEl.textContent = item.description;
     if (linkEl) {
       linkEl.href = item.url;
-      linkEl.textContent = item.type === 'youtube' ? 'Open in YouTube Channel ↗' : 'Open in Instagram ↗';
+      linkEl.textContent = item.type === 'youtube' ? 'Open YouTube Channel' : 'Open Instagram';
     }
 
     if (playerCont) {
       playerCont.innerHTML = `
-        <div style="width: 100%; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #072517 0%, #0b3b24 100%); color: #FFF; padding: 24px; text-align: center;">
-          <div style="font-size: 2.6rem; margin-bottom: 8px;">${item.type === 'youtube' ? '📺' : (item.type === 'instagram' ? '📱' : '💬')}</div>
+        <div style="width: 100%; height: 100%; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #072517; color: #FFF; padding: 24px; text-align: center;">
           <h4 style="color: #DFBD7A; font-size: 1.05rem; margin-bottom: 6px;">${escapeHTML(item.title)}</h4>
           <p style="font-size: 0.78rem; color: #DCE3DE; max-width: 440px; margin-bottom: 14px;">
             Published on official channel <strong>${escapeHTML(item.channel)}</strong>. Watch high-definition broadcast directly on the verified platform.
           </p>
           <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-            ▶️ Watch Now on ${escapeHTML(item.platform || 'Platform')}
+            Watch on ${escapeHTML(item.platform || 'Platform')}
           </a>
         </div>
       `;
@@ -680,20 +679,16 @@
 
     const renderCard = (m) => {
       let badgeClass = 'badge-youtube';
-      let platformIcon = '📺';
       let platformLabel = 'YouTube';
 
       if (m.type === 'instagram' || m.platform === 'Instagram' || m.type === 'reel') {
         badgeClass = 'badge-instagram';
-        platformIcon = '📷';
         platformLabel = 'Instagram Reel';
       } else if (m.type === 'whatsapp' || m.platform === 'WhatsApp') {
         badgeClass = 'badge-whatsapp';
-        platformIcon = '💬';
         platformLabel = 'WhatsApp Channel';
       } else if (m.type === 'facebook' || m.platform === 'Facebook') {
         badgeClass = 'badge-facebook';
-        platformIcon = '📘';
         platformLabel = 'Facebook';
       }
 
@@ -704,22 +699,21 @@
           <div class="social-card-media" onclick="window.JRMApp.openVideoModal('${m.id}')">
             <img src="${escapeHTML(thumbnailImg)}" alt="${escapeHTML(m.title)}" class="social-card-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800&q=80';">
             <div class="social-card-overlay">
-              <div class="social-play-btn">▶</div>
+              <div class="social-play-btn">Play</div>
             </div>
             <div class="social-card-badge-top">
               <span class="badge-platform ${badgeClass}">
-                ${platformIcon} ${platformLabel}
+                ${platformLabel}
               </span>
             </div>
-            ${m.views ? `<span class="social-card-views-top">👁️ ${escapeHTML(m.views)}</span>` : ''}
-            <span class="social-card-duration-bottom">⏱️ ${escapeHTML(m.duration || 'Video')}</span>
+            <span class="social-card-duration-bottom">${escapeHTML(m.duration || 'Video')}</span>
           </div>
           <div class="social-card-body">
             <h4 class="social-card-title" onclick="window.JRMApp.openVideoModal('${m.id}')">
               ${escapeHTML(m.title)}
             </h4>
             <div class="social-card-speaker">
-              <span>🎙️</span> <span>${escapeHTML(m.speaker || 'JRM Scholars')}</span>
+              <span>${escapeHTML(m.speaker || 'JRM Scholars')}</span>
             </div>
             <p class="social-card-desc">
               ${escapeHTML(m.description)}
@@ -729,10 +723,10 @@
             <span class="social-card-channel-name">${escapeHTML(m.channel || '@jrmantophill')} • ${escapeHTML(m.date || '')}</span>
             <div style="display: flex; gap: 6px;">
               <button type="button" class="btn btn-primary btn-sm" onclick="window.JRMApp.openVideoModal('${m.id}')" style="padding: 4px 10px; font-size: 0.75rem;">
-                ▶ Watch
+                Watch
               </button>
               <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Open on official platform" style="padding: 4px 8px;">
-                ↗
+                Open
               </a>
             </div>
           </div>
@@ -747,7 +741,6 @@
       if (filtered.length === 0) {
         allContainer.innerHTML = `
           <div style="grid-column: 1 / -1; padding: 36px 16px; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
-            <div style="font-size: 2.2rem; margin-bottom: 8px;">🔍</div>
             <h4 style="margin-bottom: 4px; color: var(--text-main);">No posts found matching filter criteria</h4>
             <p style="font-size: 0.82rem;">Try clearing your search query or switching to 'All Feeds'.</p>
             <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="window.JRMApp.resetMediaFilters()">
@@ -876,7 +869,6 @@
     if (state.role !== 'member' && state.role !== 'admin' && state.role !== 'superadmin') {
       container.innerHTML = `
         <div style="text-align: center; padding: 40px 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
-          <div style="font-size: 2.2rem; margin-bottom: 8px;">👤</div>
           <h3 style="margin-bottom: 8px;">Member Statement & Personal Ledger (Mera Hisab)</h3>
           <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 480px; margin: 0 auto 16px;">
             Log in securely with your registered Email or Mobile OTP to view your contribution ledger, receipt tokens, and downloadable receipts.
@@ -961,12 +953,12 @@
                   </td>
                   <td>
                     <span class="status-pill status-${h.status || (Number(h.balance) > 0 ? 'pending' : 'paid')}">
-                      ${Number(h.balance) === 0 ? 'Paid ✅' : 'Pending ❌'}
+                      ${Number(h.balance) === 0 ? 'Paid' : 'Pending'}
                     </span>
                   </td>
                   <td>
                     <button class="btn btn-outline btn-sm" onclick="window.JRMApp.viewReceipt('${h.id}')">
-                      📄 View / Print Receipt
+                      View Receipt
                     </button>
                   </td>
                 </tr>
@@ -1145,16 +1137,16 @@
                 <td>${escapeHTML(c.phone || '-')}</td>
                 <td style="font-weight: 700; color: var(--status-paid);">${JRMData.formatINR(c.paid)}</td>
                 <td style="font-weight: 700; color: ${Number(c.balance) > 0 ? 'var(--status-pending)' : 'var(--text-muted)'};">
-                  ${Number(c.balance) > 0 ? `${JRMData.formatINR(c.balance)} ❌` : '0 ✅'}
+                  ${Number(c.balance) > 0 ? JRMData.formatINR(c.balance) : '0'}
                 </td>
                 <td><span class="user-session-pill" style="font-size: 0.72rem;">${escapeHTML(c.mode || 'Cash')}</span></td>
                 <td>${escapeHTML(c.date)}</td>
                 <td><code>${escapeHTML(c.token || '')}</code></td>
                 <td>
                   <div style="display: flex; gap: 4px;">
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.viewReceipt('${c.id}')" title="Receipt">📄</button>
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')" title="Edit">✏️</button>
-                    <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')" title="WhatsApp">📱</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.viewReceipt('${c.id}')" title="Receipt">Receipt</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')" title="Edit">Edit</button>
+                    <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')" title="WhatsApp">WhatsApp</button>
                   </div>
                 </td>
               </tr>
@@ -1202,8 +1194,8 @@
                 <td><code>${escapeHTML(e.voucherNo || '')}</code></td>
                 <td>
                   <div style="display: flex; gap: 4px;">
-                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditExpenseModal('${e.id}')">✏️</button>
-                    <button class="btn btn-outline btn-sm" style="color: var(--status-pending);" onclick="window.JRMApp.deleteExpenseEntry('${e.id}')">🗑️</button>
+                    <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditExpenseModal('${e.id}')">Edit</button>
+                    <button class="btn btn-outline btn-sm" style="color: var(--status-pending);" onclick="window.JRMApp.deleteExpenseEntry('${e.id}')">Delete</button>
                   </div>
                 </td>
               </tr>
@@ -1227,7 +1219,6 @@
     if (pendingList.length === 0) {
       container.innerHTML = `
         <div style="padding: 30px; text-align: center; background: var(--bg-subtle); border-radius: var(--radius-sm);">
-          <div style="font-size: 2rem;">✅</div>
           <h4 style="color: var(--status-paid); margin: 6px 0;">All Accounts Cleared</h4>
           <p style="font-size: 0.82rem; color: var(--text-muted);">No members currently have pending balances.</p>
         </div>
@@ -1251,7 +1242,7 @@
         <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px;">
           ${c.phone ? `
             <a href="tel:${escapeHTML(c.phone.replace(/\s+/g, ''))}" class="btn btn-outline btn-sm">
-              📞 Direct Call
+              Direct Call
             </a>
           ` : `
             <button class="btn btn-outline btn-sm" onclick="window.JRMApp.openEditCollectionModal('${c.id}')">
@@ -1259,10 +1250,10 @@
             </button>
           `}
           <button class="btn btn-whatsapp btn-sm" onclick="window.JRMApp.sendWhatsAppReminder('${c.id}')">
-            💬 WhatsApp Reminder
+            WhatsApp Reminder
           </button>
           <button class="btn btn-primary btn-sm" onclick="window.JRMApp.quickSettleModal('${c.id}')">
-            ✓ Receive Payment
+            Receive Payment
           </button>
         </div>
       </div>
@@ -1330,17 +1321,17 @@
       const collections = JRMData.getCollections();
       let text = `*(40) MAHANA SUNNI DEENI NASHISHT MEHFIL (Collection)*\n`;
       text += `*Jamat Raza-e-Mustafa Antophill Mumbai*\n\n`;
-      text += `*Date :19--10--2026/*\n\n`;
-      text += `*👇Team Member Collection 👇*\n\n`;
+      text += `*Date: 19-10-2026*\n\n`;
+      text += `*Team Member Collection*\n\n`;
 
       collections.forEach(c => {
         const sr = c.memberNo || '';
         if (Number(c.balance) === 0 && Number(c.paid) > 0) {
-          text += `*${sr}/${c.name} paid ${c.paid} ✅*\n`;
+          text += `*${sr}/${c.name} Paid: ${c.paid}*\n`;
         } else if (Number(c.balance) > 0) {
-          text += Number(c.paid) > 0 ? `*${sr}/${c.name} BAL ${c.balance}*✅\n` : `*${sr}/${c.name} BAL ${c.balance} ❌*\n`;
+          text += Number(c.paid) > 0 ? `*${sr}/${c.name} Paid: ${c.paid} (Balance: ${c.balance})*\n` : `*${sr}/${c.name} Balance: ${c.balance}*\n`;
         } else {
-          text += `*${sr}/${c.name} BAL 0*\n`;
+          text += `*${sr}/${c.name} Balance: 0*\n`;
         }
       });
 
@@ -1670,7 +1661,7 @@
     if (matches.length === 0) {
       resultBox.innerHTML = `
         <div style="background: var(--status-pending-bg); border: 1px solid var(--status-pending); padding: 14px; border-radius: var(--radius-sm); color: var(--status-pending); font-size: 0.85rem;">
-          ❌ No verified record found for: <strong>${escapeHTML(query)}</strong>.
+          No verified record found for: <strong>${escapeHTML(query)}</strong>.
         </div>
       `;
       return;
@@ -1751,8 +1742,8 @@
       </div>
 
       <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px;" class="no-print">
-        <button class="btn btn-outline" onclick="window.print()">🖨️ Print Receipt</button>
-        <button class="btn btn-whatsapp" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')">📱 Send via WhatsApp</button>
+        <button class="btn btn-outline" onclick="window.print()">Print Receipt</button>
+        <button class="btn btn-whatsapp" onclick="window.JRMApp.sendWhatsAppReceipt('${c.id}')">Send via WhatsApp</button>
       </div>
     `;
 
@@ -1775,7 +1766,7 @@
       `*Amount Received:* ${JRMData.formatINR(c.paid)}\n` +
       `*Payment Mode:* ${c.mode || 'Cash'}\n` +
       `*Date (IST):* ${c.date} (Indian Standard Time)\n` +
-      `${c.balance > 0 ? `*Balance Pending:* ${JRMData.formatINR(c.balance)}\n` : `*Status:* Paid in full ✅\n`}\n` +
+      `${c.balance > 0 ? `*Balance Pending:* ${JRMData.formatINR(c.balance)}\n` : `*Status:* Paid in full\n`}\n` +
       `Online Statement & Receipt:\n` +
       `https://${settings.domain}/#verify/${c.token}\n\n` +
       `JazakAllah Khair.\n` +
@@ -1839,7 +1830,7 @@
       syncSessionState();
       switchView('admin-console');
       renderAll();
-      showToast('👑 Zain Super Admin Master control unlocked.');
+      showToast('Zain Super Admin control unlocked.');
     } else {
       alert(res.error);
     }

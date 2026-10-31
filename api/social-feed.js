@@ -15,7 +15,7 @@ const VERIFIED_FALLBACK_FEED = [
     id: 'yt-41st-announcement',
     type: 'youtube',
     platform: 'YouTube',
-    title: '(41) Mahana Sunni Deeni Nashisht — Official Program Announcement',
+    title: '(41) Mahana Sunni Deeni Nashisht: Official Program Announcement',
     speaker: 'Jamat Raza-E-Mustafa Antophill Zimmedaran',
     channel: '@jrmantophill-s8k',
     channelUrl: 'https://www.youtube.com/@jrmantophill-s8k',
@@ -25,7 +25,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-10-20',
     duration: '06:14',
     category: 'Mehfil Announcement',
-    views: '1.2K',
     description: 'Official invitation and details for the upcoming 41st Mahana Sunni Deeni Nashisht on Monday, 16 November 2026 at Akbar Suleman Compound, Wadala East, Mumbai.'
   },
   {
@@ -42,7 +41,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-10-19',
     duration: '48:20',
     category: 'Bayanat',
-    views: '3.4K',
     description: 'Delivered at Akbar Suleman Compound, Antophill, Wadala. Explanation of traditional Sunni beliefs, adherence to Shariah, and preserving religious ethics.'
   },
   {
@@ -58,7 +56,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-10-19',
     duration: '00:58',
     category: 'Reels & Shorts',
-    views: '4.8K',
     description: 'Behind the scenes at Bada Maidan, Wadala: Volunteers preparing fresh Tabarruk packages for hundreds of attendees.'
   },
   {
@@ -75,7 +72,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-09-21',
     duration: '35:14',
     category: 'Bayanat',
-    views: '2.1K',
     description: 'Keynote discourse on educating youth, fostering brotherhood, and upholding moral values in Antophill and Wadala.'
   },
   {
@@ -91,7 +87,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-09-21',
     duration: '00:45',
     category: 'Reels & Shorts',
-    views: '5.6K',
     description: 'Spiritual moments from the 39th Mahana Deeni Nashisht: collective recitation of Mustafa Jane Rahmat Pe Lakhon Salam.'
   },
   {
@@ -107,7 +102,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-10-20',
     duration: 'Bulletin',
     category: 'Official Notice',
-    views: '890',
     description: 'Important updates regarding seating arrangements, volunteer registration, and Madrasa support for the 41st gathering.'
   },
   {
@@ -115,7 +109,7 @@ const VERIFIED_FALLBACK_FEED = [
     type: 'youtube',
     platform: 'YouTube',
     title: 'Kalam-e-Raza: "Chamak Tujhse Paate Hain Sab Paane Waale"',
-    speaker: 'Naat Khawan Team — JRM Antophill',
+    speaker: 'Naat Khawan Team, JRM Antophill',
     channel: '@jrmantophill-s8k',
     channelUrl: 'https://www.youtube.com/@jrmantophill-s8k',
     url: 'https://www.youtube.com/@jrmantophill-s8k',
@@ -124,7 +118,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-10-19',
     duration: '12:45',
     category: 'Kalam-e-Raza',
-    views: '2.9K',
     description: 'Naat recital presented in praise of Sayyiduna Rasoolullah ﷺ from the poetry of Imam Ahmed Raza Khan.'
   },
   {
@@ -141,7 +134,6 @@ const VERIFIED_FALLBACK_FEED = [
     date: '2026-08-25',
     duration: '52:10',
     category: 'Conference',
-    views: '4.1K',
     description: 'Documentary tribute commemorating the global Islamic mission of Huzoor Tajushshariah Allama Akhtar Raza Khan Azhari.'
   }
 ];
@@ -234,7 +226,6 @@ async function scrapeYouTubeChannel(handle = '@jrmantophill-s8k') {
             date: new Date().toISOString().split('T')[0],
             duration: 'Speech',
             category: 'Bayanat',
-            views: 'Latest',
             description: `Live broadcast from Jamat Raza-E-Mustafa Antophill official YouTube channel ${handle}.`
           });
         }

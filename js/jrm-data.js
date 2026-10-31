@@ -112,54 +112,54 @@
       helpline: '+91 85911 06632'
     },
     activePosterUrl: 'https://jrmantophill.esitesz.com/jrmantophill.jpeg',
-    posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound, Antophill, Wadala. All devotees and Ahle Sunnah community members are invited to attend with discipline.'
+    posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil: In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound, Antophill, Wadala. All devotees and Ahle Sunnah community members are invited to attend with discipline.'
   };
 
   // Personalities of the Central Trust
   const DEFAULT_PERSONALITIES = [
     {
       id: 'pers-01',
+      order: '01',
       name: 'Imam Ahmed Raza Khan Fazil-e-Bareilvi (Aala Hazrat)',
-      title: 'Founder of Jamat Raza-E-Mustafa (1920) • Mujaddid of the 14th Century',
-      period: '1856 – 1921 CE / 1272 – 1340 AH',
-      bio: 'Eminent Islamic jurist, theologian, philosopher, mathematician, and spiritual master. Authored monumental works including Fatawa Razaviyya (30 volumes) and Kanzul Iman. Founded Jamat Raza-e-Mustafa to preserve Sunni Islamic beliefs and social welfare.',
-      icon: '🕌'
+      title: 'Founder of Jamat Raza-E-Mustafa (1920) | Mujaddid of the 14th Century',
+      period: '1856-1921 CE / 1272-1340 AH',
+      bio: 'Eminent Islamic jurist, theologian, philosopher, mathematician, and spiritual master. Authored monumental works including Fatawa Razaviyya (30 volumes) and Kanzul Iman. Founded Jamat Raza-e-Mustafa to preserve Sunni Islamic beliefs and social welfare.'
     },
     {
       id: 'pers-02',
+      order: '02',
       name: 'Huzoor Hujjat-ul-Islam Maulana Hamid Raza Khan Qadri',
-      title: 'First Sajjada Nasheen of Bareilly Sharif • Eldest Son of Aala Hazrat',
-      period: '1875 – 1943 CE / 1292 – 1362 AH',
-      bio: 'Renowned scholar, debater, and spiritual successor. Led Jamat Raza-E-Mustafa across British India, championing religious education and social upliftment.',
-      icon: '📖'
+      title: 'First Sajjada Nasheen of Bareilly Sharif | Eldest Son of Aala Hazrat',
+      period: '1875-1943 CE / 1292-1362 AH',
+      bio: 'Renowned scholar, debater, and spiritual successor. Led Jamat Raza-E-Mustafa across British India, championing religious education and social upliftment.'
     },
     {
       id: 'pers-03',
+      order: '03',
       name: 'Huzoor Mufti-e-Azam Hind Maulana Mustafa Raza Khan',
-      title: 'Grand Mufti of India • Second Son of Aala Hazrat',
-      period: '1892 – 1981 CE / 1310 – 1402 AH',
-      bio: 'Spiritual beacon of millions across the globe. Authored Fatawa Mustafawiyya and Saman-e-Bakhshish. Established Jamat Raza-e-Mustafa as a global voice for Ahle Sunnah wal Jama\'ah.',
-      icon: '🌟'
+      title: 'Grand Mufti of India | Second Son of Aala Hazrat',
+      period: '1892-1981 CE / 1310-1402 AH',
+      bio: 'Spiritual guide to millions across the globe. Authored Fatawa Mustafawiyya and Saman-e-Bakhshish. Established Jamat Raza-e-Mustafa as an enduring voice for Ahle Sunnah wal Jama\'ah.'
     },
     {
       id: 'pers-04',
+      order: '04',
       name: 'Huzoor Tajushshariah Mufti Akhtar Raza Khan Azhari',
-      title: 'Fakhr-e-Azhar • Chief Islamic Jurist & Spiritual Guide',
-      period: '1943 – 2018 CE / 1362 – 1439 AH',
-      bio: 'World-renowned Al-Azhar graduate, internationally ranked among the world\'s most influential Islamic personalities. Patronized Jamat Raza-E-Mustafa chapters across Mumbai, Maharashtra, and 40+ countries.',
-      icon: '🎓'
+      title: 'Fakhr-e-Azhar | Chief Islamic Jurist & Spiritual Guide',
+      period: '1943-2018 CE / 1362-1439 AH',
+      bio: 'World-renowned Al-Azhar graduate, internationally ranked among the world\'s most influential Islamic personalities. Patronized Jamat Raza-E-Mustafa chapters across Mumbai, Maharashtra, and 40+ countries.'
     },
     {
       id: 'pers-05',
+      order: '05',
       name: 'Huzoor Qaid-e-Millat Allama Asjad Raza Khan Qadri',
       title: 'President & Supreme Patron, Jamat Raza-E-Mustafa',
       period: 'Present Leader',
-      bio: 'Current spiritual head and President of Central Jamat Raza-E-Mustafa Bareilly Sharif. Inspiring youth mobilization, modern educational centers, and branch expansions worldwide, including the Antophill Wadala chapter.',
-      icon: '👑'
+      bio: 'Current spiritual head and President of Central Jamat Raza-E-Mustafa Bareilly Sharif. Inspiring youth mobilization, modern educational centers, and branch expansions worldwide, including the Antophill Wadala chapter.'
     }
   ];
 
-  // Programs — Spotlight Active (41st) + Past Archive (40th & 39th)
+  // Programs: Spotlight Active (41st) + Past Archive (40th & 39th)
   const DEFAULT_PROGRAMS = [
     {
       id: 'prog-nov-2026',
@@ -174,7 +174,7 @@
       description: '41st Monthly Sunni Deeni Nashisht spiritual & educational conference organized by Jamat Raza-E-Mustafa Antophill Wadala. Program includes Quranic recitation, Kalam-e-Raza, speeches by visiting Ulama-e-Ahle Sunnat on Islamic ethics and Shariah guidance, followed by Langar-e-Raza Tabarruk and collective Dua.',
       venue: 'Akbar Suleman Compound (Bada Maidan), Antophill, Wadala East, Mumbai 400037',
       posterUrl: 'https://jrmantophill.esitesz.com/jrmantophill.jpeg',
-      posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil — In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound. Community gathering open to all devotees of Ahle Sunnah.',
+      posterAnnouncement: '41st Mahana Sunni Deeni Nashisht Mehfil: In Sha Allah Monday, 16 November 2026 at Akbar Suleman Compound. Community gathering open to all devotees of Ahle Sunnah.',
       rsvpCount: 174,
       createdAt: '2026-10-20T10:00:00Z'
     },
@@ -274,11 +274,10 @@
       type: 'youtube',
       platform: 'YouTube',
       category: 'Mehfil Announcement',
-      title: '(41) Mahana Sunni Deeni Nashisht — Official Video Circular',
-      speaker: 'JRM Antophill Committee & Zain',
+      title: '(41) Mahana Sunni Deeni Nashisht: Official Video Circular',
+      speaker: 'JRM Antophill Committee and Zain',
       date: '2026-10-20',
       duration: '06:14',
-      views: '1.2K',
       channel: '@jrmantophill-s8k',
       url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'Wp1vX9_JRM41',
@@ -295,7 +294,6 @@
       speaker: 'Ulama-e-Ahle Sunnat Delegations',
       date: '2026-10-19',
       duration: '48:20',
-      views: '3.4K',
       channel: '@jrmantophill-s8k',
       url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample1',
@@ -312,7 +310,6 @@
       speaker: 'Hazrat Allama Maulana Mufti Sahab',
       date: '2026-09-21',
       duration: '35:14',
-      views: '2.1K',
       channel: '@jrmantophill-s8k',
       url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample2',
@@ -326,10 +323,9 @@
       platform: 'YouTube',
       category: 'Kalam-e-Raza',
       title: 'Kalam-e-Raza: "Chamak Tujhse Paate Hain Sab Paane Waale"',
-      speaker: 'Naat Khawan Team — JRM Antophill',
+      speaker: 'Naat Khawan Team, JRM Antophill',
       date: '2026-10-19',
       duration: '12:45',
-      views: '2.9K',
       channel: '@jrmantophill-s8k',
       url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample3',
@@ -342,11 +338,10 @@
       type: 'reel',
       platform: 'Instagram',
       category: 'Reels & Shorts',
-      title: 'Moments of Durood-o-Salam & Dua — Bada Maidan',
+      title: 'Moments of Durood-o-Salam & Dua at Bada Maidan',
       speaker: 'JRM Antophill Khuddam',
       date: '2026-10-19',
       duration: '00:58',
-      views: '5.6K',
       channel: '@jrmantophill',
       url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
       videoId: '',
@@ -363,7 +358,6 @@
       speaker: 'Khuddam-e-Millat Committee',
       date: '2026-09-21',
       duration: '00:45',
-      views: '4.8K',
       channel: '@jrmantophill',
       url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
       videoId: '',
@@ -380,7 +374,6 @@
       speaker: 'Senior Scholars of Jamat Raza-E-Mustafa',
       date: '2026-08-25',
       duration: '52:10',
-      views: '4.1K',
       channel: '@jrmantophill-s8k',
       url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample6',
@@ -535,7 +528,7 @@
       return true;
     },
 
-    // Member Authentication — Email / Mobile OTP Based
+    // Member Authentication: Email / Mobile OTP Based
     isMemberLoggedIn() {
       const session = Storage.get(STORAGE_KEYS.MEMBER_SESSION, null);
       if (!session) return false;
