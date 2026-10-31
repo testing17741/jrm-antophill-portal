@@ -18,7 +18,9 @@
     modeFilter: 'all',
     otpTarget: '',
     mediaSearchQuery: '',
-    mediaCategoryFilter: 'all'
+    mediaCategoryFilter: 'all',
+    mediaPlatformFilter: 'all',
+    isSyncingSocial: false
   };
 
   const el = {};
@@ -69,6 +71,11 @@
     updateISTClocks();
     setInterval(updateISTClocks, 30000);
     startEventCountdown();
+
+    // Background sync latest social feeds from API
+    setTimeout(() => {
+      syncSocialFeeds(false);
+    }, 1200);
   });
 
   function cacheElements() {
@@ -555,6 +562,65 @@
     renderMediaFeed();
   }
 
+  function filterSocialPlatform(platform) {
+    state.mediaPlatformFilter = platform;
+    const pills = document.querySelectorAll('.social-platform-pill');
+    pills.forEach(p => {
+      if (p.getAttribute('data-platform') === platform) {
+        p.classList.add('active');
+      } else {
+        p.classList.remove('active');
+      }
+    });
+    renderMediaFeed();
+  }
+
+  function resetMediaFilters() {
+    state.mediaSearchQuery = '';
+    state.mediaCategoryFilter = 'all';
+    state.mediaPlatformFilter = 'all';
+    const sInput = document.getElementById('mediaSearchInput');
+    if (sInput) sInput.value = '';
+    const catBtns = document.querySelectorAll('.media-filter-btn');
+    catBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-cat') === 'all'));
+    const platBtns = document.querySelectorAll('.social-platform-pill');
+    platBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-platform') === 'all'));
+    renderMediaFeed();
+  }
+
+  async function syncSocialFeeds(userInitiated = false) {
+    if (state.isSyncingSocial) return;
+    state.isSyncingSocial = true;
+
+    const homeBtn = document.getElementById('homeSyncBtn');
+    const mediaBtn = document.getElementById('mediaSyncBtn');
+    if (homeBtn) homeBtn.innerHTML = '<span class="spin-icon">⚡</span> Syncing...';
+    if (mediaBtn) mediaBtn.innerHTML = '<span class="spin-icon">⚡</span> Scraping...';
+
+    try {
+      const res = await JRMData.syncSocialMediaFeed(true);
+      const timeStr = JRMData.getLastScrapedTime();
+      const homeTime = document.getElementById('homeSyncTimeDisplay');
+      const mediaTime = document.getElementById('socialLastScrapedTime');
+      if (homeTime) homeTime.textContent = timeStr;
+      if (mediaTime) mediaTime.textContent = timeStr;
+
+      renderMediaFeed();
+
+      if (userInitiated) {
+        showToast(`⚡ Social Feeds Synced! (${res.count} items refreshed)`);
+      }
+    } catch (err) {
+      if (userInitiated) {
+        showToast('Feed refresh completed with cached items.');
+      }
+    } finally {
+      state.isSyncingSocial = false;
+      if (homeBtn) homeBtn.innerHTML = '⚡ Sync Feeds Now';
+      if (mediaBtn) mediaBtn.innerHTML = '⚡ Scrape & Refresh';
+    }
+  }
+
   function openVideoModal(mediaId) {
     const all = JRMData.getMediaItems();
     const item = all.find(m => m.id === mediaId);
@@ -579,13 +645,13 @@
     if (playerCont) {
       playerCont.innerHTML = `
         <div style="width: 100%; height: 100%; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #072517 0%, #0b3b24 100%); color: #FFF; padding: 24px; text-align: center;">
-          <div style="font-size: 2.6rem; margin-bottom: 8px;">${item.type === 'youtube' ? '📺' : '📱'}</div>
+          <div style="font-size: 2.6rem; margin-bottom: 8px;">${item.type === 'youtube' ? '📺' : (item.type === 'instagram' ? '📱' : '💬')}</div>
           <h4 style="color: #DFBD7A; font-size: 1.05rem; margin-bottom: 6px;">${escapeHTML(item.title)}</h4>
           <p style="font-size: 0.78rem; color: #DCE3DE; max-width: 440px; margin-bottom: 14px;">
             Published on official channel <strong>${escapeHTML(item.channel)}</strong>. Watch high-definition broadcast directly on the verified platform.
           </p>
           <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-            ▶️ Watch Now on ${item.type === 'youtube' ? 'YouTube' : 'Instagram'}
+            ▶️ Watch Now on ${escapeHTML(item.platform || 'Platform')}
           </a>
         </div>
       `;
@@ -598,49 +664,81 @@
     const homeContainer = document.getElementById('homeMediaFeedContainer');
     const allContainer = document.getElementById('allMediaGridContainer');
     const countIndicator = document.getElementById('mediaCountIndicator');
+    const homeTime = document.getElementById('homeSyncTimeDisplay');
+    const mediaTime = document.getElementById('socialLastScrapedTime');
 
-    const filtered = JRMData.getMediaItems(state.mediaSearchQuery, state.mediaCategoryFilter);
+    const lastTime = JRMData.getLastScrapedTime();
+    if (homeTime) homeTime.textContent = lastTime;
+    if (mediaTime) mediaTime.textContent = lastTime;
+
+    const filtered = JRMData.getMediaItems(state.mediaSearchQuery, state.mediaCategoryFilter, state.mediaPlatformFilter);
     const totalCount = JRMData.getMediaItems().length;
 
     if (countIndicator) {
       countIndicator.textContent = `Showing ${filtered.length} of ${totalCount} items`;
     }
 
-    const renderCard = (m) => `
-      <div class="media-card">
-        <div>
-          <div class="media-thumbnail-wrap" onclick="window.JRMApp.openVideoModal('${m.id}')" title="Click to watch preview">
-            <div class="media-play-overlay">▶</div>
-            <span class="media-duration-tag">⏱️ ${escapeHTML(m.duration || 'Video')}</span>
+    const renderCard = (m) => {
+      let badgeClass = 'badge-youtube';
+      let platformIcon = '📺';
+      let platformLabel = 'YouTube';
+
+      if (m.type === 'instagram' || m.platform === 'Instagram' || m.type === 'reel') {
+        badgeClass = 'badge-instagram';
+        platformIcon = '📷';
+        platformLabel = 'Instagram Reel';
+      } else if (m.type === 'whatsapp' || m.platform === 'WhatsApp') {
+        badgeClass = 'badge-whatsapp';
+        platformIcon = '💬';
+        platformLabel = 'WhatsApp Channel';
+      } else if (m.type === 'facebook' || m.platform === 'Facebook') {
+        badgeClass = 'badge-facebook';
+        platformIcon = '📘';
+        platformLabel = 'Facebook';
+      }
+
+      const thumbnailImg = m.thumbnail || 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800&q=80';
+
+      return `
+        <div class="social-card-v2">
+          <div class="social-card-media" onclick="window.JRMApp.openVideoModal('${m.id}')">
+            <img src="${escapeHTML(thumbnailImg)}" alt="${escapeHTML(m.title)}" class="social-card-img" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800&q=80';">
+            <div class="social-card-overlay">
+              <div class="social-play-btn">▶</div>
+            </div>
+            <div class="social-card-badge-top">
+              <span class="badge-platform ${badgeClass}">
+                ${platformIcon} ${platformLabel}
+              </span>
+            </div>
+            ${m.views ? `<span class="social-card-views-top">👁️ ${escapeHTML(m.views)}</span>` : ''}
+            <span class="social-card-duration-bottom">⏱️ ${escapeHTML(m.duration || 'Video')}</span>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span class="media-type-badge ${m.type === 'youtube' ? 'media-type-youtube' : 'media-type-reel'}">
-              ${m.type === 'youtube' ? '📺 YouTube Speech' : '📱 Instagram Reel'}
-            </span>
-            <span style="font-size: 0.72rem; color: var(--text-muted);">${escapeHTML(m.date)}</span>
+          <div class="social-card-body">
+            <h4 class="social-card-title" onclick="window.JRMApp.openVideoModal('${m.id}')">
+              ${escapeHTML(m.title)}
+            </h4>
+            <div class="social-card-speaker">
+              <span>🎙️</span> <span>${escapeHTML(m.speaker || 'JRM Scholars')}</span>
+            </div>
+            <p class="social-card-desc">
+              ${escapeHTML(m.description)}
+            </p>
           </div>
-          <h4 style="font-size: 0.94rem; margin-bottom: 4px; line-height: 1.35; color: var(--text-main); cursor: pointer;" onclick="window.JRMApp.openVideoModal('${m.id}')">
-            ${escapeHTML(m.title)}
-          </h4>
-          <div style="font-size: 0.76rem; font-weight: 600; color: var(--brand-green); margin-bottom: 6px;">
-            ${escapeHTML(m.speaker || 'JRM Scholars')}
+          <div class="social-card-foot">
+            <span class="social-card-channel-name">${escapeHTML(m.channel || '@jrmantophill')} • ${escapeHTML(m.date || '')}</span>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.JRMApp.openVideoModal('${m.id}')" style="padding: 4px 10px; font-size: 0.75rem;">
+                ▶ Watch
+              </button>
+              <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Open on official platform" style="padding: 4px 8px;">
+                ↗
+              </a>
+            </div>
           </div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">
-            ${escapeHTML(m.description)}
-          </p>
         </div>
-        <div>
-          <div style="display: flex; gap: 6px;">
-            <button type="button" class="btn btn-primary btn-sm" style="flex: 1; justify-content: center;" onclick="window.JRMApp.openVideoModal('${m.id}')">
-              ▶ Watch Video
-            </button>
-            <a href="${escapeHTML(m.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" title="Open on channel" style="padding: 6px 10px;">
-              ↗
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
+      `;
+    };
 
     if (homeContainer) {
       homeContainer.innerHTML = filtered.slice(0, 4).map(renderCard).join('');
@@ -648,11 +746,12 @@
     if (allContainer) {
       if (filtered.length === 0) {
         allContainer.innerHTML = `
-          <div style="grid-column: 1 / -1; padding: 32px; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
-            <div style="font-size: 2rem; margin-bottom: 6px;">🔍</div>
-            <p>No speeches or reels found matching "<strong>${escapeHTML(state.mediaSearchQuery)}</strong>" in this category.</p>
-            <button class="btn btn-outline btn-sm" style="margin-top: 10px;" onclick="window.JRMApp.filterMediaCategory('all'); if (document.getElementById('mediaSearchInput')) document.getElementById('mediaSearchInput').value='';">
-              Show All Media
+          <div style="grid-column: 1 / -1; padding: 36px 16px; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1px dashed var(--border-strong);">
+            <div style="font-size: 2.2rem; margin-bottom: 8px;">🔍</div>
+            <h4 style="margin-bottom: 4px; color: var(--text-main);">No posts found matching filter criteria</h4>
+            <p style="font-size: 0.82rem;">Try clearing your search query or switching to 'All Feeds'.</p>
+            <button class="btn btn-primary btn-sm" style="margin-top: 12px;" onclick="window.JRMApp.resetMediaFilters()">
+              Clear All Filters & Show Everything
             </button>
           </div>
         `;
@@ -1953,6 +2052,9 @@
     shareProgramInfo,
     handleMediaSearch,
     filterMediaCategory,
+    filterSocialPlatform,
+    syncSocialFeeds,
+    resetMediaFilters,
     openVideoModal,
     renderMediaFeed,
     renderPersonalities,

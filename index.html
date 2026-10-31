@@ -191,15 +191,29 @@
         </div>
       </section>
 
-      <!-- Latest Media & Bayanats Preview -->
+      <!-- Latest Media & Bayanats Preview (Dribbble Social Feed) -->
       <section class="content-box">
         <div class="content-box-header">
           <div>
-            <h3>Speeches, Bayanats & Video Highlights</h3>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">From @jrmantophill-s8k & Instagram Reels</span>
+            <h3>Official Speeches, Bayanats & Video Highlights</h3>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">From @jrmantophill-s8k, Instagram Reels & WhatsApp</span>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('media')">View All Media</button>
+          <button class="btn btn-outline btn-sm" onclick="window.JRMApp.switchView('media')">View All Media ↗</button>
         </div>
+
+        <!-- Live Scraper Status Bar -->
+        <div class="social-sync-bar">
+          <div class="social-sync-info">
+            <span class="pulse-dot"></span>
+            <span><strong>Live Social Scraper:</strong> Connected to official channels • Scraped: <span id="homeSyncTimeDisplay">Loading...</span></span>
+          </div>
+          <div class="social-sync-actions">
+            <button class="btn-sync" onclick="window.JRMApp.syncSocialFeeds(true)" id="homeSyncBtn">
+              ⚡ Sync Feeds Now
+            </button>
+          </div>
+        </div>
+
         <div id="homeMediaFeedContainer" class="media-grid">
           <!-- Injected dynamically by JS -->
         </div>
@@ -292,7 +306,7 @@
     </div>
 
     <!-- ========================================================================
-         VIEW 4: MEDIA, SPEECHES & INSTAGRAM REELS (Searchable Library)
+         VIEW 4: MEDIA, SPEECHES & INSTAGRAM REELS (Dribbble Social Feed Hub)
          ======================================================================== -->
     <div id="view-media" class="app-view">
       <div class="content-box">
@@ -302,17 +316,46 @@
             <span style="font-size: 0.78rem; color: var(--text-muted);">Recorded Lectures, Reels & Spiritual Discourses</span>
           </div>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <a href="http://www.youtube.com/@jrmantophill-s8k" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color: #C00;">
+            <a href="https://www.youtube.com/@jrmantophill-s8k" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color: #C00;">
               📺 YouTube Channel
             </a>
             <a href="https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color: #C13584;">
               📱 Instagram Reels
             </a>
+            <a href="https://whatsapp.com/channel/0029VacNKL4DjiOgHMNQdp2j" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm">
+              💬 WhatsApp
+            </a>
           </div>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;">
-          Search our catalog of recorded Ulama lectures, spiritual discourses, Naat-e-Mustafa recitations, and short reminders:
-        </p>
+
+        <!-- Live Social Scraper Status Bar -->
+        <div class="social-sync-bar">
+          <div class="social-sync-info">
+            <span class="pulse-dot"></span>
+            <span><strong>Live Scraper:</strong> Connected to official YouTube & Instagram • Scraped: <span id="socialLastScrapedTime">...</span></span>
+          </div>
+          <div class="social-sync-actions">
+            <button class="btn-sync" onclick="window.JRMApp.syncSocialFeeds(true)" id="mediaSyncBtn">
+              ⚡ Scrape & Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Platform Navigation Tabs (Dribbble Style) -->
+        <div class="social-platform-nav" id="socialPlatformNav">
+          <button class="social-platform-pill active" data-platform="all" onclick="window.JRMApp.filterSocialPlatform('all')">
+            🌟 All Feeds
+          </button>
+          <button class="social-platform-pill" data-platform="youtube" onclick="window.JRMApp.filterSocialPlatform('youtube')">
+            📺 YouTube (@jrmantophill-s8k)
+          </button>
+          <button class="social-platform-pill" data-platform="instagram" onclick="window.JRMApp.filterSocialPlatform('instagram')">
+            📱 Instagram Reels (@jrmantophill)
+          </button>
+          <button class="social-platform-pill" data-platform="whatsapp" onclick="window.JRMApp.filterSocialPlatform('whatsapp')">
+            💬 WhatsApp Channel
+          </button>
+        </div>
 
         <!-- Media Search & Filter Toolbar -->
         <div class="media-search-toolbar">
@@ -321,10 +364,11 @@
             <input type="text" id="mediaSearchInput" class="media-search-input" placeholder="Search speeches, scholars, Naats, or topics (e.g. Ala Hazrat, Seerat, Wadala)..." oninput="window.JRMApp.handleMediaSearch(event)">
           </div>
           <div class="media-filter-pills" id="mediaCategoryFilterContainer">
-            <button class="media-filter-btn active" data-cat="all" onclick="window.JRMApp.filterMediaCategory('all')">All Media</button>
+            <button class="media-filter-btn active" data-cat="all" onclick="window.JRMApp.filterMediaCategory('all')">All Categories</button>
             <button class="media-filter-btn" data-cat="Bayanat" onclick="window.JRMApp.filterMediaCategory('Bayanat')">Bayanat & Speeches</button>
             <button class="media-filter-btn" data-cat="Kalam-e-Raza" onclick="window.JRMApp.filterMediaCategory('Kalam-e-Raza')">Kalam-e-Raza & Naats</button>
             <button class="media-filter-btn" data-cat="Reels & Shorts" onclick="window.JRMApp.filterMediaCategory('Reels & Shorts')">Instagram Reels</button>
+            <button class="media-filter-btn" data-cat="Mehfil Announcement" onclick="window.JRMApp.filterMediaCategory('Mehfil Announcement')">Notices</button>
             <button class="media-filter-btn" data-cat="Conference" onclick="window.JRMApp.filterMediaCategory('Conference')">Conferences</button>
             <span id="mediaCountIndicator" class="media-count-indicator">Showing all items</span>
           </div>

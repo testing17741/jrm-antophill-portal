@@ -73,20 +73,6 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
-  --text-faint: #6D8276;
-
-  --brand-green: #2B7A54;
-  --brand-green-hover: #369566;
-  --brand-green-light: #153424;
-
-  --status-paid: #52C28A;
-  --status-paid-bg: #102C1E;
-  --status-pending: #E06357;
-  --status-pending-bg: #2C1412;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 3px 8px rgba(0, 0, 0, 0.4);
-}
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -1259,6 +1245,314 @@ a {
   border: 1px dashed var(--border-strong);
   border-radius: calc(var(--radius-md) - 2px);
   pointer-events: none;
+}
+
+/* ==========================================================================
+   DRIBBLE-GRADE ISLAMIC TRUST UI & SOCIAL SCRAPER COMPONENTS
+   ========================================================================== */
+
+/* Islamic Star Pattern Ambient Watermark */
+.islamic-pattern-accent {
+  background-image: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Pulse Dot Animation for Live Scraper Status */
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(14, 186, 92, 0.7); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 7px rgba(14, 186, 92, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(14, 186, 92, 0); }
+}
+
+.pulse-dot {
+  width: 9px;
+  height: 9px;
+  background-color: #0EBA5C;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-icon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+/* Live Social Media Scraper Banner */
+.social-sync-bar {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-gold);
+  border-left: 4px solid var(--brand-gold);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.social-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+}
+
+.social-sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-sync {
+  background: var(--brand-green-light);
+  border: 1px solid var(--brand-green);
+  color: var(--brand-green);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.btn-sync:hover {
+  background: var(--brand-green);
+  color: #FFF;
+}
+
+/* Dribbble Platform Filter Tabs */
+.social-platform-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.social-platform-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-platform-pill:hover {
+  border-color: var(--brand-green);
+  color: var(--brand-green);
+  transform: translateY(-1px);
+}
+
+.social-platform-pill.active {
+  background: var(--brand-green);
+  border-color: var(--brand-green);
+  color: #FFF;
+  box-shadow: 0 2px 8px rgba(11, 59, 36, 0.25);
+}
+
+/* Platform Badge Colors */
+.badge-platform {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.badge-youtube {
+  background: #FF0000;
+  color: #FFFFFF;
+}
+
+.badge-instagram {
+  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+  color: #FFFFFF;
+}
+
+.badge-whatsapp {
+  background: #25D366;
+  color: #FFFFFF;
+}
+
+.badge-facebook {
+  background: #1877F2;
+  color: #FFFFFF;
+}
+
+/* Dribbble Enhanced Video Card */
+.social-card-v2 {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.social-card-v2:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-gold);
+}
+
+.social-card-media {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  background: #08140D;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.social-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.social-card-v2:hover .social-card-img {
+  transform: scale(1.05);
+}
+
+.social-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-play-btn {
+  width: 44px;
+  height: 44px;
+  background: rgba(197, 160, 89, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #072517;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.social-card-media:hover .social-play-btn {
+  transform: scale(1.15);
+  background: #E8C882;
+}
+
+.social-card-badge-top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.social-card-views-top {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #FFF;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.social-card-duration-bottom {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.social-card-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.social-card-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.social-card-title:hover {
+  color: var(--brand-green);
+}
+
+.social-card-speaker {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--brand-green);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.social-card-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  flex: 1;
+}
+
+.social-card-foot {
+  padding: 10px 14px;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.social-card-channel-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 @media print {

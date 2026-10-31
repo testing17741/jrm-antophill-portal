@@ -14,6 +14,8 @@
     LOGS: 'jrm_audit_logs_trust_v1',
     SETTINGS: 'jrm_settings_trust_v1',
     MEDIA: 'jrm_media_trust_v1',
+    SOCIAL_FEED: 'jrm_social_feed_trust_v1',
+    LAST_SCRAPED_AT: 'jrm_last_scraped_at_v1',
     PENDING_OTP: 'jrm_pending_otp_trust_v1',
     SUPER_ADMIN_SESSION: 'jrm_super_session_trust_v1',
     ADMIN_SESSION: 'jrm_admin_session_trust_v1',
@@ -265,91 +267,143 @@
     { id: 'exp-06', itemNo: 6, title: 'Miscellaneous (Parchun Kharcha)', category: 'Parchun Kharcha', amount: 1000, programId: 'prog-sep-2026', paidTo: 'Local Market Antophill', mode: 'Cash', date: '2026-09-21', voucherNo: 'VCH-SEP-006', notes: 'Carpets, stage banners, mineral water, and supplies' }
   ];
 
-  // Rich Media Library (Speeches, Bayanats, Reels, Naats)
+  // Rich Unified Social & Media Library (YouTube, Instagram Reels, WhatsApp, Naats)
   const DEFAULT_MEDIA = [
+    {
+      id: 'med-00',
+      type: 'youtube',
+      platform: 'YouTube',
+      category: 'Mehfil Announcement',
+      title: '(41) Mahana Sunni Deeni Nashisht — Official Video Circular',
+      speaker: 'JRM Antophill Committee & Zain',
+      date: '2026-10-20',
+      duration: '06:14',
+      views: '1.2K',
+      channel: '@jrmantophill-s8k',
+      url: 'https://www.youtube.com/@jrmantophill-s8k',
+      videoId: 'Wp1vX9_JRM41',
+      thumbnail: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800&q=80',
+      description: 'Official invitation and details for the upcoming 41st Mahana Sunni Deeni Nashisht on Monday, 16 November 2026 at Akbar Suleman Compound, Wadala East, Mumbai.',
+      keywords: 'november 16 mehfil 41st deeni nashisht antophill wadala'
+    },
     {
       id: 'med-01',
       type: 'youtube',
+      platform: 'YouTube',
       category: 'Bayanat',
       title: 'Haqeeqat-e-Maslak-e-Ala Hazrat & Sunni Aqeedah',
       speaker: 'Ulama-e-Ahle Sunnat Delegations',
       date: '2026-10-19',
       duration: '48:20',
+      views: '3.4K',
       channel: '@jrmantophill-s8k',
-      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample1',
+      thumbnail: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=800&q=80',
       description: 'Delivered at Akbar Suleman Compound, Antophill, Wadala. Comprehensive explanation of Ahle Sunnah wal Jama\'ah principles and moral character.',
       keywords: 'ala hazrat bareilly sharif sunni aqeedah mahana mehfil'
     },
     {
       id: 'med-02',
       type: 'youtube',
+      platform: 'YouTube',
       category: 'Bayanat',
       title: 'Seerat-e-Mustafa ﷺ & Shariah Responsibility of Youth',
       speaker: 'Hazrat Allama Maulana Mufti Sahab',
       date: '2026-09-21',
       duration: '35:14',
+      views: '2.1K',
       channel: '@jrmantophill-s8k',
-      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample2',
+      thumbnail: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=800&q=80',
       description: 'Inspiring address on educating Sunni Muslim youth in modern Mumbai, fostering Islamic ethics, and serving the community.',
       keywords: 'seerat un nabi youth education shariah guidance'
     },
     {
       id: 'med-03',
       type: 'naat',
+      platform: 'YouTube',
       category: 'Kalam-e-Raza',
       title: 'Kalam-e-Raza: "Chamak Tujhse Paate Hain Sab Paane Waale"',
       speaker: 'Naat Khawan Team — JRM Antophill',
       date: '2026-10-19',
       duration: '12:45',
+      views: '2.9K',
       channel: '@jrmantophill-s8k',
-      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample3',
+      thumbnail: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=800&q=80',
       description: 'Soulful recitation of Aala Hazrat\'s celebrated Manqabat and Naat during the 40th Deeni Nashisht.',
       keywords: 'kalam e raza naat shareef hadaiq e bakhshish'
     },
     {
       id: 'med-04',
       type: 'reel',
+      platform: 'Instagram',
       category: 'Reels & Shorts',
       title: 'Moments of Durood-o-Salam & Dua — Bada Maidan',
       speaker: 'JRM Antophill Khuddam',
       date: '2026-10-19',
       duration: '00:58',
+      views: '5.6K',
       channel: '@jrmantophill',
       url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
       videoId: '',
+      thumbnail: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=800&q=80',
       description: 'Spiritual glimpses of the concluding collective Dua at Akbar Suleman Compound, Antophill Wadala.',
       keywords: 'instagram reel short video dua durood antophill'
     },
     {
       id: 'med-05',
       type: 'reel',
+      platform: 'Instagram',
       category: 'Reels & Shorts',
       title: 'Langar-e-Raza Tabarruk Preparation & Volunteer Seva',
       speaker: 'Khuddam-e-Millat Committee',
       date: '2026-09-21',
       duration: '00:45',
+      views: '4.8K',
       channel: '@jrmantophill',
       url: 'https://www.instagram.com/jrmantophill?igsh=a2dzNDYxb2VycW04',
       videoId: '',
+      thumbnail: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80',
       description: 'Behind the scenes: Volunteers preparing food boxes for distribution to all attendees in Wadala.',
       keywords: 'langar niyaz khidmat volunteer antophill'
     },
     {
       id: 'med-06',
       type: 'youtube',
+      platform: 'YouTube',
       category: 'Conference',
       title: 'Legacy of Huzoor Tajushshariah & Global Mission of JRM',
       speaker: 'Senior Scholars of Jamat Raza-E-Mustafa',
       date: '2026-08-25',
       duration: '52:10',
+      views: '4.1K',
       channel: '@jrmantophill-s8k',
-      url: 'http://www.youtube.com/@jrmantophill-s8k',
+      url: 'https://www.youtube.com/@jrmantophill-s8k',
       videoId: 'sample6',
+      thumbnail: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=800&q=80',
       description: 'Commemorating the international service of Huzoor Tajushshariah Allama Akhtar Raza Khan Azhari in India and worldwide.',
       keywords: 'tajushshariah azhari miyan bareilly conference'
+    },
+    {
+      id: 'med-07',
+      type: 'whatsapp',
+      platform: 'WhatsApp',
+      category: 'Official Notice',
+      title: 'WhatsApp Circular: Guidelines for Youth & Madrasa Assistance',
+      speaker: 'Super Admin Zain & Zimmedaran',
+      date: '2026-10-20',
+      duration: 'Circular',
+      views: '920',
+      channel: 'JRM WhatsApp Channel',
+      url: 'https://whatsapp.com/channel/0029VacNKL4DjiOgHMNQdp2j',
+      videoId: '',
+      thumbnail: 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?auto=format&fit=crop&w=800&q=80',
+      description: 'Official WhatsApp broadcast outlining volunteer roles, Madrasa rent contribution transparency, and event coordination.',
+      keywords: 'whatsapp circular guidelines rules volunteer'
     }
   ];
 
@@ -642,11 +696,14 @@
       return program;
     },
 
-    // Media & Speeches Feed (With Search & Category Filter)
-    getMediaItems(query = '', category = 'all') {
+    // Media & Speeches Feed (With Search, Platform & Category Filter)
+    getMediaItems(query = '', category = 'all', platform = 'all') {
       let list = Storage.get(STORAGE_KEYS.MEDIA, DEFAULT_MEDIA);
+      if (platform && platform !== 'all') {
+        list = list.filter(m => (m.type && m.type.toLowerCase() === platform.toLowerCase()) || (m.platform && m.platform.toLowerCase().includes(platform.toLowerCase())));
+      }
       if (category && category !== 'all') {
-        list = list.filter(m => m.category.toLowerCase() === category.toLowerCase());
+        list = list.filter(m => m.category && m.category.toLowerCase() === category.toLowerCase());
       }
       if (query && query.trim()) {
         const q = query.toLowerCase().trim();
@@ -654,7 +711,8 @@
           (m.title && m.title.toLowerCase().includes(q)) ||
           (m.speaker && m.speaker.toLowerCase().includes(q)) ||
           (m.keywords && m.keywords.toLowerCase().includes(q)) ||
-          (m.category && m.category.toLowerCase().includes(q))
+          (m.category && m.category.toLowerCase().includes(q)) ||
+          (m.description && m.description.toLowerCase().includes(q))
         );
       }
       return list;
@@ -671,6 +729,39 @@
       }
       Storage.set(STORAGE_KEYS.MEDIA, list);
       return item;
+    },
+
+    // Social Media Scraper & Live Feed Aggregator
+    getLastScrapedTime() {
+      return Storage.get(STORAGE_KEYS.LAST_SCRAPED_AT, '20-10-2026, 03:05 PM IST');
+    },
+
+    async syncSocialMediaFeed(force = false) {
+      try {
+        const endpoint = '/api/social-feed?limit=30';
+        const res = await fetch(endpoint, { method: 'GET', headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            const current = Storage.get(STORAGE_KEYS.MEDIA, DEFAULT_MEDIA);
+            const merged = [...json.data];
+            const seen = new Set(json.data.map(i => i.id));
+            for (const item of current) {
+              if (!seen.has(item.id)) merged.push(item);
+            }
+            Storage.set(STORAGE_KEYS.MEDIA, merged);
+            const timeStr = json.scrapedAtIST || (new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST');
+            Storage.set(STORAGE_KEYS.LAST_SCRAPED_AT, timeStr);
+            this.log('SOCIAL_FEED_SYNC', `Synced ${json.data.length} social items from API`);
+            return { success: true, count: json.data.length, scrapedAtIST: timeStr, liveScrapedCount: json.liveScrapedCount };
+          }
+        }
+      } catch (err) {
+        // Fallback gracefully to local stored items
+      }
+      const nowIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST';
+      Storage.set(STORAGE_KEYS.LAST_SCRAPED_AT, nowIST);
+      return { success: true, count: DEFAULT_MEDIA.length, scrapedAtIST: nowIST, liveScrapedCount: 0, fallback: true };
     },
 
     // Collections

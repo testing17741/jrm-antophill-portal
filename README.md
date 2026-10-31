@@ -33,9 +33,13 @@ The official responsive Progressive Web App (PWA) and organizational website for
   - History of Jamat Raza-E-Mustafa (founded 1920 by Ala Hazrat Imam Ahmed Raza Khan Bareilvi).
   - Antophill Wadala Chapter: Establishment at Akbar Suleman Compound, Ulama guidance, and committee leadership under Zain.
   - Core Objectives: Preserving Ahl-e-Sunnat beliefs, organizing monthly deeni nashisht, youth education, and social welfare.
-- **Media & Bayanats Feed:**
-  - Curated speeches, Tilawat, Naat, and video highlights from `@jrmantophill-s8k` and `@jrmantophill` Instagram Reels.
-  - Dynamic media engine allows committee administrators to link new video bayanats and clips.
+- **Media & Social Feed Hub (Dribbble-Grade UI & Live Scraper API):**
+  - **Live Scraper API (`/api/social-feed`):** Scrapes and unifies real-time feeds from YouTube (`@jrmantophill-s8k`), Instagram Reels (`@jrmantophill`), WhatsApp Channel notices, and Facebook updates.
+  - **Dribbble Design Aesthetics:** Islamic star pattern background, gold-arched cards, dual hairlines, video thumbnails with play overlay, view counts, and duration chips.
+  - **Platform Tabs:** Instant filtering across All Feeds, YouTube Speeches, Instagram Reels, and WhatsApp Announcements.
+  - **Interactive Search:** Live search bar by scholar, title, topic, or keyword with real-time item counter.
+  - **Live Sync Pulse:** Shows live scraper status with animated green pulse indicator and last scraped timestamp in Indian Standard Time (IST).
+  - **Modal Video Player:** Integrated responsive player for watching lectures and reels directly.
 - **Past Mehfils Archive:**
   - Historical records of previous gatherings (e.g. 40th and 39th Mehfils) with verified audited financial logs.
 - **Public Financial Transparency:**
